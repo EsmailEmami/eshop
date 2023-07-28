@@ -7,10 +7,12 @@ import (
 )
 
 type AuthToken struct {
-	ID        uuid.UUID `gorm:"column:id"`
-	UserID    uuid.UUID `gorm:"column:user_id"`
-	Revoked   bool      `gorm:"column:revoked"`
-	ExpiresAt time.Time `gorm:"column:expires_at"`
+	BasicModel
+	UserID         uuid.UUID      `gorm:"column:user_id"`
+	User           *User          `gorm:"foreignKey:user_id;references:id"  json:"user"`
+	Revoked        bool           `gorm:"column:revoked"`
+	ExpiresAt      time.Time      `gorm:"column:expires_at"`
+	LoginHistories []LoginHistory `gorm:"foreignKey:token_id;references:id" json:"loginHistories"`
 }
 
 func (model AuthToken) TableName() string {

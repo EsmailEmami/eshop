@@ -18,14 +18,14 @@ func seedUsers(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			FirstName: "محمد",
-			LastName:  "غلامی",
-			Username:  "mgh",
+			FirstName: "اسماعیل",
+			LastName:  "امامی",
+			Username:  "esmailemami",
 			Password:  "$2a$10$LxCfacwwZ2TYmJJRBU0RGu/nY.15kiqPaQq8IAWBhjxSXbCTAep7u",
 			IsSystem:  true,
-			Mobile:    "09171209668",
+			Mobile:    "09903669556",
 			Enabled:   true,
-			NoeSematID: func() *uuid.UUID {
+			RoleID: func() *uuid.UUID {
 				id := uuid.MustParse(consts.NOE_SEMAT_ROOT_ID)
 				return &id
 			}(),
@@ -37,14 +37,14 @@ func seedUsers(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			FirstName: "عبدالله",
-			LastName:  "محمدی",
-			Username:  "abdollahm66",
+			FirstName: "علیرضا",
+			LastName:  "صفری",
+			Username:  "alireza83safari",
 			Password:  "$2a$12$2r6Z7XiJgUTQpLcxcGd15uUezXug4fmDYz4VV2jfHV7kUwZHnqGLS",
 			IsSystem:  true,
-			Mobile:    "09179818310",
+			Mobile:    "09903669556",
 			Enabled:   true,
-			NoeSematID: func() *uuid.UUID {
+			RoleID: func() *uuid.UUID {
 				id := uuid.MustParse(consts.NOE_SEMAT_ROOT_ID)
 				return &id
 			}(),
@@ -68,14 +68,14 @@ func seedUsers(dbConn *gorm.DB) error {
 			}
 		} else {
 			err = dbConn.Model(&models.User{}).Where("id", item.ID).UpdateColumns(map[string]any{
-				"first_name":   item.FirstName,
-				"last_name":    item.LastName,
-				"username":     item.Username,
-				"is_system":    item.IsSystem,
-				"mobile":       item.Mobile,
-				"enabled":      item.Enabled,
-				"noe_semat_id": item.NoeSematID.String(),
-				"updated_at":   time.Now(),
+				"first_name": item.FirstName,
+				"last_name":  item.LastName,
+				"username":   item.Username,
+				"is_system":  item.IsSystem,
+				"mobile":     item.Mobile,
+				"enabled":    item.Enabled,
+				"role_id":    item.RoleID.String(),
+				"updated_at": time.Now(),
 			}).Error
 			if err != nil {
 				return err
