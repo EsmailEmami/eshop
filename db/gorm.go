@@ -46,6 +46,8 @@ func GormDBConn(ctx context.Context) (*gorm.DB, error) {
 	}
 	dbConn = dbConn.Omit(clause.Associations)
 
+	loadCallbacks(dbConn)
+
 	sqlDB, _ := dbConn.DB()
 	sqlDB.SetMaxIdleConns(30)
 	sqlDB.SetMaxOpenConns(10000)

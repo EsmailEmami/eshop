@@ -1,6 +1,273 @@
+definitions:
+  models.AuthToken:
+    properties:
+      createdAt:
+        type: string
+      expiresAt:
+        type: string
+      id:
+        type: string
+      loginHistories:
+        items:
+          $ref: '#/definitions/models.LoginHistory'
+        type: array
+      revoked:
+        type: boolean
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userId:
+        type: string
+    type: object
+  models.LoginHistory:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      ip:
+        type: string
+      token:
+        $ref: '#/definitions/models.AuthToken'
+      tokenId:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userAgent:
+        type: string
+      userId:
+        type: string
+    type: object
+  models.LoginInputModel:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  models.LoginOutputModel:
+    properties:
+      expiresAt:
+        type: string
+      expiresIn:
+        type: integer
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/models.LoginOutputUserModel'
+    type: object
+  models.LoginOutputUserModel:
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      username:
+        type: string
+    type: object
+  models.RegisterInputModel:
+    properties:
+      password:
+        type: string
+      passwordConfirmation:
+        type: string
+      username:
+        type: string
+    type: object
+  models.Role:
+    properties:
+      code:
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      id:
+        type: string
+      isSystem:
+        type: boolean
+      name:
+        type: string
+      permissions:
+        items:
+          type: string
+        type: array
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+    type: object
+  models.User:
+    properties:
+      authTokens:
+        items:
+          $ref: '#/definitions/models.AuthToken'
+        type: array
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      enabled:
+        type: boolean
+      firstName:
+        type: string
+      id:
+        type: string
+      isSystem:
+        type: boolean
+      lastName:
+        type: string
+      mobile:
+        type: string
+      noeSematId:
+        type: string
+      role:
+        $ref: '#/definitions/models.Role'
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+      username:
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /auth/is_authenticated:
+    get:
+      consumes:
+      - application/json
+      description: Returns the logged in user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Returns the logged in user
+      tags:
+      - Auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Log user in
+      parameters:
+      - description: Login input model
+        in: body
+        name: loginInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginInputModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoginOutputModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Log user in
+      tags:
+      - Auth
+  /auth/logout:
+    get:
+      consumes:
+      - application/json
+      description: Logout the user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Logout the user.
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: register a new user.
+      parameters:
+      - description: Register input model
+        in: body
+        name: RegisterInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterInputModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: a new user.
+      tags:
+      - Auth
 securityDefinitions:
   Bearer:
     description: Type "Bearer" followed by a space and JWT token.

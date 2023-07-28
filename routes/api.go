@@ -3,6 +3,9 @@ package routes
 import (
 	"net/http"
 
+	"github.com/esmailemami/eshop/apphttp"
+	"github.com/esmailemami/eshop/apphttp/controllers"
+	"github.com/esmailemami/eshop/apphttp/middlewares"
 	"github.com/esmailemami/eshop/docs"
 	"github.com/go-chi/chi/v5"
 	"github.com/spf13/viper"
@@ -35,10 +38,19 @@ func LoadApiRoutes(root *chi.Mux) {
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 	root.Mount("/swagger/", httpSwagger.WrapHandler)
 
+	// Route group for '/api/v1'
 	root.Route("/api/v1", func(r chi.Router) {
-		// Auth
-		// r.Post("/login", apphttp.Handler(auth.Login))
-		// r.Get("/logout", apphttp.Handler(auth.Logout))
-		// r.Get("/is_authenticated", apphttp.Handler(auth.IsAuthenticated, middle
+		// No authentication required
+		r.Post("/auth/login", apphttp.Handler(controllers.Login))
+		r.Post("/auth/register", apphttp.Handler(controllers.Register))
+
+		// Authentication required
+		r.Group(func(r chi.Router) {
+			r.Use(middlewares.AuthenticationHandler)
+
+			// Auth
+			r.Get("/auth/is_authenticated", apphttp.Handler(controllers.IsAuthenticated))
+			r.Get("/auth/logout", apphttp.Handler(controllers.Logout))
+		})
 	})
 }

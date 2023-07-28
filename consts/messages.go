@@ -8,6 +8,7 @@ const (
 	Deleted              = "رکورد مورد نظر با موفقیت حذف شد"
 	VerifivationCodeSent = "کد اعتبار سنجی با موفقیت ارسال شد."
 	RegistrationDone     = "ثبت نام شما با موفقیت انجام شد."
+	LoggedOut            = "خروج با موفقیت انجام شد."
 
 	// Errors
 	CacheRecordNotFound              = "Cache Record Not Found"

@@ -4,6 +4,7 @@ up: |
     id    			    uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     name            varchar(1024),
     code            varchar(1024) unique,
+    file_id         uuid not null,
  
     created_at 		  timestamptz default now(),
     created_by_id 	uuid null,
@@ -14,7 +15,8 @@ up: |
 
     CONSTRAINT fk__brand_user_created_by FOREIGN KEY (created_by_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk__brand_user_updated_by FOREIGN KEY (updated_by_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk__brand_user_deleted_by FOREIGN KEY (deleted_by_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT
+    CONSTRAINT fk__brand_user_deleted_by FOREIGN KEY (deleted_by_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk__brand_file FOREIGN KEY (file_id) REFERENCES public.file (id) ON UPDATE CASCADE ON DELETE RESTRICT
   );
 
 down: |

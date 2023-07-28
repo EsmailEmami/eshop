@@ -10,6 +10,10 @@ type File struct {
 	Products       []ProductFileMap `gorm:"foreignKey:file_id;references:id" json:"products"`
 }
 
+func (File) TableName() string {
+	return "file"
+}
+
 type FileType int
 
 const (

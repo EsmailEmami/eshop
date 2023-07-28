@@ -9,3 +9,7 @@ type ProductFileMap struct {
 	Product Product `gorm:"foreignKey:product_id;references:id" json:"product"`
 	File    File    `gorm:"foreignKey:file_id;references:id"    json:"file"`
 }
+
+func (ProductFileMap) TableName() string {
+	return "product_file_map"
+}

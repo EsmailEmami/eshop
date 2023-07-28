@@ -6,6 +6,9 @@ up: |
     code            varchar(1024) unique,
     brand_id        uuid not null,
     category_id     uuid not null,
+    short_description     varchar(3000),
+    description     varchar,
+
  
     created_at 		  timestamptz default now(),
     created_by_id 	uuid null,

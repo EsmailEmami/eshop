@@ -8,3 +8,7 @@ type Category struct {
 
 	Products []Product `gorm:"foreignKey:category_id;references:id" json:"products"`
 }
+
+func (Category) TableName() string {
+	return "category"
+}

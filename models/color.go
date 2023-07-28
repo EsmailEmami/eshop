@@ -8,3 +8,7 @@ type Color struct {
 	ColorHex     string        `gorm:"color_hex"                         json:"colorHex"`
 	ProductItems []ProductItem `gorm:"foreignKey:color_id;references:id" json:"products"`
 }
+
+func (Color) TableName() string {
+	return "color"
+}
