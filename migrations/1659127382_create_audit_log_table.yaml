@@ -1,0 +1,23 @@
+---
+up: |
+  CREATE TABLE audit_log (
+    id                   	uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    action					      varchar(30),
+    user_id					      uuid,
+    table_name				    varchar(50),
+    model_name				    varchar(50),
+    model_id				      varchar(100),
+    token_id				      varchar(100),
+    user_agent				    text,
+    ip						        varchar(60),
+    "method"				      varchar(15),
+    request_uri				    text,
+    "data"					      jsonb,
+    where_clauses			    jsonb,
+    created_at 				    timestamptz default now()
+  );
+
+down: |
+  DROP TABLE audit_log cascade;
+
+connection: log-db

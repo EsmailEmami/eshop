@@ -1,0 +1,45 @@
+[log]
+level=6 # PanicLevel=0, FatalLevel=1, ErrorLevel=2, WarnLevel=3, InfoLevel=4, DebugLevel=5, TraceLevel=6
+
+[server]
+ip="127.0.0.1"
+port="6060"
+
+[appdb]
+db_name = ""
+host = "localhost"
+password = ""
+port = "5432"
+username = ""
+
+[log-db]
+db_name = ""
+host = "localhost"
+password = ""
+port = "5432"
+username = ""
+
+[redis]
+redis_host="127.0.0.1"
+redis_port="6379"
+redis_db=0
+redis_password=""
+
+[kafka]
+host = "127.0.0.1"
+port = 9092
+
+[global]
+file_storage_path=""
+
+[keys]
+private = ""
+
+[queue]
+log-path=""
+
+[niksms]
+username = ""
+password = ""
+sender-number = ""
+

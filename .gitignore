@@ -1,0 +1,15 @@
+*.test
+cpu.out
+mem.out
+dbdata/
+.env
+config.toml
+.vscode/
+/oauth-keys/*.key
+__debug_bin
+ssl_cert/*
+!ssl_cert/.gitkeep
+vendor/
+deployments/secrets/REDIS_PASSWORD.txt
+deployments/secrets/POSTGRES_PASSWORD.txt
+deployments/data

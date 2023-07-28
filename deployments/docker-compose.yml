@@ -1,0 +1,47 @@
+version: "3.7"
+networks:
+  billing-core-net:
+    driver: bridge
+
+secrets:
+  POSTGRES_PASSWORD:
+    file: ./secrets/POSTGRES_PASSWORD.txt
+  REDIS_PASSWORD:
+    file: ./secrets/REDIS_PASSWORD.txt
+
+services:
+  redis:
+    container_name: redis_db
+    image: redis:latest
+    restart: always
+    secrets:
+      - REDIS_PASSWORD
+    ports: 
+      - 6379:6379
+    environment:
+      - REDIS_PASSWORD_FILE=/run/secrets/REDIS_PASSWORD
+    command: --requirepass 12345678
+    volumes:
+      - cache:/data
+    networks:
+      - billing-core-net
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    restart: always
+    secrets:
+      - POSTGRES_PASSWORD
+    ports:
+      - 9092:9092
+    environment:
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    volumes:
+      - kafka:/data/bitnami/kafka/data
+
+
+volumes:
+  cache:
+    driver: local
+  kafka:
+    driver: local
