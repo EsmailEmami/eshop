@@ -9,3 +9,6 @@ run:
 
 seed:
 	@go run . db seed
+
+update-db:
+	@go run . migration up

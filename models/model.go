@@ -25,5 +25,5 @@ type BasicModel struct {
 	ID        *uuid.UUID     `gorm:"primaryKey"        json:"id"`
 	CreatedAt time.Time      `gorm:"column:created_at" json:"createdAt"`
 	UpdatedAt time.Time      `gorm:"column:updated_at" json:"updatedAt"`
-	DeletedAt gorm.DeletedAt `                         json:"-"`
+	DeletedAt gorm.DeletedAt `gorm:"deleted_at"        json:"-"`
 }

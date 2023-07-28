@@ -1,0 +1,12 @@
+---
+up: |
+    CREATE TABLE sms_result (
+    id    			    uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at 		  timestamptz default now(),
+    "to" VARCHAR(1024),
+    track_id VARCHAR(1024),
+    driver_name VARCHAR(1024)
+    );
+
+down: |
+  drop table sms_result;

@@ -1,0 +1,13 @@
+---
+up: |
+  CREATE TABLE product_file_map (
+  product_id    	uuid,
+  file_id    	uuid,
+
+  CONSTRAINT pk_product_file_map PRIMARY KEY (product_id, file_id),
+  CONSTRAINT fk__product_file_map_product FOREIGN KEY (product_id) REFERENCES public.product (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk__product_file_map_file FOREIGN KEY (file_id) REFERENCES public.file (id) ON UPDATE CASCADE ON DELETE RESTRICT
+  );
+
+down: |
+  drop table product_file_map;
