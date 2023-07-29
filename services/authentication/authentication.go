@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	appmodels "github.com/esmailemami/eshop/apphttp/models"
+	appmodels "github.com/esmailemami/eshop/app/models"
 	"github.com/esmailemami/eshop/consts"
 	dbpkg "github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/models"

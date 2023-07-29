@@ -3,7 +3,7 @@ package middlewares
 import (
 	"fmt"
 
-	"github.com/esmailemami/eshop/apphttp"
+	"github.com/esmailemami/eshop/app"
 	"github.com/esmailemami/eshop/consts"
 	"github.com/esmailemami/eshop/errors"
 	"github.com/esmailemami/eshop/models"
@@ -13,8 +13,8 @@ import (
 
 // actions will check with OR condition.
 // if one of them is allowed, it will return no error
-func Permitted(actions ...string) func(ctx *apphttp.HttpContext) error {
-	return func(ctx *apphttp.HttpContext) error {
+func Permitted(actions ...string) func(ctx *app.HttpContext) error {
+	return func(ctx *app.HttpContext) error {
 		permitted := false
 
 		// load token's related user

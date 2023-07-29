@@ -1,4 +1,4 @@
-package apphttp
+package app
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/esmailemami/eshop/apphttp/httpmodels"
+	"github.com/esmailemami/eshop/app/httpmodels"
 	"github.com/esmailemami/eshop/consts"
 	"github.com/go-chi/chi/v5"
 )

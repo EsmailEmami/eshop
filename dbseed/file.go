@@ -14,14 +14,110 @@ func seedFile(dbConn *gorm.DB) error {
 		{
 			Model: models.Model{
 				ID: func() *uuid.UUID {
-					id := uuid.MustParse(consts.DEFAULT_FILE_ID)
+					id := uuid.MustParse(consts.FILE_DEFAULT_ID)
 					return &id
 				}(),
 			},
-			MimeType:       "png",
+			MimeType:       ".jpg",
 			OriginalName:   "default picture",
-			UniqueFileName: consts.DEFAULT_FILE_ID + ".png",
+			UniqueFileName: consts.FILE_DEFAULT_ID + ".jpg",
 			FileType:       models.FileTypeSystematic,
+		},
+		{
+			Model: models.Model{
+				ID: func() *uuid.UUID {
+					id := uuid.MustParse(consts.FILE_BRAND_APPLE_ID)
+					return &id
+				}(),
+			},
+			MimeType:       ".png",
+			OriginalName:   "APPLE LOGO",
+			UniqueFileName: consts.FILE_BRAND_APPLE_ID + ".png",
+			FileType:       models.FileTypeBrand,
+		},
+		{
+			Model: models.Model{
+				ID: func() *uuid.UUID {
+					id := uuid.MustParse(consts.FILE_BRAND_HUAWEI_ID)
+					return &id
+				}(),
+			},
+			MimeType:       ".png",
+			OriginalName:   "HUAWEI LOGO",
+			UniqueFileName: consts.FILE_BRAND_HUAWEI_ID + ".png",
+			FileType:       models.FileTypeBrand,
+		},
+		{
+			Model: models.Model{
+				ID: func() *uuid.UUID {
+					id := uuid.MustParse(consts.FILE_BRAND_XIAOMI_ID)
+					return &id
+				}(),
+			},
+			MimeType:       ".png",
+			OriginalName:   "XIAOMI LOGO",
+			UniqueFileName: consts.FILE_BRAND_XIAOMI_ID + ".png",
+			FileType:       models.FileTypeBrand,
+		},
+		{
+			Model: models.Model{
+				ID: func() *uuid.UUID {
+					id := uuid.MustParse(consts.FILE_BRAND_SAMSUNG_ID)
+					return &id
+				}(),
+			},
+			MimeType:       ".png",
+			OriginalName:   "SAMSUNG LOGO",
+			UniqueFileName: consts.FILE_BRAND_SAMSUNG_ID + ".png",
+			FileType:       models.FileTypeBrand,
+		},
+		{
+			Model: models.Model{
+				ID: func() *uuid.UUID {
+					id := uuid.MustParse(consts.FILE_BRAND_COCACOLA_ID)
+					return &id
+				}(),
+			},
+			MimeType:       ".png",
+			OriginalName:   "COCACOLA LOGO",
+			UniqueFileName: consts.FILE_BRAND_COCACOLA_ID + ".png",
+			FileType:       models.FileTypeBrand,
+		},
+		{
+			Model: models.Model{
+				ID: func() *uuid.UUID {
+					id := uuid.MustParse(consts.FILE_BRAND_NESTELE_ID)
+					return &id
+				}(),
+			},
+			MimeType:       ".png",
+			OriginalName:   "NESTELE LOGO",
+			UniqueFileName: consts.FILE_BRAND_NESTELE_ID + ".png",
+			FileType:       models.FileTypeBrand,
+		},
+		{
+			Model: models.Model{
+				ID: func() *uuid.UUID {
+					id := uuid.MustParse(consts.FILE_BRAND_PEPSI_ID)
+					return &id
+				}(),
+			},
+			MimeType:       ".png",
+			OriginalName:   "PEPSI LOGO",
+			UniqueFileName: consts.FILE_BRAND_PEPSI_ID + ".png",
+			FileType:       models.FileTypeBrand,
+		},
+		{
+			Model: models.Model{
+				ID: func() *uuid.UUID {
+					id := uuid.MustParse(consts.FILE_BRAND_OPPO_ID)
+					return &id
+				}(),
+			},
+			MimeType:       ".png",
+			OriginalName:   "OPPO LOGO",
+			UniqueFileName: consts.FILE_BRAND_OPPO_ID + ".png",
+			FileType:       models.FileTypeBrand,
 		},
 	}
 

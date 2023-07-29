@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/esmailemami/eshop/apphttp"
+	"github.com/esmailemami/eshop/app"
 	"github.com/esmailemami/eshop/consts"
 	appDB "github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func Authentication(ctx *apphttp.HttpContext) error {
+func Authentication(ctx *app.HttpContext) error {
 	jwtToken, tokenString, err := token.LoadTokenFromHttpRequest(ctx.Request)
 	if err != nil {
 		return errors.NewUnauthorizedError(consts.UnauthorizedError, err)
@@ -46,10 +46,10 @@ func Authentication(ctx *apphttp.HttpContext) error {
 
 func AuthenticationHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := apphttp.NewHttpContext(w, r)
+		ctx := app.NewHttpContext(w, r)
 		err := Authentication(ctx)
 		if err != nil {
-			apphttp.ErrorResponseHandler(ctx, err)
+			app.ErrorResponseHandler(ctx, err)
 			return
 		}
 

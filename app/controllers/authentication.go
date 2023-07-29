@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/esmailemami/eshop/apphttp"
-	"github.com/esmailemami/eshop/apphttp/models"
+	"github.com/esmailemami/eshop/app"
+	"github.com/esmailemami/eshop/app/models"
 	"github.com/esmailemami/eshop/consts"
 	dbpkg "github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
@@ -25,7 +25,7 @@ import (
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /auth/login [post]
-func Login(ctx *apphttp.HttpContext) error {
+func Login(ctx *app.HttpContext) error {
 	var input models.LoginInputModel
 
 	if err := ctx.BlindBind(&input); err != nil {
@@ -60,7 +60,7 @@ func Login(ctx *apphttp.HttpContext) error {
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /auth/is_authenticated [get]
-func IsAuthenticated(ctx *apphttp.HttpContext) error {
+func IsAuthenticated(ctx *app.HttpContext) error {
 	userCtx, ok := ctx.Get(consts.UserContext)
 	if !ok {
 		return errors.NewBadRequestError("کاربر یافت نشد", nil)
@@ -90,7 +90,7 @@ func IsAuthenticated(ctx *apphttp.HttpContext) error {
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /auth/logout [get]
-func Logout(ctx *apphttp.HttpContext) error {
+func Logout(ctx *app.HttpContext) error {
 	jwtToken, _, err := token.LoadTokenFromHttpRequest(ctx.Request)
 	if err != nil {
 		return logOutDone(ctx)
@@ -109,7 +109,7 @@ func Logout(ctx *apphttp.HttpContext) error {
 	return logOutDone(ctx)
 }
 
-func logOutDone(ctx *apphttp.HttpContext) error {
+func logOutDone(ctx *app.HttpContext) error {
 	ctx.SetCookie("Authorization", "", 0, "/", "", true, true)
 	return ctx.QuickResponse(consts.LoggedOut, http.StatusOK)
 }
@@ -125,7 +125,7 @@ func logOutDone(ctx *apphttp.HttpContext) error {
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /auth/register [post]
-func Register(ctx *apphttp.HttpContext) error {
+func Register(ctx *app.HttpContext) error {
 	var input models.RegisterInputModel
 	if err := ctx.BlindBind(&input); err != nil {
 		return errors.NewBadRequestError(consts.BadRequest, err)

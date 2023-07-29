@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/esmailemami/eshop/apphttp/validations"
+	"github.com/esmailemami/eshop/app/validations"
 	"github.com/esmailemami/eshop/consts"
 	dbpkg "github.com/esmailemami/eshop/db"
 	dbmodels "github.com/esmailemami/eshop/models"
@@ -70,9 +70,9 @@ func (model CategoryReqModel) MergeWithDBData(dbmodel *dbmodels.Category) {
 }
 
 type CategoryOutPutModel struct {
-	ID        *uuid.UUID `gorm:"id"                     json:"id"`
-	CreatedAt time.Time  `gorm:"column:created_at"      json:"createdAt"`
-	UpdatedAt time.Time  `gorm:"column:updated_at"      json:"updatedAt"`
-	Name      string     `gorm:"name"                   json:"name"`
-	Code      string     `gorm:"code" 					json:"code"`
+	ID        *uuid.UUID `gorm:"id"                json:"id"`
+	CreatedAt time.Time  `gorm:"column:created_at" json:"createdAt"`
+	UpdatedAt time.Time  `gorm:"column:updated_at" json:"updatedAt"`
+	Name      string     `gorm:"name"              json:"name"`
+	Code      string     `gorm:"code"              json:"code"`
 }

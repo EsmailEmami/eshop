@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func seedUsers(dbConn *gorm.DB) error {
+func seedUser(dbConn *gorm.DB) error {
 	items := []models.User{
 		{
 			Model: models.Model{

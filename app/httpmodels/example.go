@@ -1,7 +1,7 @@
 package httpmodels
 
 import (
-	"github.com/esmailemami/eshop/apphttp/validations"
+	"github.com/esmailemami/eshop/app/validations"
 	"github.com/esmailemami/eshop/consts"
 	"github.com/esmailemami/eshop/models"
 	"github.com/esmailemami/eshop/services/numeric"

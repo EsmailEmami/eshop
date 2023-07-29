@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/esmailemami/eshop/apphttp"
-	appmodels "github.com/esmailemami/eshop/apphttp/models"
+	"github.com/esmailemami/eshop/app"
+	appmodels "github.com/esmailemami/eshop/app/models"
 	"github.com/esmailemami/eshop/consts"
 	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
@@ -12,39 +12,66 @@ import (
 	"github.com/google/uuid"
 )
 
-// GetCategorys godoc
-// @Tags Categorys
+// GetColors godoc
+// @Tags Colors
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Success 200 {object} []appmodels.CategoryOutPutModel
+// @Success 200 {object} []appmodels.ColorOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /category [get]
-func GetCategories(ctx *apphttp.HttpContext) error {
-	baseDB := db.MustGormDBConn(ctx).Model(&models.Category{})
+// @Router /color [get]
+func GetColors(ctx *app.HttpContext) error {
+	baseDB := db.MustGormDBConn(ctx).Model(&models.Color{})
 
-	var data []appmodels.CategoryOutPutModel
+	var data []appmodels.ColorOutPutModel
 
 	if err := baseDB.Find(&data).Error; err != nil {
-		return err
+		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
 	return ctx.JSON(data, http.StatusOK)
 }
 
-// Create Category godoc
-// @Tags Categorys
+// GetColor godoc
+// @Tags Colors
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Param category   body  appmodels.CategoryReqModel  true  "Category model"
+// @Param id  path  string  true  "Record ID"
+// @Success 200 {object} appmodels.ColorOutPutModel
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /color/{id} [get]
+func GetColor(ctx *app.HttpContext) error {
+	id, err := uuid.Parse(ctx.GetPathParam("id"))
+
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+	baseDB := db.MustGormDBConn(ctx).Model(&models.Color{})
+
+	var data appmodels.ColorOutPutModel
+
+	if err := baseDB.First(&data, "id", id).Error; err != nil {
+		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
+	}
+
+	return ctx.JSON(data, http.StatusOK)
+}
+
+// Create Color godoc
+// @Tags Colors
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param Color   body  appmodels.ColorReqModel  true  "Color model"
 // @Success 200 {object} httpmodels.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /category  [post]
-func CreateCategory(ctx *apphttp.HttpContext) error {
-	var inputModel appmodels.CategoryReqModel
+// @Router /color  [post]
+func CreateColor(ctx *app.HttpContext) error {
+	var inputModel appmodels.ColorReqModel
 
 	err := ctx.BlindBind(&inputModel)
 	if err != nil {
@@ -58,51 +85,51 @@ func CreateCategory(ctx *apphttp.HttpContext) error {
 	}
 
 	if err := baseDB.Create(inputModel.ToDBModel()).Error; err != nil {
-		return errors.NewBadRequestError(consts.BadRequest, err)
+		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
 	return ctx.QuickResponse(consts.Created, http.StatusOK)
 }
 
-// Edit Category godoc
-// @Tags Categorys
+// Edit Color godoc
+// @Tags Colors
 // @Accept json
 // @Produce json
 // @Security Bearer
 // @Param id  path  string  true  "Record ID"
-// @Param category   body  appmodels.CategoryReqModel  true  "Category model"
+// @Param Color   body  appmodels.ColorReqModel  true  "Color model"
 // @Success 200 {object} httpmodels.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /category/edit/{id}  [post]
-func EditCategory(ctx *apphttp.HttpContext) error {
+// @Router /color/edit/{id}  [post]
+func EditColor(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
 	if err != nil {
 		return errors.NewBadRequestError(consts.BadRequest, err)
 	}
 
-	var inputModel appmodels.CategoryReqModel
+	var inputModel appmodels.ColorReqModel
 
 	err = ctx.BlindBind(&inputModel)
 	if err != nil {
-		return err
+		return errors.NewBadRequestError(consts.BadRequest, err)
 	}
 
 	err = inputModel.ValidateUpdate()
 	if err != nil {
-		return err
+		return errors.NewValidationError(consts.ValidationError, err)
 	}
 
 	baseDB := db.MustGormDBConn(ctx)
 
-	var dbModel models.Category
+	var dbModel models.Color
 
 	if baseDB.First(&dbModel, id).Error != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	if db.Exists(baseDB, &models.Category{}, "code = ? and id != ?", inputModel.Code, id) {
+	if db.Exists(baseDB, &models.Color{}, "code = ? and id != ?", inputModel.Code, id) {
 		return errors.NewValidationError(consts.ExistedCode, nil)
 	}
 
@@ -114,8 +141,8 @@ func EditCategory(ctx *apphttp.HttpContext) error {
 	return ctx.QuickResponse(consts.Updated, http.StatusOK)
 }
 
-// Delete Category godoc
-// @Tags Categorys
+// Delete Color godoc
+// @Tags Colors
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -123,16 +150,16 @@ func EditCategory(ctx *apphttp.HttpContext) error {
 // @Success 200 {object} httpmodels.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /category/delete/{id}  [post]
-func DeleteCategory(ctx *apphttp.HttpContext) error {
+// @Router /color/delete/{id}  [post]
+func DeleteColor(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 	if err != nil {
 		return err
 	}
 
-	baseDB := db.MustGormDBConn(ctx).Model(&models.Category{})
+	baseDB := db.MustGormDBConn(ctx).Model(&models.Color{})
 
-	var dbModel models.Category
+	var dbModel models.Color
 
 	if baseDB.First(&dbModel, id).Error != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)

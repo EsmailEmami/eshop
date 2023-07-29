@@ -19,4 +19,5 @@ type FileType int
 const (
 	FileTypeSystematic FileType = iota
 	FileTypeProduct
+	FileTypeBrand
 )

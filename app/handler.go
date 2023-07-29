@@ -1,4 +1,4 @@
-package apphttp
+package app
 
 import (
 	"net/http"

@@ -3,9 +3,9 @@ package routes
 import (
 	"net/http"
 
-	"github.com/esmailemami/eshop/apphttp"
-	"github.com/esmailemami/eshop/apphttp/controllers"
-	"github.com/esmailemami/eshop/apphttp/middlewares"
+	"github.com/esmailemami/eshop/app"
+	"github.com/esmailemami/eshop/app/controllers"
+	"github.com/esmailemami/eshop/app/middlewares"
 	"github.com/esmailemami/eshop/docs"
 	"github.com/go-chi/chi/v5"
 	"github.com/spf13/viper"
@@ -40,21 +40,36 @@ func LoadApiRoutes(root *chi.Mux) {
 
 	root.Route("/api/v1", func(r chi.Router) {
 
-		r.Post("/auth/login", apphttp.Handler(controllers.Login))
-		r.Post("/auth/register", apphttp.Handler(controllers.Register))
+		r.Post("/auth/login", app.Handler(controllers.Login))
+		r.Post("/auth/register", app.Handler(controllers.Register))
 
 		r.Group(func(r chi.Router) {
 			r.Use(middlewares.AuthenticationHandler)
 
 			// Auth
-			r.Get("/auth/is_authenticated", apphttp.Handler(controllers.IsAuthenticated))
-			r.Get("/auth/logout", apphttp.Handler(controllers.Logout))
+			r.Get("/auth/is_authenticated", app.Handler(controllers.IsAuthenticated))
+			r.Get("/auth/logout", app.Handler(controllers.Logout))
 
 			// category
-			r.Get("/category", apphttp.Handler(controllers.GetCategories))
-			r.Post("/category", apphttp.Handler(controllers.CreateCategory))
-			r.Post("/category/edit/{id}", apphttp.Handler(controllers.EditCategory))
-			r.Post("/category/delete/{id}", apphttp.Handler(controllers.DeleteCategory))
+			r.Get("/category", app.Handler(controllers.GetCategories))
+			r.Get("/category/{id}", app.Handler(controllers.GetCategory))
+			r.Post("/category", app.Handler(controllers.CreateCategory))
+			r.Post("/category/edit/{id}", app.Handler(controllers.EditCategory))
+			r.Post("/category/delete/{id}", app.Handler(controllers.DeleteCategory))
+
+			// brand
+			r.Get("/brand", app.Handler(controllers.GetBrands))
+			r.Get("/brand/{id}", app.Handler(controllers.GetBrand))
+			r.Post("/brand", app.Handler(controllers.CreateBrand))
+			r.Post("/brand/edit/{id}", app.Handler(controllers.EditBrand))
+			r.Post("/brand/delete/{id}", app.Handler(controllers.DeleteBrand))
+
+			// color
+			r.Get("/color", app.Handler(controllers.GetColors))
+			r.Get("/color/{id}", app.Handler(controllers.GetColor))
+			r.Post("/color", app.Handler(controllers.CreateColor))
+			r.Post("/color/edit/{id}", app.Handler(controllers.EditColor))
+			r.Post("/color/delete/{id}", app.Handler(controllers.DeleteColor))
 		})
 	})
 }

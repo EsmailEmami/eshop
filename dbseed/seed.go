@@ -28,7 +28,9 @@ func Run() error {
 	seeds := []seed{
 		{fn: seedFile, conn: conn},
 		{fn: seedRole, conn: conn},
-		{fn: seedUsers, conn: conn},
+		{fn: seedUser, conn: conn},
+		{fn: seedBrand, conn: conn},
+		{fn: seedColor, conn: conn},
 	}
 
 	for _, s := range seeds {
