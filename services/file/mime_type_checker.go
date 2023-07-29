@@ -2,6 +2,10 @@ package file
 
 import (
 	"encoding/xml"
+	"image"
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
 	"mime/multipart"
 )
 
@@ -32,6 +36,15 @@ func IsExcelFileMimeType(mimeType string) bool {
 	}
 }
 
+func IsImageMimeType(mimeType string) bool {
+	switch mimeType {
+	case "image/jpeg", "image/png", "image/gif", "image/bmp", "image/webp", "image/svg+xml", "image/tiff", "image/vnd.microsoft.icon", "image/jp2", "image/vnd.adobe.photoshop", "image/x-canon-cr2", "image/x-nikon-nef", "image/x-sony-arw", "image/x-adobe-dng", "image/x-olympus-orf", "image/x-panasonic-rw2", "image/x-samsung-srw", "image/heif":
+		return true
+	default:
+		return false
+	}
+}
+
 func IsSvgFileMimeType(mimeType string) bool {
 	switch mimeType {
 	case "image/svg+xml":
@@ -41,8 +54,24 @@ func IsSvgFileMimeType(mimeType string) bool {
 	}
 }
 
+func IsImageFile(fh *multipart.FileHeader) bool {
+	contentType := fh.Header.Get("Content-Type")
+	if !IsImageMimeType(contentType) {
+		return false
+	}
+
+	uploadedFile, err := fh.Open()
+	if err != nil {
+		return false
+	}
+	defer uploadedFile.Close()
+
+	_, _, err = image.Decode(uploadedFile)
+	return err == nil
+}
+
 // check given content that it can be parsed as a xml/svg
-func IsValidUploadedSvgFile(fileToUpload multipart.FileHeader) bool {
+func IsValidUploadedSvgFile(fileToUpload *multipart.FileHeader) bool {
 	ct := fileToUpload.Header.Get("Content-Type")
 	if !IsSvgFileMimeType(ct) {
 		return false
@@ -60,4 +89,8 @@ func IsValidUploadedSvgFile(fileToUpload multipart.FileHeader) bool {
 		return false
 	}
 	return true
+}
+
+func GetMimeType(fh *multipart.FileHeader) string {
+	return fh.Header.Get("Content-Type")
 }

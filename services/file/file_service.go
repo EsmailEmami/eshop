@@ -4,40 +4,49 @@ import (
 	"io"
 	"mime/multipart"
 	"os"
+	"path/filepath"
 )
 
-func UploadFile(fh multipart.FileHeader, target string, userRandomName bool) (uploadedFilePath string, err error) {
+func UploadFile(fh *multipart.FileHeader, target string, useRandomName, startFromRoot bool) (uploadedFilePath, fileName string, err error) {
 	uploadedFile, err := fh.Open()
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	defer uploadedFile.Close()
 
 	bts, err := io.ReadAll(uploadedFile)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	err = os.MkdirAll(target, os.ModePerm)
+	var dirPath string
+
+	if startFromRoot {
+		dirPath = GetPath(target)
+	} else {
+		dirPath = target
+	}
+
+	err = os.MkdirAll(dirPath, os.ModePerm)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	fileName := ""
-	if !userRandomName {
+	if !useRandomName {
 		fileName = GenerateUniqueFilename(target, fh.Filename, 1)
 	} else {
 		fileName = GenerateRandomFileName(fh.Filename)
 	}
-	filePath := target + "/" + fileName
+
+	filePath := dirPath + "/" + fileName
 
 	err = WriteFile(filePath, bts)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return filePath, nil
+	return filePath, fileName, nil
 }
 
 func ReadFile(filePath string) (bts []byte, err error) {
@@ -78,4 +87,27 @@ func GetFileSize(filePath string) int64 {
 	}
 
 	return info.Size()
+}
+
+// GetPath joins the given path with root
+func GetPath(paths ...string) string {
+	// Get the current working directory (project's root directory)
+	currentDir, err := os.Getwd()
+	if err != nil {
+		panic(err) // Handle the error appropriately based on your use case
+	}
+
+	// Concatenate the current directory with "/upload" to get the upload folder path
+	paths = append([]string{currentDir}, paths...)
+	pathDir := filepath.Join(paths...)
+
+	return pathDir
+}
+
+func DeleteFile(filePath string) error {
+	err := os.Remove(filePath)
+	if err != nil {
+		return err
+	}
+	return nil
 }

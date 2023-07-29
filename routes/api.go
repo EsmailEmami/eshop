@@ -70,6 +70,9 @@ func LoadApiRoutes(root *chi.Mux) {
 			r.Post("/color", app.Handler(controllers.CreateColor))
 			r.Post("/color/edit/{id}", app.Handler(controllers.EditColor))
 			r.Post("/color/delete/{id}", app.Handler(controllers.DeleteColor))
+
+			// file
+			r.Post("/file/uploadImage/{itemId}/{fileType}", app.Handler(controllers.UploadImage))
 		})
 	})
 }

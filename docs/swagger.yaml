@@ -812,6 +812,45 @@ paths:
       - Bearer: []
       tags:
       - Colors
+  /file/uploadImage/{itemId}/{fileType}:
+    post:
+      consumes:
+      - application/json
+      description: Uploads an image file to the server.
+      parameters:
+      - description: item ID
+        in: path
+        name: itemId
+        required: true
+        type: string
+      - description: file Type
+        in: path
+        name: fileType
+        required: true
+        type: integer
+      - description: Image file to be uploaded
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Upload an image file
+      tags:
+      - Files
 securityDefinitions:
   Bearer:
     description: Type "Bearer" followed by a space and JWT token.
