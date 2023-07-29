@@ -1,4 +1,9 @@
 definitions:
+  httpmodels.SuccessResponse:
+    properties:
+      message:
+        type: string
+    type: object
   models.AuthToken:
     properties:
       createdAt:
@@ -18,6 +23,26 @@ definitions:
       user:
         $ref: '#/definitions/models.User'
       userId:
+        type: string
+    type: object
+  models.CategoryOutPutModel:
+    properties:
+      code:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.CategoryReqModel:
+    properties:
+      code:
+        type: string
+      name:
         type: string
     type: object
   models.LoginHistory:
@@ -128,10 +153,10 @@ definitions:
         type: string
       mobile:
         type: string
-      noeSematId:
-        type: string
       role:
         $ref: '#/definitions/models.Role'
+      roleId:
+        type: string
       updatedAt:
         type: string
       updatedBy:
@@ -268,6 +293,132 @@ paths:
       summary: a new user.
       tags:
       - Auth
+  /category:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.CategoryOutPutModel'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Categorys
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Category model
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/models.CategoryReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Categorys
+  /category/delete/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Categorys
+  /category/edit/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Category model
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/models.CategoryReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Categorys
 securityDefinitions:
   Bearer:
     description: Type "Bearer" followed by a space and JWT token.

@@ -27,3 +27,8 @@ type BasicModel struct {
 	UpdatedAt time.Time      `gorm:"column:updated_at" json:"updatedAt"`
 	DeletedAt gorm.DeletedAt `gorm:"deleted_at"        json:"-"`
 }
+
+func NewID() *uuid.UUID {
+	id := uuid.New()
+	return &id
+}

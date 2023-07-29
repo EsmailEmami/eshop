@@ -40,5 +40,5 @@ func (user User) IsRoot() bool {
 		return false
 	}
 
-	return user.RoleID.String() == consts.NOE_SEMAT_ROOT_ID
+	return user.RoleID.String() == consts.ROLE_ROOT_ID
 }

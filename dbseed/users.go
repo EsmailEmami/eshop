@@ -21,12 +21,12 @@ func seedUsers(dbConn *gorm.DB) error {
 			FirstName: "اسماعیل",
 			LastName:  "امامی",
 			Username:  "esmailemami",
-			Password:  "$2a$10$LxCfacwwZ2TYmJJRBU0RGu/nY.15kiqPaQq8IAWBhjxSXbCTAep7u",
+			Password:  "$2a$10$2oV2MylgwZftP47vL/ndteC6tzmcY85qRNo/5FTCeS403eL8zo9Yq",
 			IsSystem:  true,
 			Mobile:    "09903669556",
 			Enabled:   true,
 			RoleID: func() *uuid.UUID {
-				id := uuid.MustParse(consts.NOE_SEMAT_ROOT_ID)
+				id := uuid.MustParse(consts.ROLE_ROOT_ID)
 				return &id
 			}(),
 		},
@@ -40,12 +40,12 @@ func seedUsers(dbConn *gorm.DB) error {
 			FirstName: "علیرضا",
 			LastName:  "صفری",
 			Username:  "alireza83safari",
-			Password:  "$2a$12$2r6Z7XiJgUTQpLcxcGd15uUezXug4fmDYz4VV2jfHV7kUwZHnqGLS",
+			Password:  "$2a$10$2oV2MylgwZftP47vL/ndteC6tzmcY85qRNo/5FTCeS403eL8zo9Yq",
 			IsSystem:  true,
 			Mobile:    "09903669556",
 			Enabled:   true,
 			RoleID: func() *uuid.UUID {
-				id := uuid.MustParse(consts.NOE_SEMAT_ROOT_ID)
+				id := uuid.MustParse(consts.ROLE_ROOT_ID)
 				return &id
 			}(),
 		},

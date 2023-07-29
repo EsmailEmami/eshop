@@ -162,7 +162,7 @@ func beforeCreateCallback(scope *gorm.DB, st reflect.Value, user models.User) er
 		return err
 	}
 
-	v.Set(reflect.ValueOf(&user.ID))
+	v.Set(reflect.ValueOf(user.ID))
 	return nil
 }
 
@@ -177,7 +177,7 @@ func beforeUpdateCallback(scope *gorm.DB, st reflect.Value, user models.User) er
 		return err
 	}
 
-	v.Set(reflect.ValueOf(&user.ID))
+	v.Set(reflect.ValueOf(user.ID))
 	return nil
 }
 
@@ -191,8 +191,16 @@ func beforeDeleteCallback(scope *gorm.DB, st reflect.Value, user models.User) er
 	// handle soft delete deleted_by_id
 	//region soft delete
 	modelVal := reflect.ValueOf(scope.Statement.Model)
+
 	if modelVal.Kind() == reflect.Ptr {
-		id = reflect.Indirect(modelVal).FieldByName("ID").Interface().(uuid.UUID)
+
+		idField := reflect.Indirect(modelVal).FieldByName("ID")
+		if idField.IsValid() {
+			idPtr := idField.Interface().(*uuid.UUID)
+			if idPtr == nil {
+				id = uuid.Nil
+			}
+		}
 
 		val := reflect.Indirect(modelVal).FieldByName("DeletedByID")
 		if !val.IsValid() {
@@ -204,7 +212,13 @@ func beforeDeleteCallback(scope *gorm.DB, st reflect.Value, user models.User) er
 			return err
 		}
 	} else {
-		id = modelVal.FieldByName("ID").Interface().(uuid.UUID)
+		idField := reflect.Indirect(modelVal).FieldByName("ID")
+		if idField.IsValid() {
+			idPtr := idField.Interface().(*uuid.UUID)
+			if idPtr == nil {
+				id = uuid.Nil
+			}
+		}
 
 		val := modelVal.FieldByName("DeletedByID")
 		if !val.IsValid() {
@@ -221,11 +235,11 @@ func beforeDeleteCallback(scope *gorm.DB, st reflect.Value, user models.User) er
 	scope.Statement.AddClause(clause.Update{})
 	scope.Statement.AddClause(clause.Set{
 		{Column: clause.Column{Name: "deleted_at"}, Value: curTime},
-		{Column: clause.Column{Name: "deleted_by_id"}, Value: user.ID},
+		{Column: clause.Column{Name: "deleted_by_id"}, Value: *user.ID},
 	})
 
 	scope.Statement.SetColumn("deleted_at", curTime)
-	scope.Statement.SetColumn("deleted_by_id", user.ID)
+	scope.Statement.SetColumn("deleted_by_id", *user.ID)
 
 	if id.String() != "00000000-0000-0000-0000-000000000000" {
 		scope.Statement.AddClause(clause.Where{Exprs: []clause.Expression{

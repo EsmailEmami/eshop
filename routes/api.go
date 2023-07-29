@@ -23,11 +23,11 @@ func LoadApiRoutes(root *chi.Mux) {
 	})
 
 	root.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		_, _ = w.Write([]byte("Biling Core API Server"))
+		_, _ = w.Write([]byte("Eshop API Server"))
 	})
 
-	docs.SwaggerInfo.Title = "Biling Core API doc"
-	docs.SwaggerInfo.Description = "Biling Core API."
+	docs.SwaggerInfo.Title = "Eshop API doc"
+	docs.SwaggerInfo.Description = "Eshop API."
 	docs.SwaggerInfo.Version = "1.0"
 	port := viper.GetString("server.port")
 	if port == "" {
@@ -38,19 +38,23 @@ func LoadApiRoutes(root *chi.Mux) {
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 	root.Mount("/swagger/", httpSwagger.WrapHandler)
 
-	// Route group for '/api/v1'
 	root.Route("/api/v1", func(r chi.Router) {
-		// No authentication required
+
 		r.Post("/auth/login", apphttp.Handler(controllers.Login))
 		r.Post("/auth/register", apphttp.Handler(controllers.Register))
 
-		// Authentication required
 		r.Group(func(r chi.Router) {
 			r.Use(middlewares.AuthenticationHandler)
 
 			// Auth
 			r.Get("/auth/is_authenticated", apphttp.Handler(controllers.IsAuthenticated))
 			r.Get("/auth/logout", apphttp.Handler(controllers.Logout))
+
+			// category
+			r.Get("/category", apphttp.Handler(controllers.GetCategories))
+			r.Post("/category", apphttp.Handler(controllers.CreateCategory))
+			r.Post("/category/edit/{id}", apphttp.Handler(controllers.EditCategory))
+			r.Post("/category/delete/{id}", apphttp.Handler(controllers.DeleteCategory))
 		})
 	})
 }

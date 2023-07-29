@@ -26,6 +26,8 @@ func Run() error {
 	conn = conn.Session(&gorm.Session{Logger: logger.Discard})
 
 	seeds := []seed{
+		{fn: seedFile, conn: conn},
+		{fn: seedRole, conn: conn},
 		{fn: seedUsers, conn: conn},
 	}
 

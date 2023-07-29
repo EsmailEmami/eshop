@@ -17,5 +17,6 @@ func (File) TableName() string {
 type FileType int
 
 const (
-	FileTypeProduct FileType = iota
+	FileTypeSystematic FileType = iota
+	FileTypeProduct
 )
