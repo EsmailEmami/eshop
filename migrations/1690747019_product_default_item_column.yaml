@@ -1,0 +1,6 @@
+---
+up: |
+  ALTER TABLE public.product ADD default_product_item_id uuid NULL;
+
+down: |
+  ALTER TABLE public.product DROP COLUMN IF EXISTS default_product_item_id;

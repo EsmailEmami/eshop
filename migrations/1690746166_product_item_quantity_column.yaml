@@ -1,0 +1,9 @@
+---
+up: |
+  ALTER TABLE public.product_item ADD quantity int NOT NULL DEFAULT 0;
+  ALTER TABLE public.product_item ADD bought_quantity int NOT NULL DEFAULT 0;
+
+
+down: |
+  ALTER TABLE public.product_item DROP COLUMN IF EXISTS quantity;
+  ALTER TABLE public.product_item DROP COLUMN IF EXISTS bought_quantity;

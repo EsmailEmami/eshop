@@ -9,7 +9,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"gorm.io/gorm/logger"
 )
 
 var gormDBConn *gorm.DB
@@ -39,7 +38,7 @@ func GormDBConn(ctx context.Context) (*gorm.DB, error) {
 
 	dbConn, err := gorm.Open(postgres.Open(connStr), &gorm.Config{
 		FullSaveAssociations: false,
-		Logger:               logger.Default.LogMode(logger.Silent),
+		//Logger:               logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {
 		return nil, err
