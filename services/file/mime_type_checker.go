@@ -38,7 +38,7 @@ func IsExcelFileMimeType(mimeType string) bool {
 
 func IsImageMimeType(mimeType string) bool {
 	switch mimeType {
-	case "image/jpeg", "image/png", "image/gif", "image/bmp", "image/webp", "image/svg+xml", "image/tiff", "image/vnd.microsoft.icon", "image/jp2", "image/vnd.adobe.photoshop", "image/x-canon-cr2", "image/x-nikon-nef", "image/x-sony-arw", "image/x-adobe-dng", "image/x-olympus-orf", "image/x-panasonic-rw2", "image/x-samsung-srw", "image/heif":
+	case "image/jpeg", "image/png", "image/gif":
 		return true
 	default:
 		return false
