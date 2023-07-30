@@ -9,6 +9,7 @@ import (
 	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
 	"github.com/esmailemami/eshop/models"
+	fileService "github.com/esmailemami/eshop/services/file"
 	"github.com/google/uuid"
 )
 
@@ -117,6 +118,7 @@ func EditBrand(ctx *app.HttpContext) error {
 	}
 
 	baseDB := db.MustGormDBConn(ctx)
+	baseTx := baseDB.Begin()
 
 	err = inputModel.ValidateUpdate(baseDB)
 	if err != nil {
@@ -125,7 +127,7 @@ func EditBrand(ctx *app.HttpContext) error {
 
 	var dbModel models.Brand
 
-	if baseDB.First(&dbModel, id).Error != nil {
+	if baseDB.Preload("File").First(&dbModel, id).Error != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
@@ -133,10 +135,21 @@ func EditBrand(ctx *app.HttpContext) error {
 		return errors.NewValidationError(consts.ExistedCode, nil)
 	}
 
+	if dbModel.FileID != inputModel.FileID {
+		err := fileService.DeleteFile(baseTx, dbModel.File)
+
+		if err != nil {
+			baseTx.Rollback()
+			return errors.NewInternalServerError(consts.InternalServerError, err)
+		}
+	}
+
 	inputModel.MergeWithDBData(&dbModel)
-	if baseDB.Save(&dbModel).Error != nil {
+	if baseTx.Save(&dbModel).Error != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
+
+	baseTx.Commit()
 
 	return ctx.QuickResponse(consts.Updated, http.StatusOK)
 }
@@ -157,17 +170,28 @@ func DeleteBrand(ctx *app.HttpContext) error {
 		return err
 	}
 
-	baseDB := db.MustGormDBConn(ctx).Model(&models.Brand{})
+	baseDB := db.MustGormDBConn(ctx)
+	baseTx := baseDB.Begin()
 
 	var dbModel models.Brand
 
-	if baseDB.First(&dbModel, id).Error != nil {
+	if baseDB.Preload("File").First(&dbModel, id).Error != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	if baseDB.Delete(&dbModel).Error != nil {
+	err = fileService.DeleteFile(baseTx, dbModel.File)
+
+	if err != nil {
+		baseTx.Rollback()
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	if baseTx.Delete(&dbModel).Error != nil {
+		baseTx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, nil)
 	}
+
+	baseTx.Commit()
 
 	return ctx.QuickResponse(consts.Deleted, http.StatusOK)
 }

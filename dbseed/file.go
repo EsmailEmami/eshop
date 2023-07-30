@@ -18,10 +18,11 @@ func seedFile(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			MimeType:       ".jpg",
+			MimeType:       "image/jpeg",
 			OriginalName:   "default picture",
 			UniqueFileName: consts.FILE_DEFAULT_ID + ".jpg",
 			FileType:       models.FileTypeSystematic,
+			Extension:      "jpg",
 		},
 		{
 			Model: models.Model{
@@ -30,10 +31,11 @@ func seedFile(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			MimeType:       ".png",
+			MimeType:       "image/png",
 			OriginalName:   "APPLE LOGO",
 			UniqueFileName: consts.FILE_BRAND_APPLE_ID + ".png",
 			FileType:       models.FileTypeBrand,
+			Extension:      "png",
 		},
 		{
 			Model: models.Model{
@@ -42,10 +44,11 @@ func seedFile(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			MimeType:       ".png",
+			MimeType:       "image/png",
 			OriginalName:   "HUAWEI LOGO",
 			UniqueFileName: consts.FILE_BRAND_HUAWEI_ID + ".png",
 			FileType:       models.FileTypeBrand,
+			Extension:      "png",
 		},
 		{
 			Model: models.Model{
@@ -54,10 +57,11 @@ func seedFile(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			MimeType:       ".png",
+			MimeType:       "image/png",
 			OriginalName:   "XIAOMI LOGO",
 			UniqueFileName: consts.FILE_BRAND_XIAOMI_ID + ".png",
 			FileType:       models.FileTypeBrand,
+			Extension:      "png",
 		},
 		{
 			Model: models.Model{
@@ -66,10 +70,11 @@ func seedFile(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			MimeType:       ".png",
+			MimeType:       "image/png",
 			OriginalName:   "SAMSUNG LOGO",
 			UniqueFileName: consts.FILE_BRAND_SAMSUNG_ID + ".png",
 			FileType:       models.FileTypeBrand,
+			Extension:      "png",
 		},
 		{
 			Model: models.Model{
@@ -78,10 +83,11 @@ func seedFile(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			MimeType:       ".png",
+			MimeType:       "image/png",
 			OriginalName:   "COCACOLA LOGO",
 			UniqueFileName: consts.FILE_BRAND_COCACOLA_ID + ".png",
 			FileType:       models.FileTypeBrand,
+			Extension:      "png",
 		},
 		{
 			Model: models.Model{
@@ -90,10 +96,11 @@ func seedFile(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			MimeType:       ".png",
+			MimeType:       "image/png",
 			OriginalName:   "NESTELE LOGO",
 			UniqueFileName: consts.FILE_BRAND_NESTELE_ID + ".png",
 			FileType:       models.FileTypeBrand,
+			Extension:      "png",
 		},
 		{
 			Model: models.Model{
@@ -102,10 +109,11 @@ func seedFile(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			MimeType:       ".png",
+			MimeType:       "image/png",
 			OriginalName:   "PEPSI LOGO",
 			UniqueFileName: consts.FILE_BRAND_PEPSI_ID + ".png",
 			FileType:       models.FileTypeBrand,
+			Extension:      "png",
 		},
 		{
 			Model: models.Model{
@@ -114,10 +122,11 @@ func seedFile(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			MimeType:       ".png",
+			MimeType:       "image/png",
 			OriginalName:   "OPPO LOGO",
 			UniqueFileName: consts.FILE_BRAND_OPPO_ID + ".png",
 			FileType:       models.FileTypeBrand,
+			Extension:      "png",
 		},
 	}
 

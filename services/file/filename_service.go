@@ -14,7 +14,7 @@ func GetFileExetension(filename string) string {
 		return ""
 	}
 
-	return p[len(p)-1]
+	return strings.ToLower(p[len(p)-1])
 }
 
 // GenerateUniqueFilename برای فایل درخواستی در پوشه مورد نظر، یک نام یکتا ایجاد میکند که از تکرار نام وبازنویسی فایل قدیمی جلوگیری شود

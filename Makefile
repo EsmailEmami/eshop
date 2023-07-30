@@ -10,5 +10,5 @@ run:
 seed:
 	@go run . db seed
 
-update-db:
+update-database:
 	@go run . migration up
