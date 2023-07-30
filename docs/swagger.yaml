@@ -4,6 +4,44 @@ definitions:
       message:
         type: string
     type: object
+  models.AppPicOutPutModel:
+    properties:
+      appPicType:
+        $ref: '#/definitions/models.AppPicType'
+      createdAt:
+        type: string
+      description:
+        type: string
+      fileId:
+        type: string
+      id:
+        type: string
+      priority:
+        type: integer
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.AppPicReqModel:
+    properties:
+      appPicType:
+        $ref: '#/definitions/models.AppPicType'
+      description:
+        type: string
+      fileId:
+        type: string
+      priority:
+        type: integer
+      title:
+        type: string
+    type: object
+  models.AppPicType:
+    enum:
+    - 0
+    type: integer
+    x-enum-varnames:
+    - AppPicTypeSlider
   models.AuthToken:
     properties:
       createdAt:
@@ -117,11 +155,13 @@ definitions:
     - 0
     - 1
     - 2
+    - 3
     type: integer
     x-enum-varnames:
     - FileTypeSystematic
     - FileTypeProduct
     - FileTypeBrand
+    - FileTypeAppPic
   models.LoginHistory:
     properties:
       createdAt:
@@ -246,6 +286,163 @@ definitions:
 info:
   contact: {}
 paths:
+  /appPic:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.AppPicOutPutModel'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - AppPics
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: AppPic model
+        in: body
+        name: AppPic
+        required: true
+        schema:
+          $ref: '#/definitions/models.AppPicReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - AppPics
+  /appPic/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AppPicOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - AppPics
+  /appPic/delete/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - AppPics
+  /appPic/edit/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: AppPic model
+        in: body
+        name: AppPic
+        required: true
+        schema:
+          $ref: '#/definitions/models.AppPicReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - AppPics
   /auth/is_authenticated:
     get:
       consumes:

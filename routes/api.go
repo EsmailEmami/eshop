@@ -77,6 +77,13 @@ func LoadApiRoutes(root *chi.Mux) {
 			r.Get("/file/{fileId}", app.Handler(controllers.GetFile))
 			r.Get("/file/stream/{fileId}", app.Handler(controllers.GetStreamingFile))
 			r.Get("/file/{itemId}/{fileType}", app.Handler(controllers.GetItemFiles))
+
+			// appPic
+			r.Get("/appPic", app.Handler(controllers.GetAppPics))
+			r.Get("/appPic/{id}", app.Handler(controllers.GetAppPic))
+			r.Post("/appPic", app.Handler(controllers.CreateAppPic))
+			r.Post("/appPic/edit/{id}", app.Handler(controllers.EditAppPic))
+			r.Post("/appPic/delete/{id}", app.Handler(controllers.DeleteAppPic))
 		})
 	})
 }

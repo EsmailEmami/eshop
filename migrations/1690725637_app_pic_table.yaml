@@ -1,0 +1,25 @@
+---
+up: |
+  CREATE TABLE app_pic (
+    id    			    uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    priority        int not null,
+    app_pic_type    int not null,
+    file_id         uuid  not null,
+    title           varchar(1024) not null,
+    description     varchar(1024),
+ 
+    created_at 		  timestamptz default now(),
+    created_by_id 	uuid null,
+    updated_at 		  timestamptz default now(),
+    updated_by_id 	uuid null,
+    deleted_at		  timestamptz null,
+    deleted_by_id 	uuid null,
+
+    CONSTRAINT fk__app_pic_user_created_by FOREIGN KEY (created_by_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk__app_pic_user_updated_by FOREIGN KEY (updated_by_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk__app_pic_user_deleted_by FOREIGN KEY (deleted_by_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk__app_pic_file_file_id FOREIGN KEY (file_id) REFERENCES public.file (id) ON UPDATE CASCADE ON DELETE RESTRICT
+  );
+
+down: |
+  drop table app_pic;
