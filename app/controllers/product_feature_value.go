@@ -107,11 +107,12 @@ func CreateProductFeatureValue(ctx *app.HttpContext) error {
 	baseTx := baseDB.Begin()
 
 	// remove all last items if exists
-	if err := baseTx.Where("product_id = ?", productId).Delete(&models.ProductFeatureValue{}).Error; err != nil {
+	if err := baseTx.Unscoped().Where("product_id = ?", productId).Delete(&models.ProductFeatureValue{}).Error; err != nil {
 		baseTx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
+	dbItems := []models.ProductFeatureValue{}
 	for _, inputModel := range inputModels {
 		inputModel.ProductID = productId
 		err = inputModel.ValidateCreate(baseDB)
@@ -120,10 +121,12 @@ func CreateProductFeatureValue(ctx *app.HttpContext) error {
 			return errors.NewValidationError(consts.ValidationError, err)
 		}
 
-		if err := baseTx.Create(inputModel.ToDBModel()).Error; err != nil {
-			baseTx.Rollback()
-			return errors.NewInternalServerError(consts.InternalServerError, err)
-		}
+		dbItems = append(dbItems, *inputModel.ToDBModel())
+	}
+
+	if err := baseTx.Debug().CreateInBatches(dbItems, len(dbItems)).Error; err != nil {
+		baseTx.Rollback()
+		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
 	baseTx.Commit()

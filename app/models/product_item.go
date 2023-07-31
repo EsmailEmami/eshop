@@ -103,16 +103,27 @@ func (model ProductItemReqModel) MergeWithDBData(dbmodel *dbmodels.ProductItem) 
 }
 
 type ProductItemInfoOutPutModel struct {
-	ID                      *uuid.UUID             `gorm:"id"                        json:"id"`
-	Price                   float64                `gorm:"price"                     json:"price"`
-	Status                  dbmodels.ProductStatus `gorm:"status"                    json:"status"`
-	ColorID                 uuid.UUID              `gorm:"color_id"                  json:"colorId"`
-	ColorName               string                 `gorm:"color_name"                json:"color"`
-	ProductID               uuid.UUID              `gorm:"product_id"                json:"productId"`
-	ProductTitle            string                 `gorm:"product_title"             json:"productTitle"`
-	ProductCode             string                 `gorm:"product_code"              json:"productCode"`
-	Quantity                int                    `gorm:"quantity"                  json:"quantity"`
-	ProductShortDescription string                 `gorm:"product_short_description" json:"productShortDescription"`
-	ProductDescription      string                 `gorm:"product_description"       json:"productDescription"`
-	Files                   []FileOutPutModel      `gorm:"-"                         json:"files"`
+	ID                      *uuid.UUID                        `gorm:"id"                        json:"id"`
+	Price                   float64                           `gorm:"price"                     json:"price"`
+	Status                  dbmodels.ProductStatus            `gorm:"status"                    json:"status"`
+	ColorID                 uuid.UUID                         `gorm:"color_id"                  json:"colorId"`
+	ColorName               string                            `gorm:"color_name"                json:"color"`
+	ProductID               uuid.UUID                         `gorm:"product_id"                json:"productId"`
+	ProductTitle            string                            `gorm:"product_title"             json:"productTitle"`
+	ProductCode             string                            `gorm:"product_code"              json:"productCode"`
+	Quantity                int                               `gorm:"quantity"                  json:"quantity"`
+	ProductShortDescription string                            `gorm:"product_short_description" json:"productShortDescription"`
+	ProductDescription      string                            `gorm:"product_description"       json:"productDescription"`
+	Files                   []FileOutPutModel                 `gorm:"-"                         json:"files"`
+	Features                []ProductItemCategoryFeatureModel `gorm:"-"                         json:"features"`
+}
+
+type ProductItemCategoryFeatureModel struct {
+	Category string                    `json:"category"`
+	Items    []ProductItemFeatureModel `json:"items"`
+}
+
+type ProductItemFeatureModel struct {
+	Key   string `gorm:"key"   json:"key"`
+	Value string `gorm:"value" json:"value"`
 }

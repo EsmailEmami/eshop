@@ -3034,6 +3034,9 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "productFeatureKeyId": {
+                    "type": "string"
+                },
                 "updatedAt": {
                     "type": "string"
                 },
@@ -3053,6 +3056,31 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ProductItemCategoryFeatureModel": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ProductItemFeatureModel"
+                    }
+                }
+            }
+        },
+        "models.ProductItemFeatureModel": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ProductItemInfoOutPutModel": {
             "type": "object",
             "properties": {
@@ -3061,6 +3089,12 @@ const docTemplate = `{
                 },
                 "colorId": {
                     "type": "string"
+                },
+                "features": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ProductItemCategoryFeatureModel"
+                    }
                 },
                 "files": {
                     "type": "array",

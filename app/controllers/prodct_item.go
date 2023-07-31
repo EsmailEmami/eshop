@@ -32,7 +32,7 @@ func GetProductItem(ctx *app.HttpContext) error {
 
 	var data appmodels.ProductItemInfoOutPutModel
 
-	if err := baseDB.Debug().Table("product_item pi2").
+	if err := baseDB.Table("product_item pi2").
 		Joins("INNER JOIN product p ON P.id = pi2 .product_id").
 		Joins("INNER JOIN color c ON C.id = pi2.color_id").
 		Select(`pi2.id, pi2.price,pi2.status, pi2 .color_id, pi2.product_id, pi2.quantity,
@@ -45,13 +45,54 @@ func GetProductItem(ctx *app.HttpContext) error {
 	// files query
 	var files []appmodels.FileOutPutModel
 
-	if err := baseDB.Debug().Table("file as f").
+	if err := baseDB.Table("file as f").
 		Joins("INNER JOIN product_file_map pf ON pf.file_id = f.id").
 		Where("pf.product_id = ?", data.ProductID).Find(&files).Error; err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, nil)
 	}
-
 	data.Files = files
+
+	// features
+	data.Features = []appmodels.ProductItemCategoryFeatureModel{}
+
+	var featureData []map[string]interface{}
+
+	if err := baseDB.Table("product_feature_value pfv").
+		Joins("INNER JOIN product_feature_key pfk ON pfk.id = pfv.product_feature_key_id").
+		Joins("INNER JOIN product_feature_category pfc ON pfc.id = pfk.product_feature_category_id").
+		Where("pfv.product_id = ?", data.ProductID).
+		Select("pfk.name as key,pfv.value, pfc.name as category").Find(&featureData).Error; err != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, nil)
+	}
+
+	features := map[string][]appmodels.ProductItemFeatureModel{}
+
+	for _, v := range featureData {
+		data, exists := features[v["category"].(string)]
+
+		if exists {
+			data = append(data, appmodels.ProductItemFeatureModel{
+				Key:   v["key"].(string),
+				Value: v["value"].(string),
+			})
+		} else {
+			data = []appmodels.ProductItemFeatureModel{
+				{
+					Key:   v["key"].(string),
+					Value: v["value"].(string),
+				},
+			}
+		}
+
+		features[v["category"].(string)] = data
+	}
+
+	for categoryName, keys := range features {
+		data.Features = append(data.Features, appmodels.ProductItemCategoryFeatureModel{
+			Category: categoryName,
+			Items:    keys,
+		})
+	}
 
 	return ctx.JSON(data, http.StatusOK)
 }

@@ -254,6 +254,8 @@ definitions:
         type: string
       id:
         type: string
+      productFeatureKeyId:
+        type: string
       updatedAt:
         type: string
       value:
@@ -266,12 +268,32 @@ definitions:
       value:
         type: string
     type: object
+  models.ProductItemCategoryFeatureModel:
+    properties:
+      category:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/models.ProductItemFeatureModel'
+        type: array
+    type: object
+  models.ProductItemFeatureModel:
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+    type: object
   models.ProductItemInfoOutPutModel:
     properties:
       color:
         type: string
       colorId:
         type: string
+      features:
+        items:
+          $ref: '#/definitions/models.ProductItemCategoryFeatureModel'
+        type: array
       files:
         items:
           $ref: '#/definitions/models.FileOutPutModel'
