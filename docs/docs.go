@@ -2755,6 +2755,15 @@ const docTemplate = `{
                 "fileId": {
                     "type": "string"
                 },
+                "fileName": {
+                    "type": "string"
+                },
+                "fileType": {
+                    "$ref": "#/definitions/models.FileType"
+                },
+                "fileUrl": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -3081,6 +3090,26 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ProductItemFileOutPutModel": {
+            "type": "object",
+            "properties": {
+                "fileType": {
+                    "$ref": "#/definitions/models.FileType"
+                },
+                "fileUrl": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "originalName": {
+                    "type": "string"
+                },
+                "uniqueFineName": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ProductItemInfoOutPutModel": {
             "type": "object",
             "properties": {
@@ -3099,7 +3128,7 @@ const docTemplate = `{
                 "files": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.FileOutPutModel"
+                        "$ref": "#/definitions/models.ProductItemFileOutPutModel"
                     }
                 },
                 "id": {
@@ -3170,6 +3199,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "code": {
+                    "type": "string"
+                },
+                "fileUrl": {
                     "type": "string"
                 },
                 "id": {

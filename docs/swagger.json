@@ -2743,6 +2743,15 @@
                 "fileId": {
                     "type": "string"
                 },
+                "fileName": {
+                    "type": "string"
+                },
+                "fileType": {
+                    "$ref": "#/definitions/models.FileType"
+                },
+                "fileUrl": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -3069,6 +3078,26 @@
                 }
             }
         },
+        "models.ProductItemFileOutPutModel": {
+            "type": "object",
+            "properties": {
+                "fileType": {
+                    "$ref": "#/definitions/models.FileType"
+                },
+                "fileUrl": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "originalName": {
+                    "type": "string"
+                },
+                "uniqueFineName": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ProductItemInfoOutPutModel": {
             "type": "object",
             "properties": {
@@ -3087,7 +3116,7 @@
                 "files": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.FileOutPutModel"
+                        "$ref": "#/definitions/models.ProductItemFileOutPutModel"
                     }
                 },
                 "id": {
@@ -3158,6 +3187,9 @@
                     "type": "string"
                 },
                 "code": {
+                    "type": "string"
+                },
+                "fileUrl": {
                     "type": "string"
                 },
                 "id": {

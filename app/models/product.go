@@ -149,13 +149,16 @@ func (model *ProductReqModel) MergeWithDBData(dbmodel *dbmodels.Product) {
 }
 
 type ProductOutPutModel struct {
-	ID           *uuid.UUID `gorm:"id"            json:"id"`
-	Name         string     `gorm:"name"          json:"name"`
-	Code         string     `gorm:"code"          json:"code"`
-	BrandID      uuid.UUID  `gorm:"brand_id"      json:"brandId"`
-	BrandName    string     `gorm:"brand_name"    json:"brandName"`
-	CategoryID   uuid.UUID  `gorm:"category_id"   json:"categoryId"`
-	CategoryName string     `gorm:"category_name" json:"categoryName"`
-	Price        float32    `gorm:"price"         json:"price"`
-	ItemID       uuid.UUID  `gorm:"item_id"       json:"itemId"`
+	ID           *uuid.UUID        `gorm:"column:id"               json:"id"`
+	Name         string            `gorm:"column:name"             json:"name"`
+	Code         string            `gorm:"column:code"             json:"code"`
+	BrandID      uuid.UUID         `gorm:"column:brand_id"         json:"brandId"`
+	BrandName    string            `gorm:"column:brand_name"       json:"brandName"`
+	CategoryID   uuid.UUID         `gorm:"column:category_id"      json:"categoryId"`
+	CategoryName string            `gorm:"column:category_name"    json:"categoryName"`
+	Price        float32           `gorm:"column:price"            json:"price"`
+	ItemID       uuid.UUID         `gorm:"column:item_id"          json:"itemId"`
+	FileType     dbmodels.FileType `gorm:"column:column:file_type" json:"-"`
+	FileName     string            `gorm:"column:file_name"        json:"-"`
+	FileUrl      string            `gorm:"column:file_url"         json:"fileUrl"`
 }

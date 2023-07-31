@@ -71,6 +71,12 @@ definitions:
         type: string
       fileId:
         type: string
+      fileName:
+        type: string
+      fileType:
+        $ref: '#/definitions/models.FileType'
+      fileUrl:
+        type: string
       id:
         type: string
       name:
@@ -284,6 +290,19 @@ definitions:
       value:
         type: string
     type: object
+  models.ProductItemFileOutPutModel:
+    properties:
+      fileType:
+        $ref: '#/definitions/models.FileType'
+      fileUrl:
+        type: string
+      id:
+        type: string
+      originalName:
+        type: string
+      uniqueFineName:
+        type: string
+    type: object
   models.ProductItemInfoOutPutModel:
     properties:
       color:
@@ -296,7 +315,7 @@ definitions:
         type: array
       files:
         items:
-          $ref: '#/definitions/models.FileOutPutModel'
+          $ref: '#/definitions/models.ProductItemFileOutPutModel'
         type: array
       id:
         type: string
@@ -343,6 +362,8 @@ definitions:
       categoryName:
         type: string
       code:
+        type: string
+      fileUrl:
         type: string
       id:
         type: string

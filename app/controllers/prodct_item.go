@@ -43,13 +43,19 @@ func GetProductItem(ctx *app.HttpContext) error {
 	}
 
 	// files query
-	var files []appmodels.FileOutPutModel
+	var files []appmodels.ProductItemFileOutPutModel
 
 	if err := baseDB.Table("file as f").
 		Joins("INNER JOIN product_file_map pf ON pf.file_id = f.id").
 		Where("pf.product_id = ?", data.ProductID).Find(&files).Error; err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, nil)
 	}
+
+	for i := 0; i < len(files); i++ {
+		file := files[i]
+		files[i].FileUrl = file.FileType.GetDirectory() + "/" + file.UniqueFileName
+	}
+
 	data.Files = files
 
 	// features

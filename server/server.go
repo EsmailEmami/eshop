@@ -26,12 +26,16 @@ func RunServer() {
 		ip = "127.0.0.1"
 	}
 
+	fileServer := http.FileServer(http.Dir("./uploads"))
+	router.Handle("/uploads/*", http.StripPrefix("/uploads", fileServer))
+
 	srv := &http.Server{
 		Handler:      router,
 		Addr:         ip + ":" + port,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
+
 	fmt.Println("server started at: http://127.0.0.1:" + port)
 	defer srv.Close()
 	log.Fatalln(srv.ListenAndServe())

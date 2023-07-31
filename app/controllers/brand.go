@@ -23,12 +23,20 @@ import (
 // @Failure 401 {object} map[string]any
 // @Router /brand [get]
 func GetBrands(ctx *app.HttpContext) error {
-	baseDB := db.MustGormDBConn(ctx).Model(&models.Brand{})
+	baseDB := db.MustGormDBConn(ctx)
 
 	var data []appmodels.BrandOutPutModel
 
-	if err := baseDB.Find(&data).Error; err != nil {
+	if err := baseDB.Table("brand b").
+		Joins("INNER JOIN file f on f.id = b.file_id").
+		Select("b.id, b.created_at, b.updated_at,b.name,b.code, b.file_id, f.unique_file_name as file_name,f.file_type").
+		Find(&data).Error; err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	for i := 0; i < len(data); i++ {
+		brand := data[i]
+		data[i].FileUrl = brand.FileType.GetDirectory() + "/" + brand.FileName
 	}
 
 	return ctx.JSON(data, http.StatusOK)
@@ -50,15 +58,20 @@ func GetBrand(ctx *app.HttpContext) error {
 	if err != nil {
 		return errors.NewBadRequestError(consts.BadRequest, err)
 	}
-	baseDB := db.MustGormDBConn(ctx).Model(&models.Brand{})
+	baseDB := db.MustGormDBConn(ctx)
 
-	var data appmodels.BrandOutPutModel
+	var brand appmodels.BrandOutPutModel
 
-	if err := baseDB.First(&data, "id", id).Error; err != nil {
-		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
+	if err := baseDB.Table("brand b").
+		Joins("INNER JOIN file f on f.id = b.file_id").
+		Select("b.id, b.created_at, b.updated_at,b.name,b.code, b.file_id, f.unique_file_name as file_name,f.file_type").
+		First(&brand, "b.id", id).Error; err != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
-	return ctx.JSON(data, http.StatusOK)
+	brand.FileUrl = brand.FileType.GetDirectory() + "/" + brand.FileName
+
+	return ctx.JSON(brand, http.StatusOK)
 }
 
 // Create Brand godoc

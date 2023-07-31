@@ -27,17 +27,27 @@ func GetProducts(ctx *app.HttpContext) error {
 	var data []appmodels.ProductOutPutModel
 
 	if err := baseDB.Table("product as p").
-		Joins("INNER JOIN product_item pi2 ON pi2.product_id = p.id").
-		Joins("INNER JOIN brand b ON B.id = P.brand_id").
-		Joins("INNER JOIN category c ON C.id = P.category_id").
-		Order(`p.id, 
-			CASE
-			WHEN p.default_product_item_id IS NULL THEN pi2.bought_quantity
-			WHEN pi2.id = p.default_product_item_id THEN 0
-			ELSE 1 
-			END, pi2.bought_quantity`).
-		Select(`DISTINCT ON (p.id) p.id, p."name", p.code, pi2.price, P.brand_id , B."name" AS brand_name, p.category_id , c."name" AS category_name, pi2.id  AS item_id`).First(&data).Error; err != nil {
+		Joins(`INNER JOIN product_item pi2 ON pi2.product_id = p.id
+	       INNER JOIN brand b ON b.id = p.brand_id
+	       INNER JOIN category c ON c.id = p.category_id
+	       INNER JOIN product_file_map pf ON pf.product_id = p.id
+	       INNER JOIN file f ON f.id = pf.file_id`).
+		Order(`p.id, f.created_at,
+		  CASE
+			  WHEN p.default_product_item_id IS NULL THEN pi2.bought_quantity
+			  WHEN pi2.id = p.default_product_item_id THEN 0
+			  ELSE 1 
+		  END, pi2.bought_quantity`).
+		Select(`DISTINCT ON (p.id) p.id, p."name", p.code, pi2.price, p.brand_id, 
+	        b."name" AS brand_name, p.category_id, c."name" AS category_name, 
+	        pi2.id AS item_id, f.file_type, f.unique_file_name AS file_name`).
+		Find(&data).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
+	}
+
+	for i := 0; i < len(data); i++ {
+		product := data[i]
+		data[i].FileUrl = product.FileType.GetDirectory() + "/" + product.FileName
 	}
 
 	return ctx.JSON(data, http.StatusOK)
@@ -65,20 +75,26 @@ func GetProduct(ctx *app.HttpContext) error {
 	var data appmodels.ProductOutPutModel
 
 	if err := baseDB.Table("product as p").
-		Joins("INNER JOIN product_item pi2 ON pi2.product_id = p.id").
-		Joins("INNER JOIN brand b ON B.id = P.brand_id").
-		Joins("INNER JOIN category c ON C.id = P.category_id").
-		Order(`p.id, 
-		CASE
-		WHEN p.default_product_item_id IS NULL THEN pi2.bought_quantity
-		WHEN pi2.id = p.default_product_item_id THEN 0
-		ELSE 1 
-		END, pi2.bought_quantity`).
+		Joins(`INNER JOIN product_item pi2 ON pi2.product_id = p.id
+	   INNER JOIN brand b ON b.id = p.brand_id
+	   INNER JOIN category c ON c.id = p.category_id
+	   INNER JOIN product_file_map pf ON pf.product_id = p.id
+	   INNER JOIN file f ON f.id = pf.file_id`).
+		Order(`p.id, f.created_at,
+	  CASE
+		  WHEN p.default_product_item_id IS NULL THEN pi2.bought_quantity
+		  WHEN pi2.id = p.default_product_item_id THEN 0
+		  ELSE 1 
+	  END, pi2.bought_quantity`).
 		Where("p.id = ?", id).
-		Select(`DISTINCT ON (p.id) p.id, p."name", p.code, pi2.price, P.brand_id , B."name" AS brand_name, p.category_id , c."name" AS category_name, pi2.id  AS item_id`).First(&data).Error; err != nil {
+		Select(`DISTINCT ON (p.id) p.id, p."name", p.code, pi2.price, p.brand_id, 
+		b."name" AS brand_name, p.category_id, c."name" AS category_name, 
+		pi2.id AS item_id, f.file_type, f.unique_file_name AS file_name`).
+		First(&data).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
+	data.FileUrl = data.FileType.GetDirectory() + "/" + data.FileName
 	return ctx.JSON(data, http.StatusOK)
 }
 

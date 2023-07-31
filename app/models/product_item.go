@@ -5,6 +5,7 @@ import (
 
 	"github.com/esmailemami/eshop/consts"
 	dbpkg "github.com/esmailemami/eshop/db"
+	"github.com/esmailemami/eshop/models"
 	dbmodels "github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
@@ -114,7 +115,7 @@ type ProductItemInfoOutPutModel struct {
 	Quantity                int                               `gorm:"quantity"                  json:"quantity"`
 	ProductShortDescription string                            `gorm:"product_short_description" json:"productShortDescription"`
 	ProductDescription      string                            `gorm:"product_description"       json:"productDescription"`
-	Files                   []FileOutPutModel                 `gorm:"-"                         json:"files"`
+	Files                   []ProductItemFileOutPutModel      `gorm:"-"                         json:"files"`
 	Features                []ProductItemCategoryFeatureModel `gorm:"-"                         json:"features"`
 }
 
@@ -126,4 +127,12 @@ type ProductItemCategoryFeatureModel struct {
 type ProductItemFeatureModel struct {
 	Key   string `gorm:"key"   json:"key"`
 	Value string `gorm:"value" json:"value"`
+}
+
+type ProductItemFileOutPutModel struct {
+	ID             *uuid.UUID      `gorm:"id"               json:"id"`
+	OriginalName   string          `gorm:"original_name"    json:"originalName"`
+	UniqueFileName string          `gorm:"unique_file_name" json:"uniqueFineName"`
+	FileType       models.FileType `gorm:"file_type"        json:"fileType"`
+	FileUrl        string          `gorm:"-"                json:"fileUrl"`
 }
