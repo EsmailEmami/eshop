@@ -97,6 +97,26 @@ func LoadApiRoutes(root *chi.Mux) {
 			r.Post("/productItem", app.Handler(controllers.CreateProductItem))
 			r.Post("/productItem/edit/{id}", app.Handler(controllers.EditProductItem))
 			r.Post("/productItem/delete/{id}", app.Handler(controllers.DeleteProductItem))
+
+			// productFeatureCategory
+			r.Get("/productFeatureCategory", app.Handler(controllers.GetProductFeatureCategories))
+			r.Get("/productFeatureCategory/{id}", app.Handler(controllers.GetProductFeatureCategory))
+			r.Post("/productFeatureCategory", app.Handler(controllers.CreateProductFeatureCategory))
+			r.Post("/productFeatureCategory/edit/{id}", app.Handler(controllers.EditProductFeatureCategory))
+			r.Post("/productFeatureCategory/delete/{id}", app.Handler(controllers.DeleteProductFeatureCategory))
+
+			// productFeatureKey
+			r.Get("/productFeatureKey", app.Handler(controllers.GetProductFeatureKeys))
+			r.Get("/productFeatureKey/{id}", app.Handler(controllers.CreateProductFeatureKey))
+			r.Post("/productFeatureKey", app.Handler(controllers.CreateProductFeatureKey))
+			r.Post("/productFeatureKey/edit/{id}", app.Handler(controllers.EditProductFeatureKey))
+			r.Post("/productFeatureKey/delete/{id}", app.Handler(controllers.DeleteProductFeatureKey))
+
+			// productFeatureValue
+			r.Get("/productFeatureValue", app.Handler(controllers.GetProductFeatureValues))
+			r.Get("/productFeatureValue/{id}", app.Handler(controllers.GetProductFeatureValue))
+			r.Post("/productFeatureValue/{productId}", app.Handler(controllers.CreateProductFeatureValue))
+			r.Post("/productFeatureValue/delete/{id}", app.Handler(controllers.DeleteProductFeatureValue))
 		})
 	})
 }

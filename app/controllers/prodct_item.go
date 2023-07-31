@@ -28,11 +28,11 @@ func GetProductItem(ctx *app.HttpContext) error {
 	if err != nil {
 		return errors.NewBadRequestError(consts.BadRequest, err)
 	}
-	baseDB := db.MustGormDBConn(ctx).Model(&models.ProductItem{})
+	baseDB := db.MustGormDBConn(ctx)
 
 	var data appmodels.ProductItemInfoOutPutModel
 
-	if err := baseDB.Table("product_item pi2").
+	if err := baseDB.Debug().Table("product_item pi2").
 		Joins("INNER JOIN product p ON P.id = pi2 .product_id").
 		Joins("INNER JOIN color c ON C.id = pi2.color_id").
 		Select(`pi2.id, pi2.price,pi2.status, pi2 .color_id, pi2.product_id, pi2.quantity,
@@ -41,6 +41,17 @@ func GetProductItem(ctx *app.HttpContext) error {
 		First(&data, "pi2.id", id).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
+
+	// files query
+	var files []appmodels.FileOutPutModel
+
+	if err := baseDB.Debug().Table("file as f").
+		Joins("INNER JOIN product_file_map pf ON pf.file_id = f.id").
+		Where("pf.product_id = ?", data.ProductID).Find(&files).Error; err != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, nil)
+	}
+
+	data.Files = files
 
 	return ctx.JSON(data, http.StatusOK)
 }

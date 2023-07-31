@@ -210,12 +210,72 @@ definitions:
       username:
         type: string
     type: object
+  models.ProductFeatureCategoryOutPutModel:
+    properties:
+      code:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.ProductFeatureCategoryReqModel:
+    properties:
+      code:
+        type: string
+      name:
+        type: string
+    type: object
+  models.ProductFeatureKeyOutPutModel:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.ProductFeatureKeyReqModel:
+    properties:
+      name:
+        type: string
+      productFeatureCategoryId:
+        type: string
+    type: object
+  models.ProductFeatureValueOutPutModel:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      updatedAt:
+        type: string
+      value:
+        type: string
+    type: object
+  models.ProductFeatureValueReqModel:
+    properties:
+      productFeatureKeyId:
+        type: string
+      value:
+        type: string
+    type: object
   models.ProductItemInfoOutPutModel:
     properties:
       color:
         type: string
       colorId:
         type: string
+      files:
+        items:
+          $ref: '#/definitions/models.FileOutPutModel'
+        type: array
       id:
         type: string
       price:
@@ -1160,6 +1220,11 @@ paths:
         required: true
         type: string
       - description: file Type
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
         in: path
         name: fileType
         required: true
@@ -1253,6 +1318,11 @@ paths:
         required: true
         type: string
       - description: file Type
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
         in: path
         name: fileType
         required: true
@@ -1437,6 +1507,470 @@ paths:
       - Bearer: []
       tags:
       - Products
+  /productFeatureCategory:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ProductFeatureCategoryOutPutModel'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureCategories
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ProductFeatureCategory model
+        in: body
+        name: ProductFeatureCategory
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductFeatureCategoryReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureCategories
+  /productFeatureCategory/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ProductFeatureCategoryOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureCategories
+  /productFeatureCategory/delete/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureCategories
+  /productFeatureCategory/edit/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: ProductFeatureCategory model
+        in: body
+        name: ProductFeatureCategory
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductFeatureCategoryReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureCategories
+  /productFeatureKey:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Product Feature Category ID
+        in: query
+        name: categoryId
+        type: string
+      - description: Search Term
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ProductFeatureKeyOutPutModel'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureKeys
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ProductFeatureKey model
+        in: body
+        name: ProductFeatureKey
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductFeatureKeyReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureKeys
+  /productFeatureKey/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ProductFeatureKeyOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureKeys
+  /productFeatureKey/delete/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureKeys
+  /productFeatureKey/edit/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: ProductFeatureKey model
+        in: body
+        name: ProductFeatureKey
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductFeatureKeyReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureKeys
+  /productFeatureValue:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Product Feature Key ID
+        in: query
+        name: keyId
+        type: string
+      - description: Product ID
+        in: query
+        name: productId
+        type: string
+      - description: Search Term
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ProductFeatureValueOutPutModel'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureValues
+  /productFeatureValue/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ProductFeatureValueOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureValues
+  /productFeatureValue/{productId}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Product ID
+        in: path
+        name: productId
+        required: true
+        type: string
+      - description: ProductFeatureValue model
+        in: body
+        name: ProductFeatureValue
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/models.ProductFeatureValueReqModel'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureValues
+  /productFeatureValue/delete/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductFeatureValues
   /productItem:
     post:
       consumes:

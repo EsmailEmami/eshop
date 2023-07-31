@@ -1,0 +1,24 @@
+---
+up: |
+  CREATE TABLE product_feature_value (
+    id    			    uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    value            varchar(1024) not null,
+    product_feature_key_id uuid not null,
+    product_id uuid not null,
+ 
+    created_at 		  timestamptz default now(),
+    created_by_id 	uuid null,
+    updated_at 		  timestamptz default now(),
+    updated_by_id 	uuid null,
+    deleted_at		  timestamptz null,
+    deleted_by_id 	uuid null,
+
+    CONSTRAINT fk__product_feature_value_user_created_by FOREIGN KEY (created_by_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk__product_feature_value_user_updated_by FOREIGN KEY (updated_by_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk__product_feature_value_user_deleted_by FOREIGN KEY (deleted_by_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk__product_feature_value_product_feature_key_product_feature_key_id FOREIGN KEY (product_feature_key_id) REFERENCES public.product_feature_key (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk__product_feature_value_product_product_id FOREIGN KEY (product_id) REFERENCES public.product (id) ON UPDATE CASCADE ON DELETE RESTRICT
+  );
+
+down: |
+  drop table product_feature_value;

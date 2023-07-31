@@ -114,4 +114,5 @@ type ProductItemInfoOutPutModel struct {
 	Quantity                int                    `gorm:"quantity"                  json:"quantity"`
 	ProductShortDescription string                 `gorm:"product_short_description" json:"productShortDescription"`
 	ProductDescription      string                 `gorm:"product_description"       json:"productDescription"`
+	Files                   []FileOutPutModel      `gorm:"-"                         json:"files"`
 }

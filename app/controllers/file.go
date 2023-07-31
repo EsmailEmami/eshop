@@ -26,7 +26,7 @@ import (
 // @Produce json
 // @Security Bearer
 // @Param itemId  path  string  true  "item ID"
-// @Param fileType  path  int  true  "file Type"
+// @Param fileType  path  models.FileType  true  "file Type"
 // @Param file formData file true "Image file to be uploaded"
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
@@ -270,7 +270,7 @@ func GetStreamingFile(ctx *app.HttpContext) error {
 // @Produce json
 // @Security Bearer
 // @Param itemId  path  string  true  "item ID"
-// @Param fileType  path  int  true  "file Type"
+// @Param fileType  path  models.FileType  true  "file Type"
 // @Success 200 {object} []appmodels.FileOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any

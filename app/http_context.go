@@ -105,7 +105,12 @@ func (ctx *HttpContext) UserAgent() string {
 	return ctx.Request.UserAgent()
 }
 
-func (c *HttpContext) SetCookie(name, value string, maxAge int, path, domain string, secure, httpOnly bool) {
+func (c *HttpContext) SetCookie(
+	name, value string,
+	maxAge int,
+	path, domain string,
+	secure, httpOnly bool,
+) {
 	if path == "" {
 		path = "/"
 	}
@@ -129,4 +134,13 @@ func (c *HttpContext) Get(key string) (any, bool) {
 	}
 
 	return val, true
+}
+
+func (c *HttpContext) GetParam(key string) (string, bool) {
+	value := c.Request.URL.Query().Get(key)
+	if strings.TrimSpace(value) != "" {
+		return value, true
+	}
+
+	return "", false
 }
