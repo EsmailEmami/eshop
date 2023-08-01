@@ -1899,6 +1899,49 @@
                 }
             }
         },
+        "/product/list": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.ProductOutPutModel"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/product/{id}": {
             "get": {
                 "security": [
@@ -4134,20 +4177,11 @@
                 "code": {
                     "type": "string"
                 },
-                "fileUrl": {
-                    "type": "string"
-                },
                 "id": {
-                    "type": "string"
-                },
-                "itemId": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
-                },
-                "price": {
-                    "type": "number"
                 }
             }
         },

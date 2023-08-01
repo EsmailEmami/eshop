@@ -22,9 +22,9 @@ import (
 // @Failure 401 {object} map[string]any
 // @Router /product [get]
 func GetProducts(ctx *app.HttpContext) error {
-	baseDB := db.MustGormDBConn(ctx).Model(&models.Product{})
+	baseDB := db.MustGormDBConn(ctx)
 
-	var data []appmodels.ProductOutPutModel
+	var data []appmodels.ProductWithItemOutPutModel
 
 	if err := baseDB.Table("product as p").
 		Joins(`INNER JOIN product_item pi2 ON pi2.product_id = p.id
@@ -53,6 +53,32 @@ func GetProducts(ctx *app.HttpContext) error {
 	return ctx.JSON(data, http.StatusOK)
 }
 
+// GetProducts godoc
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} []appmodels.ProductOutPutModel
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /product/list [get]
+func GetProductsList(ctx *app.HttpContext) error {
+	baseDB := db.MustGormDBConn(ctx)
+
+	var data []appmodels.ProductOutPutModel
+
+	if err := baseDB.Debug().Table("product as p").
+		Joins(`INNER JOIN brand b ON b.id = p.brand_id`).
+		Joins(`INNER JOIN category c ON c.id = p.category_id`).
+		Select(`p.id, p."name", p.code, p.brand_id, 
+		b."name" AS brand_name, p.category_id, c."name" AS category_name`).
+		Find(&data).Error; err != nil {
+		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
+	}
+
+	return ctx.JSON(data, http.StatusOK)
+}
+
 // GetProduct godoc
 // @Tags Products
 // @Accept json
@@ -66,35 +92,23 @@ func GetProducts(ctx *app.HttpContext) error {
 func GetProduct(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
-	_ = id
 	if err != nil {
 		return errors.NewBadRequestError(consts.BadRequest, err)
 	}
-	baseDB := db.MustGormDBConn(ctx).Model(&models.Product{})
+	baseDB := db.MustGormDBConn(ctx)
 
 	var data appmodels.ProductOutPutModel
 
 	if err := baseDB.Table("product as p").
-		Joins(`INNER JOIN product_item pi2 ON pi2.product_id = p.id
-	   INNER JOIN brand b ON b.id = p.brand_id
-	   INNER JOIN category c ON c.id = p.category_id
-	   INNER JOIN product_file_map pf ON pf.product_id = p.id
-	   INNER JOIN file f ON f.id = pf.file_id`).
-		Order(`p.id, f.created_at,
-	  CASE
-		  WHEN p.default_product_item_id IS NULL THEN pi2.bought_quantity
-		  WHEN pi2.id = p.default_product_item_id THEN 0
-		  ELSE 1 
-	  END, pi2.bought_quantity`).
+		Joins(`INNER JOIN brand b ON b.id = p.brand_id`).
+		Joins(`INNER JOIN category c ON c.id = p.category_id`).
 		Where("p.id = ?", id).
-		Select(`DISTINCT ON (p.id) p.id, p."name", p.code, pi2.price, p.brand_id, 
-		b."name" AS brand_name, p.category_id, c."name" AS category_name, 
-		pi2.id AS item_id, f.file_type, f.unique_file_name AS file_name`).
+		Select(`p.id, p."name", p.code, p.brand_id, 
+		b."name" AS brand_name, p.category_id, c."name" AS category_name`).
 		First(&data).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	data.FileUrl = data.FileType.GetDirectory() + "/" + data.FileName
 	return ctx.JSON(data, http.StatusOK)
 }
 

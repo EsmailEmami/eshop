@@ -88,6 +88,7 @@ func LoadApiRoutes(root *chi.Mux) {
 			// product
 			r.Get("/product/{id}", app.Handler(controllers.GetProduct))
 			r.Get("/product", app.Handler(controllers.GetProducts))
+			r.Get("/product/list", app.Handler(controllers.GetProductsList))
 			r.Post("/product", app.Handler(controllers.CreateProduct))
 			r.Post("/product/edit/{id}", app.Handler(controllers.EditProduct))
 			r.Post("/product/delete/{id}", app.Handler(controllers.DeleteProduct))
