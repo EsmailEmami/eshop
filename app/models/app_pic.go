@@ -91,12 +91,12 @@ func (model *AppPicReqModel) MergeWithDBData(dbmodel *dbmodels.AppPic) {
 }
 
 type AppPicOutPutModel struct {
-	ID          *uuid.UUID          `gorm:"id"                json:"id"`
+	ID          *uuid.UUID          `gorm:"column:id"                json:"id"`
 	CreatedAt   time.Time           `gorm:"column:created_at" json:"createdAt"`
 	UpdatedAt   time.Time           `gorm:"column:updated_at" json:"updatedAt"`
-	Priority    int                 `gorm:"priority"          json:"priority"`
-	AppPicType  dbmodels.AppPicType `gorm:"app_pic_type"      json:"appPicType"`
-	FileID      uuid.UUID           `gorm:"file_id"           json:"fileId"`
-	Title       string              `gorm:"title"             json:"title"`
-	Description string              `gorm:"description"       json:"description"`
+	Priority    int                 `gorm:"column:priority"          json:"priority"`
+	AppPicType  dbmodels.AppPicType `gorm:"column:app_pic_type"      json:"appPicType"`
+	FileID      uuid.UUID           `gorm:"column:file_id"           json:"fileId"`
+	Title       string              `gorm:"column:title"             json:"title"`
+	Description string              `gorm:"column:description"       json:"description"`
 }

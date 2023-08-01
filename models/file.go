@@ -5,11 +5,11 @@ import "errors"
 type File struct {
 	Model
 
-	MimeType       string           `gorm:"mime_type"                        json:"mimeType"`
-	Extension      string           `gorm:"extension"                        json:"extension"`
-	OriginalName   string           `gorm:"original_name"                    json:"originalName"`
-	UniqueFileName string           `gorm:"unique_file_name"                 json:"uniqueFineName"`
-	FileType       FileType         `gorm:"file_type"                        json:"fileType"`
+	MimeType       string           `gorm:"column:mime_type"                 json:"mimeType"`
+	Extension      string           `gorm:"column:extension"                 json:"extension"`
+	OriginalName   string           `gorm:"column:original_name"             json:"originalName"`
+	UniqueFileName string           `gorm:"column:unique_file_name"          json:"uniqueFineName"`
+	FileType       FileType         `gorm:"column:file_type"                 json:"fileType"`
 	Products       []ProductFileMap `gorm:"foreignKey:file_id;references:id" json:"products"`
 	Brands         []Brand          `gorm:"foreignKey:file_id;references:id" json:"brands"`
 	AppPics        []AppPic         `gorm:"foreignKey:file_id;references:id" json:"appPics"`

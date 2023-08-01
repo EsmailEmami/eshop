@@ -82,13 +82,13 @@ func (model BrandReqModel) MergeWithDBData(dbmodel *dbmodels.Brand) {
 }
 
 type BrandOutPutModel struct {
-	ID        *uuid.UUID        `gorm:"id"                json:"id"`
+	ID        *uuid.UUID        `gorm:"column:id"         json:"id"`
 	CreatedAt time.Time         `gorm:"column:created_at" json:"createdAt"`
 	UpdatedAt time.Time         `gorm:"column:updated_at" json:"updatedAt"`
-	Name      string            `gorm:"name"              json:"name"`
-	Code      string            `gorm:"code"              json:"code"`
-	FileID    uuid.UUID         `gorm:"file_id"           json:"fileId"`
+	Name      string            `gorm:"column:name"       json:"name"`
+	Code      string            `gorm:"column:code"       json:"code"`
+	FileID    uuid.UUID         `gorm:"column:file_id"    json:"fileId"`
 	FileUrl   string            `gorm:"-"                 json:"fileUrl"`
-	FileName  string            `gorm:"file_name"         json:"fileName"`
-	FileType  dbmodels.FileType `gorm:"file_type"         json:"fileType"`
+	FileName  string            `gorm:"column:file_name"  json:"fileName"`
+	FileType  dbmodels.FileType `gorm:"column:file_type"  json:"fileType"`
 }

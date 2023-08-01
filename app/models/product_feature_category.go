@@ -80,9 +80,9 @@ func (model ProductFeatureCategoryReqModel) MergeWithDBData(
 }
 
 type ProductFeatureCategoryOutPutModel struct {
-	ID        *uuid.UUID `gorm:"id"                json:"id"`
+	ID        *uuid.UUID `gorm:"column:id"         json:"id"`
 	CreatedAt time.Time  `gorm:"column:created_at" json:"createdAt"`
 	UpdatedAt time.Time  `gorm:"column:updated_at" json:"updatedAt"`
-	Name      string     `gorm:"name"              json:"name"`
-	Code      string     `gorm:"code"              json:"code"`
+	Name      string     `gorm:"column:name"       json:"name"`
+	Code      string     `gorm:"column:code"       json:"code"`
 }

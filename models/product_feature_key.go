@@ -5,9 +5,9 @@ import "github.com/google/uuid"
 type ProductFeatureKey struct {
 	Model
 
-	ProductFeatureCategoryID uuid.UUID               `gorm:"product_feature_category_id"                          json:"productFeatureCategoryId"`
+	ProductFeatureCategoryID uuid.UUID               `gorm:"column:product_feature_category_id"                   json:"productFeatureCategoryId"`
 	ProductFeatureCategory   *ProductFeatureCategory `gorm:"foreignKey:product_feature_category_id;references:id" json:"productFeatureCategory"`
-	Name                     string                  `gorm:"name"                                                 json:"name"`
+	Name                     string                  `gorm:"column:name"                                          json:"name"`
 	Values                   []ProductFeatureValue   `gorm:"foreignKey:product_feature_key_id; references:id;"    json:"values"`
 }
 

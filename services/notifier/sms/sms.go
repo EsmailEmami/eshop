@@ -28,7 +28,7 @@ func (n smsNotifier) GetDriverName() string {
 }
 
 type SmsResult struct {
-	To         string `gorm:"to" json:"to"`
-	TrackID    string `gorm:"track_id"  json:"trackId"`
-	DriverName string `gorm:"driver_name"  json:"driverName"`
+	To         string `gorm:"column:to" json:"to"`
+	TrackID    string `gorm:"column:track_id"  json:"trackId"`
+	DriverName string `gorm:"column:driver_name"  json:"driverName"`
 }

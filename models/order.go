@@ -3,9 +3,9 @@ package models
 type Order struct {
 	Model
 
-	Code   string      `gorm:"code"                              json:"code"`
+	Code   string      `gorm:"column:code"                       json:"code"`
 	Items  []OrderItem `gorm:"foreignKey:order_id;references:id" json:"items"`
-	Status OrderStatus `gorm:"status"                            json:"status"`
+	Status OrderStatus `gorm:"column:status"                     json:"status"`
 }
 
 func (Order) TableName() string {

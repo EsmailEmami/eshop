@@ -104,19 +104,19 @@ func (model ProductItemReqModel) MergeWithDBData(dbmodel *dbmodels.ProductItem) 
 }
 
 type ProductItemInfoOutPutModel struct {
-	ID                      *uuid.UUID                        `gorm:"id"                        json:"id"`
-	Price                   float64                           `gorm:"price"                     json:"price"`
-	Status                  dbmodels.ProductStatus            `gorm:"status"                    json:"status"`
-	ColorID                 uuid.UUID                         `gorm:"color_id"                  json:"colorId"`
-	ColorName               string                            `gorm:"color_name"                json:"color"`
-	ProductID               uuid.UUID                         `gorm:"product_id"                json:"productId"`
-	ProductTitle            string                            `gorm:"product_title"             json:"productTitle"`
-	ProductCode             string                            `gorm:"product_code"              json:"productCode"`
-	Quantity                int                               `gorm:"quantity"                  json:"quantity"`
-	ProductShortDescription string                            `gorm:"product_short_description" json:"productShortDescription"`
-	ProductDescription      string                            `gorm:"product_description"       json:"productDescription"`
-	Files                   []ProductItemFileOutPutModel      `gorm:"-"                         json:"files"`
-	Features                []ProductItemCategoryFeatureModel `gorm:"-"                         json:"features"`
+	ID                      *uuid.UUID                        `gorm:"column:id"                        json:"id"`
+	Price                   float64                           `gorm:"column:price"                     json:"price"`
+	Status                  dbmodels.ProductStatus            `gorm:"column:status"                    json:"status"`
+	ColorID                 uuid.UUID                         `gorm:"column:color_id"                  json:"colorId"`
+	ColorName               string                            `gorm:"column:color_name"                json:"color"`
+	ProductID               uuid.UUID                         `gorm:"column:product_id"                json:"productId"`
+	ProductTitle            string                            `gorm:"column:product_title"             json:"productTitle"`
+	ProductCode             string                            `gorm:"column:product_code"              json:"productCode"`
+	Quantity                int                               `gorm:"column:quantity"                  json:"quantity"`
+	ProductShortDescription string                            `gorm:"column:product_short_description" json:"productShortDescription"`
+	ProductDescription      string                            `gorm:"column:product_description"       json:"productDescription"`
+	Files                   []ProductItemFileOutPutModel      `gorm:"-"                                json:"files"`
+	Features                []ProductItemCategoryFeatureModel `gorm:"-"                                json:"features"`
 }
 
 type ProductItemCategoryFeatureModel struct {
@@ -125,14 +125,14 @@ type ProductItemCategoryFeatureModel struct {
 }
 
 type ProductItemFeatureModel struct {
-	Key   string `gorm:"key"   json:"key"`
-	Value string `gorm:"value" json:"value"`
+	Key   string `gorm:"column:key"   json:"key"`
+	Value string `gorm:"column:value" json:"value"`
 }
 
 type ProductItemFileOutPutModel struct {
-	ID             *uuid.UUID      `gorm:"id"               json:"id"`
-	OriginalName   string          `gorm:"original_name"    json:"originalName"`
-	UniqueFileName string          `gorm:"unique_file_name" json:"uniqueFineName"`
-	FileType       models.FileType `gorm:"file_type"        json:"fileType"`
-	FileUrl        string          `gorm:"-"                json:"fileUrl"`
+	ID             *uuid.UUID      `gorm:"column:id"               json:"id"`
+	OriginalName   string          `gorm:"column:original_name"    json:"originalName"`
+	UniqueFileName string          `gorm:"column:unique_file_name" json:"uniqueFineName"`
+	FileType       models.FileType `gorm:"column:file_type"        json:"fileType"`
+	FileUrl        string          `gorm:"-"                       json:"fileUrl"`
 }

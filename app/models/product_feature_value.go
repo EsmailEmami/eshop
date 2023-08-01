@@ -102,9 +102,9 @@ func (model ProductFeatureValueReqModel) MergeWithDBData(
 }
 
 type ProductFeatureValueOutPutModel struct {
-	ID                  *uuid.UUID `gorm:"id"                     json:"id"`
-	CreatedAt           time.Time  `gorm:"column:created_at"      json:"createdAt"`
-	UpdatedAt           time.Time  `gorm:"column:updated_at"      json:"updatedAt"`
-	ProductFeatureKeyID uuid.UUID  `gorm:"product_feature_key_id" json:"productFeatureKeyId"`
-	Value               string     `gorm:"value"                  json:"value"`
+	ID                  *uuid.UUID `gorm:"column:id"                     json:"id"`
+	CreatedAt           time.Time  `gorm:"column:created_at"             json:"createdAt"`
+	UpdatedAt           time.Time  `gorm:"column:updated_at"             json:"updatedAt"`
+	ProductFeatureKeyID uuid.UUID  `gorm:"column:product_feature_key_id" json:"productFeatureKeyId"`
+	Value               string     `gorm:"column:value"                  json:"value"`
 }

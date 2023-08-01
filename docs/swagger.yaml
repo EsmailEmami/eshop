@@ -4,6 +4,35 @@ definitions:
       message:
         type: string
     type: object
+  models.AppPic:
+    properties:
+      appPicType:
+        $ref: '#/definitions/models.AppPicType'
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      description:
+        type: string
+      file:
+        $ref: '#/definitions/models.File'
+      fileId:
+        type: string
+      id:
+        type: string
+      priority:
+        type: integer
+      title:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+    type: object
   models.AppPicOutPutModel:
     properties:
       appPicType:
@@ -63,6 +92,35 @@ definitions:
       userId:
         type: string
     type: object
+  models.Brand:
+    properties:
+      code:
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      file:
+        $ref: '#/definitions/models.File'
+      fileId:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.Product'
+        type: array
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+    type: object
   models.BrandOutPutModel:
     properties:
       code:
@@ -93,6 +151,31 @@ definitions:
       name:
         type: string
     type: object
+  models.Category:
+    properties:
+      code:
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.Product'
+        type: array
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+    type: object
   models.CategoryOutPutModel:
     properties:
       code:
@@ -111,6 +194,33 @@ definitions:
       code:
         type: string
       name:
+        type: string
+    type: object
+  models.Color:
+    properties:
+      code:
+        type: string
+      colorHex:
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.ProductItem'
+        type: array
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
         type: string
     type: object
   models.ColorOutPutModel:
@@ -135,6 +245,118 @@ definitions:
       colorHex:
         type: string
       name:
+        type: string
+    type: object
+  models.Comment:
+    properties:
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      id:
+        type: string
+      product:
+        $ref: '#/definitions/models.Product'
+      productId:
+        type: string
+      rate:
+        type: integer
+      strengthPoints:
+        items:
+          type: string
+        type: array
+      text:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+      weakPonits:
+        items:
+          type: string
+        type: array
+    type: object
+  models.CommentOutPutModel:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      rate:
+        type: integer
+      strengthPoints:
+        items:
+          type: string
+        type: array
+      text:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+      weakPonits:
+        items:
+          type: string
+        type: array
+    type: object
+  models.CommentReqModel:
+    properties:
+      productId:
+        type: string
+      rate:
+        type: integer
+      strengthPoints:
+        items:
+          type: string
+        type: array
+      text:
+        type: string
+      weakPonits:
+        items:
+          type: string
+        type: array
+    type: object
+  models.File:
+    properties:
+      appPics:
+        items:
+          $ref: '#/definitions/models.AppPic'
+        type: array
+      brands:
+        items:
+          $ref: '#/definitions/models.Brand'
+        type: array
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      extension:
+        type: string
+      fileType:
+        $ref: '#/definitions/models.FileType'
+      id:
+        type: string
+      mimeType:
+        type: string
+      originalName:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.ProductFileMap'
+        type: array
+      uniqueFineName:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
         type: string
     type: object
   models.FileOutPutModel:
@@ -216,6 +438,136 @@ definitions:
       username:
         type: string
     type: object
+  models.Order:
+    properties:
+      code:
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/models.OrderItem'
+        type: array
+      status:
+        type: integer
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+    type: object
+  models.OrderItem:
+    properties:
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      id:
+        type: string
+      order:
+        $ref: '#/definitions/models.Order'
+      orderId:
+        type: string
+      price:
+        type: number
+      productItem:
+        $ref: '#/definitions/models.ProductItem'
+      productItemId:
+        type: string
+      quantity:
+        type: integer
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+    type: object
+  models.Product:
+    properties:
+      brand:
+        $ref: '#/definitions/models.Brand'
+      brandId:
+        type: string
+      category:
+        $ref: '#/definitions/models.Category'
+      categoryId:
+        type: string
+      code:
+        type: string
+      comments:
+        items:
+          $ref: '#/definitions/models.Comment'
+        type: array
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      defaultProductItemId:
+        type: string
+      description:
+        type: string
+      features:
+        items:
+          $ref: '#/definitions/models.ProductFeatureValue'
+        type: array
+      files:
+        items:
+          $ref: '#/definitions/models.ProductFileMap'
+        type: array
+      id:
+        type: string
+      name:
+        type: string
+      productItems:
+        items:
+          $ref: '#/definitions/models.ProductItem'
+        type: array
+      shortDescription:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+    type: object
+  models.ProductFeatureCategory:
+    properties:
+      code:
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      id:
+        type: string
+      keys:
+        items:
+          $ref: '#/definitions/models.ProductFeatureKey'
+        type: array
+      name:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+    type: object
   models.ProductFeatureCategoryOutPutModel:
     properties:
       code:
@@ -236,6 +588,33 @@ definitions:
       name:
         type: string
     type: object
+  models.ProductFeatureKey:
+    properties:
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      productFeatureCategory:
+        $ref: '#/definitions/models.ProductFeatureCategory'
+      productFeatureCategoryId:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+      values:
+        items:
+          $ref: '#/definitions/models.ProductFeatureValue'
+        type: array
+    type: object
   models.ProductFeatureKeyOutPutModel:
     properties:
       createdAt:
@@ -252,6 +631,33 @@ definitions:
       name:
         type: string
       productFeatureCategoryId:
+        type: string
+    type: object
+  models.ProductFeatureValue:
+    properties:
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      id:
+        type: string
+      product:
+        $ref: '#/definitions/models.Product'
+      productFeatureKey:
+        $ref: '#/definitions/models.ProductFeatureKey'
+      productFeatureKeyId:
+        type: string
+      productId:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+      value:
         type: string
     type: object
   models.ProductFeatureValueOutPutModel:
@@ -272,6 +678,54 @@ definitions:
       productFeatureKeyId:
         type: string
       value:
+        type: string
+    type: object
+  models.ProductFileMap:
+    properties:
+      file:
+        $ref: '#/definitions/models.File'
+      fileId:
+        type: string
+      product:
+        $ref: '#/definitions/models.Product'
+      productId:
+        type: string
+    type: object
+  models.ProductItem:
+    properties:
+      boughtQuantity:
+        type: integer
+      color:
+        $ref: '#/definitions/models.Color'
+      colorId:
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/models.OrderItem'
+        type: array
+      price:
+        type: number
+      product:
+        $ref: '#/definitions/models.Product'
+      productId:
+        type: string
+      quantity:
+        type: integer
+      status:
+        $ref: '#/definitions/models.ProductStatus'
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
         type: string
     type: object
   models.ProductItemCategoryFeatureModel:
@@ -438,6 +892,10 @@ definitions:
       authTokens:
         items:
           $ref: '#/definitions/models.AuthToken'
+        type: array
+      comments:
+        items:
+          $ref: '#/definitions/models.Comment'
         type: array
       createdAt:
         type: string
@@ -1225,6 +1683,168 @@ paths:
       - Bearer: []
       tags:
       - Colors
+  /comment:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Product ID
+        in: query
+        name: productId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.CommentOutPutModel'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Comments
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Comment model
+        in: body
+        name: Comment
+        required: true
+        schema:
+          $ref: '#/definitions/models.CommentReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Comments
+  /comment/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CommentOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Comments
+  /comment/delete/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Comments
+  /comment/edit/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Comment model
+        in: body
+        name: Comment
+        required: true
+        schema:
+          $ref: '#/definitions/models.CommentReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpmodels.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Comments
   /file/{fileId}:
     get:
       consumes:

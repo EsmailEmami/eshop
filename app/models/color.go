@@ -63,7 +63,7 @@ func (model ColorReqModel) ValidateUpdate() error {
 	)
 }
 
-func (model ColorReqModel) ToDBModel() *dbmodels.Color {
+func (model *ColorReqModel) ToDBModel() *dbmodels.Color {
 	return &dbmodels.Color{
 		Model: dbmodels.Model{
 			ID: dbmodels.NewID(),
@@ -74,17 +74,17 @@ func (model ColorReqModel) ToDBModel() *dbmodels.Color {
 	}
 }
 
-func (model ColorReqModel) MergeWithDBData(dbmodel *dbmodels.Color) {
+func (model *ColorReqModel) MergeWithDBData(dbmodel *dbmodels.Color) {
 	dbmodel.Name = model.Name
 	dbmodel.Code = model.Code
 	dbmodel.ColorHex = model.ColorHex
 }
 
 type ColorOutPutModel struct {
-	ID        *uuid.UUID `gorm:"id"                json:"id"`
+	ID        *uuid.UUID `gorm:"column:id"         json:"id"`
 	CreatedAt time.Time  `gorm:"column:created_at" json:"createdAt"`
 	UpdatedAt time.Time  `gorm:"column:updated_at" json:"updatedAt"`
-	Name      string     `gorm:"name"              json:"name"`
-	Code      string     `gorm:"code"              json:"code"`
-	ColorHex  string     `gorm:"color_hex"         json:"colorHex"`
+	Name      string     `gorm:"column:name"       json:"name"`
+	Code      string     `gorm:"column:code"       json:"code"`
+	ColorHex  string     `gorm:"column:color_hex"  json:"colorHex"`
 }

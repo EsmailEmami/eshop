@@ -100,23 +100,48 @@ func LoadApiRoutes(root *chi.Mux) {
 
 			// productFeatureCategory
 			r.Get("/productFeatureCategory", app.Handler(controllers.GetProductFeatureCategories))
-			r.Get("/productFeatureCategory/{id}", app.Handler(controllers.GetProductFeatureCategory))
+			r.Get(
+				"/productFeatureCategory/{id}",
+				app.Handler(controllers.GetProductFeatureCategory),
+			)
 			r.Post("/productFeatureCategory", app.Handler(controllers.CreateProductFeatureCategory))
-			r.Post("/productFeatureCategory/edit/{id}", app.Handler(controllers.EditProductFeatureCategory))
-			r.Post("/productFeatureCategory/delete/{id}", app.Handler(controllers.DeleteProductFeatureCategory))
+			r.Post(
+				"/productFeatureCategory/edit/{id}",
+				app.Handler(controllers.EditProductFeatureCategory),
+			)
+			r.Post(
+				"/productFeatureCategory/delete/{id}",
+				app.Handler(controllers.DeleteProductFeatureCategory),
+			)
 
 			// productFeatureKey
 			r.Get("/productFeatureKey", app.Handler(controllers.GetProductFeatureKeys))
-			r.Get("/productFeatureKey/{id}", app.Handler(controllers.CreateProductFeatureKey))
+			r.Get("/productFeatureKey/{id}", app.Handler(controllers.GetProductFeatureKey))
 			r.Post("/productFeatureKey", app.Handler(controllers.CreateProductFeatureKey))
 			r.Post("/productFeatureKey/edit/{id}", app.Handler(controllers.EditProductFeatureKey))
-			r.Post("/productFeatureKey/delete/{id}", app.Handler(controllers.DeleteProductFeatureKey))
+			r.Post(
+				"/productFeatureKey/delete/{id}",
+				app.Handler(controllers.DeleteProductFeatureKey),
+			)
 
 			// productFeatureValue
 			r.Get("/productFeatureValue", app.Handler(controllers.GetProductFeatureValues))
 			r.Get("/productFeatureValue/{id}", app.Handler(controllers.GetProductFeatureValue))
-			r.Post("/productFeatureValue/{productId}", app.Handler(controllers.CreateProductFeatureValue))
-			r.Post("/productFeatureValue/delete/{id}", app.Handler(controllers.DeleteProductFeatureValue))
+			r.Post(
+				"/productFeatureValue/{productId}",
+				app.Handler(controllers.CreateProductFeatureValue),
+			)
+			r.Post(
+				"/productFeatureValue/delete/{id}",
+				app.Handler(controllers.DeleteProductFeatureValue),
+			)
+
+			// comment
+			r.Get("/comment", app.Handler(controllers.GetComments))
+			r.Get("/comment/{id}", app.Handler(controllers.GetComment))
+			r.Post("/comment", app.Handler(controllers.CreateComment))
+			r.Post("/comment/edit/{id}", app.Handler(controllers.EditComment))
+			r.Post("/comment/delete/{id}", app.Handler(controllers.DeleteComment))
 		})
 	})
 }

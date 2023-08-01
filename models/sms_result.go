@@ -8,7 +8,7 @@ import (
 )
 
 type SmsResult struct {
-	ID        *uuid.UUID `gorm:"primaryKey"        json:"id"`
+	ID        *uuid.UUID `gorm:"column:primaryKey"        json:"id"`
 	CreatedAt time.Time  `gorm:"column:created_at" json:"createdAt"`
 
 	sms.SmsResult
