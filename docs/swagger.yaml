@@ -1,5 +1,24 @@
 definitions:
-  httpmodels.SuccessResponse:
+  helpers.ListResponse-models_ProductWithItemOutPutModel:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.ProductWithItemOutPutModel'
+        type: array
+      from:
+        type: integer
+      last_page:
+        type: integer
+      limit:
+        type: integer
+      page:
+        type: integer
+      to:
+        type: integer
+      total:
+        type: integer
+    type: object
+  helpers.SuccessResponse:
     properties:
       message:
         type: string
@@ -845,6 +864,29 @@ definitions:
     x-enum-varnames:
     - ProductStatusPublish
     - ProductStatusInActive
+  models.ProductWithItemOutPutModel:
+    properties:
+      brandId:
+        type: string
+      brandName:
+        type: string
+      categoryId:
+        type: string
+      categoryName:
+        type: string
+      code:
+        type: string
+      fileUrl:
+        type: string
+      id:
+        type: string
+      itemId:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
   models.RegisterInputModel:
     properties:
       password:
@@ -968,7 +1010,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1030,7 +1072,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1067,7 +1109,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1249,7 +1291,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1311,7 +1353,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1348,7 +1390,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1406,7 +1448,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1468,7 +1510,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1505,7 +1547,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1563,7 +1605,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1625,7 +1667,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1662,7 +1704,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1725,7 +1767,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1787,7 +1829,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -1824,7 +1866,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2011,15 +2053,42 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: Category ID
+        in: query
+        name: categoryId
+        type: string
+      - description: Brand ID
+        in: query
+        name: brandId
+        type: string
+      - description: Min Price
+        in: query
+        name: minPrice
+        type: number
+      - description: Max Price
+        in: query
+        name: maxPrice
+        type: number
+      - description: search for product name
+        in: query
+        name: searchTerm
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/models.ProductOutPutModel'
-            type: array
+            $ref: '#/definitions/helpers.ListResponse-models_ProductWithItemOutPutModel'
         "400":
           description: Bad Request
           schema:
@@ -2050,7 +2119,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2112,7 +2181,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2149,7 +2218,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2234,7 +2303,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2296,7 +2365,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2333,7 +2402,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2400,7 +2469,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2462,7 +2531,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2499,7 +2568,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2609,7 +2678,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2640,7 +2709,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2672,7 +2741,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2734,7 +2803,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -2771,7 +2840,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpmodels.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:

@@ -88,7 +88,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -137,7 +137,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -195,7 +195,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -525,7 +525,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -574,7 +574,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -632,7 +632,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -773,7 +773,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -822,7 +822,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -880,7 +880,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -1021,7 +1021,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -1070,7 +1070,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -1128,7 +1128,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -1277,7 +1277,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -1326,7 +1326,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -1384,7 +1384,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -1728,14 +1728,55 @@ const docTemplate = `{
                 "tags": [
                     "Products"
                 ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page size",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "length of records to show",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "categoryId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Brand ID",
+                        "name": "brandId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "Min Price",
+                        "name": "minPrice",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "Max Price",
+                        "name": "maxPrice",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search for product name",
+                        "name": "searchTerm",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.ProductOutPutModel"
-                            }
+                            "$ref": "#/definitions/helpers.ListResponse-models_ProductWithItemOutPutModel"
                         }
                     },
                     "400": {
@@ -1784,7 +1825,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -1833,7 +1874,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -1891,7 +1932,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -2075,7 +2116,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -2124,7 +2165,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -2182,7 +2223,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -2337,7 +2378,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -2386,7 +2427,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -2444,7 +2485,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -2605,7 +2646,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -2715,7 +2756,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -2766,7 +2807,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -2815,7 +2856,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -2873,7 +2914,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpmodels.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -2944,7 +2985,36 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "httpmodels.SuccessResponse": {
+        "helpers.ListResponse-models_ProductWithItemOutPutModel": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ProductWithItemOutPutModel"
+                    }
+                },
+                "from": {
+                    "type": "integer"
+                },
+                "last_page": {
+                    "type": "integer"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "helpers.SuccessResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -4230,6 +4300,41 @@ const docTemplate = `{
                 "ProductStatusPublish",
                 "ProductStatusInActive"
             ]
+        },
+        "models.ProductWithItemOutPutModel": {
+            "type": "object",
+            "properties": {
+                "brandId": {
+                    "type": "string"
+                },
+                "brandName": {
+                    "type": "string"
+                },
+                "categoryId": {
+                    "type": "string"
+                },
+                "categoryName": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "fileUrl": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "itemId": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                }
+            }
         },
         "models.RegisterInputModel": {
             "type": "object",

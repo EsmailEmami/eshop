@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/esmailemami/eshop/app/httpmodels"
+	"github.com/esmailemami/eshop/app/helpers"
 	"github.com/esmailemami/eshop/consts"
 	"github.com/go-chi/chi/v5"
 )
@@ -33,7 +33,7 @@ type HttpContext struct {
 func (ctx *HttpContext) QuickResponse(message string, statusCode int) error {
 	ctx.ResponseWriter.Header().Set("Content-Type", "application/json")
 
-	res := httpmodels.SuccessResponse{Message: message}
+	res := helpers.SuccessResponse{Message: message}
 	return ctx.JSON(res, statusCode)
 }
 

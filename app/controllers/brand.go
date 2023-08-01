@@ -80,7 +80,7 @@ func GetBrand(ctx *app.HttpContext) error {
 // @Produce json
 // @Security Bearer
 // @Param Brand   body  appmodels.BrandReqModel  true  "Brand model"
-// @Success 200 {object} httpmodels.SuccessResponse
+// @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /brand  [post]
@@ -112,7 +112,7 @@ func CreateBrand(ctx *app.HttpContext) error {
 // @Security Bearer
 // @Param id  path  string  true  "Record ID"
 // @Param Brand   body  appmodels.BrandReqModel  true  "Brand model"
-// @Success 200 {object} httpmodels.SuccessResponse
+// @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /brand/edit/{id}  [post]
@@ -173,7 +173,7 @@ func EditBrand(ctx *app.HttpContext) error {
 // @Produce json
 // @Security Bearer
 // @Param id  path  string  true  "Record ID"
-// @Success 200 {object} httpmodels.SuccessResponse
+// @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /brand/delete/{id}  [post]
