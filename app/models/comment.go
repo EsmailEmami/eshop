@@ -31,7 +31,6 @@ func (model CommentReqModel) ValidateCreate(db *gorm.DB) error {
 		),
 		validation.Field(&model.Rate,
 			validation.Required.Error(consts.Required),
-			validation.By(validations.NumericValidator()),
 		),
 		validation.Field(&model.ProductID,
 			validation.Required.Error(consts.Required),

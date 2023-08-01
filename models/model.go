@@ -9,7 +9,7 @@ import (
 
 // Model مدل پایه ای جدول ها
 type Model struct {
-	ID          *uuid.UUID     `gorm:"column:primaryKey"      json:"id"`
+	ID          *uuid.UUID     `gorm:"primaryKey"             json:"id"`
 	CreatedAt   time.Time      `gorm:"column:created_at"      json:"createdAt"`
 	CreatedByID *uuid.UUID     `gorm:"column:created_by_id"   json:"createdById"`
 	CreatedBy   *User          `gorm:"foreignKey:CreatedByID" json:"createdBy"`
@@ -22,7 +22,7 @@ type Model struct {
 }
 
 type BasicModel struct {
-	ID        *uuid.UUID     `gorm:"column:primaryKey" json:"id"`
+	ID        *uuid.UUID     `gorm:"primaryKey" json:"id"`
 	CreatedAt time.Time      `gorm:"column:created_at" json:"createdAt"`
 	UpdatedAt time.Time      `gorm:"column:updated_at" json:"updatedAt"`
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"-"`

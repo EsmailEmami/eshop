@@ -13,7 +13,7 @@ type User struct {
 	LastName   string      `gorm:"column:last_name"                       json:"lastName"`
 	Mobile     string      `gorm:"column:mobile"                          json:"mobile"`
 	RoleID     *uuid.UUID  `gorm:"column:role_id"                         json:"roleId"`
-	Role       *Role       `gorm:"foreignKey:role_id;references:id"       json:"role"`
+	Role       *Role       `gorm:"foreignKey:role_id; references:id"      json:"role"`
 	IsSystem   bool        `gorm:"column:is_system"                       json:"isSystem"`
 	Enabled    bool        `gorm:"column:enabled"                         json:"enabled"`
 	AuthTokens []AuthToken `gorm:"foreignKey:user_id;references:id"       json:"authTokens"`

@@ -26,7 +26,7 @@ func GetUserByUsername(value string) (*models.User, error) {
 	db := dbpkg.MustGormDBConn(context.Background())
 
 	var user models.User
-	err := db.Preload("Role").Where("username = ?", value).First(&user).Error
+	err := db.Model(&models.User{}).Preload("Role").Where("username = ?", value).First(&user).Error
 
 	if err != nil {
 		return nil, err

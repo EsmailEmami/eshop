@@ -33,8 +33,8 @@ func GetComments(ctx *app.HttpContext) error {
 
 	var data []appmodels.CommentOutPutModel
 
-	if err := baseDB.Table("comment c").
-		Joins("INNER JOIN user u ON u.id = c.created_by_id").
+	if err := baseDB.Debug().Table(`"comment" c`).
+		Joins(`INNER JOIN "user" u ON u.id = c.created_by_id`).
 		Select("c.id, c.created_at, c.updated_at, c.text,c.rate,c.strength_points,c.weak_ponits, u.username").
 		Find(&data).Error; err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
@@ -63,8 +63,8 @@ func GetComment(ctx *app.HttpContext) error {
 
 	var data appmodels.CommentOutPutModel
 
-	if err := baseDB.Table("comment c").
-		Joins("INNER JOIN user u ON u.id = c.created_by_id").
+	if err := baseDB.Table(`"comment" c`).
+		Joins(`INNER JOIN "user" u ON u.id = c.created_by_id`).
 		Select("c.id, c.created_at, c.updated_at, c.text,c.rate,c.strength_points,c.weak_ponits, u.username").
 		First(&data, "c.id", id).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
