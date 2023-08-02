@@ -63,7 +63,10 @@ func GetProducts(ctx *app.HttpContext) error {
 		).
 		Joins("INNER JOIN brand b ON b.id = p.brand_id").
 		Joins("INNER JOIN category c ON c.id = p.category_id").
-		Joins("INNER JOIN product_file_map pf ON pf.product_id = p.id").
+		Joins("CROSS JOIN LATERAL (?) as pf", baseDB.Table("product_file_map pf").
+			Select("file_id").
+			Where("pf.product_id = p.id").Limit(1),
+		).
 		Joins("INNER JOIN file f ON f.id = pf.file_id").
 		Where("p.deleted_at IS NULL")
 
@@ -154,6 +157,7 @@ func GetProductsList(ctx *app.HttpContext) error {
 		Joins(`INNER JOIN category c ON c.id = p.category_id`).
 		Select(`p.id, p."name", p.code, p.brand_id, 
 		b."name" AS brand_name, p.category_id, c."name" AS category_name`).
+		Where("p.deleted_at IS NULL").
 		Find(&data).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
@@ -184,7 +188,7 @@ func GetProduct(ctx *app.HttpContext) error {
 	if err := baseDB.Table("product as p").
 		Joins(`INNER JOIN brand b ON b.id = p.brand_id`).
 		Joins(`INNER JOIN category c ON c.id = p.category_id`).
-		Where("p.id = ?", id).
+		Where("p.id = ? AND p.deleted_at IS NULL", id).
 		Select(`p.id, p."name", p.code, p.brand_id, 
 		b."name" AS brand_name, p.category_id, c."name" AS category_name`).
 		First(&data).Error; err != nil {
