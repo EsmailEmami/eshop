@@ -511,12 +511,38 @@ definitions:
       updatedById:
         type: string
     type: object
+  models.OrderItemOutPutModel:
+    properties:
+      fileUrl:
+        type: string
+      id:
+        type: string
+      price:
+        type: number
+      productItemId:
+        type: string
+      productName:
+        type: string
+      quantity:
+        type: integer
+      totalPrice:
+        type: number
+    type: object
   models.OrderItemReqModel:
     properties:
       productItemId:
         type: string
       quantity:
         type: integer
+    type: object
+  models.OrderOutPutModel:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/models.OrderItemOutPutModel'
+        type: array
+      price:
+        type: number
     type: object
   models.Product:
     properties:
@@ -2056,6 +2082,31 @@ paths:
       summary: Upload an image file
       tags:
       - Files
+  /order:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OrderOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Orders
   /orderItem:
     post:
       consumes:

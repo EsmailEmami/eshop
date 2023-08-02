@@ -158,7 +158,7 @@ type ProductWithItemOutPutModel struct {
 	CategoryName string            `gorm:"column:category_name"    json:"categoryName"`
 	Price        float32           `gorm:"column:price"            json:"price"`
 	ItemID       uuid.UUID         `gorm:"column:item_id"          json:"itemId"`
-	FileType     dbmodels.FileType `gorm:"column:column:file_type" json:"-"`
+	FileType     dbmodels.FileType `gorm:"column:file_type" json:"-"`
 	FileName     string            `gorm:"column:file_name"        json:"-"`
 	FileUrl      string            `gorm:"column:file_url"         json:"fileUrl"`
 }

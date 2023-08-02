@@ -32,7 +32,6 @@ func CreateOrderItem(ctx *app.HttpContext) error {
 	}
 
 	user, err := ctx.GetUser()
-
 	if err != nil {
 		return errors.NewUnauthorizedError(err.Error(), err)
 	}

@@ -147,6 +147,9 @@ func LoadApiRoutes(root *chi.Mux) {
 			// orderItem
 			r.Post("/orderItem", app.Handler(controllers.CreateOrderItem))
 			r.Post("/orderItem/delete/{productItemId}", app.Handler(controllers.DeleteOrderItem))
+
+			// order
+			r.Get("/order", app.Handler(controllers.GetOrder))
 		})
 	})
 }
