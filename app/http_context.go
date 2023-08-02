@@ -10,6 +10,7 @@ import (
 
 	"github.com/esmailemami/eshop/app/helpers"
 	"github.com/esmailemami/eshop/consts"
+	"github.com/esmailemami/eshop/models"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -143,4 +144,18 @@ func (c *HttpContext) GetParam(key string) (string, bool) {
 	}
 
 	return "", false
+}
+
+func (c *HttpContext) GetUser() (*models.User, error) {
+	userCtx, ok := c.Get(consts.UserContext)
+	if !ok {
+		return nil, errors.New("کاربر یافت نشد")
+	}
+
+	user, ok := userCtx.(models.User)
+	if !ok {
+		return nil, errors.New("کاربر یافت نشد")
+	}
+
+	return &user, nil
 }
