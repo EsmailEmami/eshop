@@ -111,7 +111,7 @@ func GetProducts(ctx *app.HttpContext) error {
 
 		db := baseDB.WithContext(context.Background())
 		db = db.Offset(limitInt * (pageInt - 1)).Limit(limitInt)
-		if err := db.Debug().Select("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name").Find(&data).Error; err != nil {
+		if err := db.Select("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name").Find(&data).Error; err != nil {
 			errChan <- err
 		}
 	}()

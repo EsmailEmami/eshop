@@ -12,9 +12,12 @@ import (
 func GetOpenOrder(db *gorm.DB, userID uuid.UUID) (*models.Order, error) {
 	var order models.Order
 
-	if err := db.Model(&models.Order{}).Find(&order, "created_by_id=? AND status = 0", userID).Error; err != nil {
+	if err := db.Model(&models.Order{}).First(&order, "created_by_id=? AND status = 0", userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			order = models.Order{
+				Model: models.Model{
+					ID: models.NewID(),
+				},
 				Status: models.OrderStatusOpen,
 			}
 
@@ -22,7 +25,7 @@ func GetOpenOrder(db *gorm.DB, userID uuid.UUID) (*models.Order, error) {
 			for {
 				order.Code = generateOrderCode(9)
 
-				if !dbpkg.Exists(db, &models.Order{}, "code=?", order.Code) {
+				if !dbpkg.Exists(db, &models.Order{}, "code = ?", order.Code) {
 					break
 				}
 			}

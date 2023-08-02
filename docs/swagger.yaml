@@ -511,6 +511,13 @@ definitions:
       updatedById:
         type: string
     type: object
+  models.OrderItemReqModel:
+    properties:
+      productItemId:
+        type: string
+      quantity:
+        type: integer
+    type: object
   models.Product:
     properties:
       brand:
@@ -2049,6 +2056,69 @@ paths:
       summary: Upload an image file
       tags:
       - Files
+  /orderItem:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: OrderItem model
+        in: body
+        name: OrderItem
+        required: true
+        schema:
+          $ref: '#/definitions/models.OrderItemReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - OrderItems
+  /orderItem/delete/{productItemId}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Product Item ID
+        in: path
+        name: productItemId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - OrderItems
   /product:
     get:
       consumes:

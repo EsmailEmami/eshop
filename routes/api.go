@@ -143,6 +143,10 @@ func LoadApiRoutes(root *chi.Mux) {
 			r.Post("/comment", app.Handler(controllers.CreateComment))
 			r.Post("/comment/edit/{id}", app.Handler(controllers.EditComment))
 			r.Post("/comment/delete/{id}", app.Handler(controllers.DeleteComment))
+
+			// orderItem
+			r.Post("/orderItem", app.Handler(controllers.CreateOrderItem))
+			r.Post("/orderItem/delete/{productItemId}", app.Handler(controllers.DeleteOrderItem))
 		})
 	})
 }
