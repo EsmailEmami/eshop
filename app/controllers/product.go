@@ -64,7 +64,8 @@ func GetProducts(ctx *app.HttpContext) error {
 		Joins("INNER JOIN brand b ON b.id = p.brand_id").
 		Joins("INNER JOIN category c ON c.id = p.category_id").
 		Joins("INNER JOIN product_file_map pf ON pf.product_id = p.id").
-		Joins("INNER JOIN file f ON f.id = pf.file_id")
+		Joins("INNER JOIN file f ON f.id = pf.file_id").
+		Where("p.deleted_at IS NULL")
 
 	if categoryID, ok := ctx.GetParam("categoryId"); ok {
 		baseDB = baseDB.Where("c.id = ?", categoryID)
@@ -107,7 +108,7 @@ func GetProducts(ctx *app.HttpContext) error {
 
 		db := baseDB.WithContext(context.Background())
 		db = db.Offset(limitInt * (pageInt - 1)).Limit(limitInt)
-		if err := db.Select("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name").Find(&data).Error; err != nil {
+		if err := db.Debug().Select("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name").Find(&data).Error; err != nil {
 			errChan <- err
 		}
 	}()
