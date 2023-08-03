@@ -1453,6 +1453,63 @@ const docTemplate = `{
                 }
             }
         },
+        "/file/changePriority/{fileId}/{itemId}/{priority}": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Files"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "file ID",
+                        "name": "fileId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "item ID",
+                        "name": "itemId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "priority",
+                        "name": "priority",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/file/delete/{fileId}": {
             "post": {
                 "security": [
@@ -4427,6 +4484,9 @@ const docTemplate = `{
                 },
                 "fileId": {
                     "type": "string"
+                },
+                "priority": {
+                    "type": "integer"
                 },
                 "product": {
                     "$ref": "#/definitions/models.Product"

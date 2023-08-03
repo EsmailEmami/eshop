@@ -84,7 +84,9 @@ func GetUserOrders(ctx *app.HttpContext) error {
 			Joins("INNER JOIN product p ON p.id = pi.product_id").
 			Joins("CROSS JOIN LATERAL (?) as pf", baseDB.Table("product_file_map pf").
 				Select("file_id").
-				Where("pf.product_id = p.id").Limit(1),
+				Where("pf.product_id = p.id").
+				Order("pf.priority ASC").
+				Limit(1),
 			).
 			Joins("INNER JOIN file f ON f.id = pf.file_id").
 			Where("p.deleted_at IS NULL AND oi.order_id = ?", *order.ID).

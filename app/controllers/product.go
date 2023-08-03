@@ -65,7 +65,7 @@ func GetProducts(ctx *app.HttpContext) error {
 		Joins("INNER JOIN category c ON c.id = p.category_id").
 		Joins("CROSS JOIN LATERAL (?) as pf", baseDB.Table("product_file_map pf").
 			Select("file_id").
-			Where("pf.product_id = p.id").Limit(1),
+			Where("pf.product_id = p.id").Order("pf.priority ASC").Limit(1),
 		).
 		Joins("INNER JOIN file f ON f.id = pf.file_id").
 		Where("p.deleted_at IS NULL")
@@ -191,15 +191,19 @@ func GetProduct(ctx *app.HttpContext) error {
 
 	var data appmodels.ProductOutPutModel
 
-	if err := baseDB.Table("product as p").
+	if err := baseDB.Debug().Table("product as p").
 		Joins(`INNER JOIN brand b ON b.id = p.brand_id`).
+		Joins("INNER JOIN file f on f.id = b.file_id").
 		Joins(`INNER JOIN category c ON c.id = p.category_id`).
+		Select(`p.id, p."name", p.code, p.brand_id, b."name" AS brand_name, 
+			p.category_id, c."name" AS category_name, f.file_type AS brand_file_type, f.unique_file_name AS brand_file_name`).
 		Where("p.id = ? AND p.deleted_at IS NULL", id).
-		Select(`p.id, p."name", p.code, p.brand_id, 
-		b."name" AS brand_name, p.category_id, c."name" AS category_name`).
+		Where("p.deleted_at IS NULL").
 		First(&data).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
+
+	data.BrandFileUrl = models.GetFileUrl(data.BrandFileType, data.BrandFileName)
 
 	return ctx.JSON(data, http.StatusOK)
 }

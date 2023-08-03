@@ -7,6 +7,7 @@ type ProductFileMap struct {
 	FileID    uuid.UUID `gorm:"column:file_id"                      json:"fileId"`
 	Product   Product   `gorm:"foreignKey:product_id;references:id" json:"product"`
 	File      File      `gorm:"foreignKey:file_id;references:id"    json:"file"`
+	Priority  int       `gorm:"column:priority"                     json:"priority"`
 }
 
 func (ProductFileMap) TableName() string {

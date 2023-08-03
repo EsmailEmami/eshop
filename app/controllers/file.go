@@ -14,6 +14,7 @@ import (
 	dbpkg "github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
 	"github.com/esmailemami/eshop/models"
+	"github.com/esmailemami/eshop/services/file"
 	service "github.com/esmailemami/eshop/services/file"
 	"github.com/google/uuid"
 )
@@ -313,4 +314,58 @@ func GetItemFiles(ctx *app.HttpContext) error {
 	}
 
 	return ctx.JSON(files, http.StatusOK)
+}
+
+// GetStreamingFile godoc
+// @Tags Files
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param fileId  path  string  true  "file ID"
+// @Param itemId  path  string  true  "item ID"
+// @Param priority  path  int  true  "priority"
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /file/changePriority/{fileId}/{itemId}/{priority} [post]
+func FileChangePriority(ctx *app.HttpContext) error {
+	fileID, err := uuid.Parse(ctx.GetPathParam("fileId"))
+	if err != nil {
+		return errors.NewBadRequestError("invalid fileId", err)
+	}
+
+	itemID, err := uuid.Parse(ctx.GetPathParam("itemId"))
+	if err != nil {
+		return errors.NewBadRequestError("invalid fileId", err)
+	}
+
+	priority, err := strconv.Atoi(ctx.GetPathParam("priority"))
+	if err != nil {
+		return errors.NewBadRequestError(consts.InvalidFileType, err)
+	}
+
+	var dbFile models.File
+	baseDB := dbpkg.MustGormDBConn(ctx)
+
+	if baseDB.First(&dbFile, fileID).Error != nil {
+		return errors.NewRecordNotFoundError(consts.ModelFileNotFound, nil)
+	}
+
+	multiple, err := file.ValidateItem(baseDB, itemID, dbFile.FileType)
+
+	if err != nil {
+		return errors.NewBadRequestError(err.Error(), err)
+	}
+
+	if !multiple {
+		return errors.NewBadRequestError(consts.InvalidFileType, nil)
+	}
+
+	baseTx := baseDB.Begin()
+	if err := file.ChangeFilePriority(baseDB, baseTx, itemID, fileID, dbFile.FileType, priority); err != nil {
+		baseTx.Rollback()
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+	baseTx.Commit()
+
+	return ctx.QuickResponse(consts.OperationDone, http.StatusOK)
 }

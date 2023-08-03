@@ -40,6 +40,7 @@ func GetOrder(ctx *app.HttpContext) error {
 		Joins("CROSS JOIN LATERAL (?) as pf", baseDB.Table("product_file_map pfm").
 			Select("file_id").
 			Where("pfm.product_id = p.id").
+			Order("pfm.priority ASC").
 			Limit(1),
 		).
 		Joins("INNER JOIN file f ON f.id = pf.file_id").

@@ -63,7 +63,9 @@ const (
 	ExistedTitle                     = "The entered title has already been registered."
 	InvalidFileSize                  = "The uploaded file size is not allowed."
 	OrderAlreadyRegistered           = "The entered order has already been registered."
+	InvalidPriority                  = "Invalid priority entered."
 	FileNotSentToServer              = "No file has been sent to the server."
 	InvalidQuantity                  = "The entered quantity is not allowed."
 	PasswordMismatch                 = "Password confirmation does not match the password."
+	InvalidFileType                  = "Invalid file type"
 )

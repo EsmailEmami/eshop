@@ -1,0 +1,6 @@
+---
+up: |
+  ALTER TABLE public."product_file_map" ADD priority int NOT NULL DEFAULT 0;
+
+down: |
+  ALTER TABLE public."product_file_map" DROP COLUMN IF EXISTS priority;
