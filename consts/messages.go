@@ -9,6 +9,7 @@ const (
 	VerifivationCodeSent = "کد اعتبار سنجی با موفقیت ارسال شد."
 	RegistrationDone     = "ثبت نام شما با موفقیت انجام شد."
 	LoggedOut            = "خروج با موفقیت انجام شد."
+	ProcessDone          = "عملیات با موفقیت به پایان رسید"
 
 	// Errors
 	CacheRecordNotFound              = "Cache Record Not Found"

@@ -1,0 +1,6 @@
+---
+up: |
+  ALTER TABLE public."order" ADD price numeric NOT NULL DEFAULT 0;
+
+down: |
+  ALTER TABLE public."order" DROP COLUMN IF EXISTS price;

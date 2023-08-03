@@ -8,6 +8,7 @@ import (
 	"github.com/esmailemami/eshop/consts"
 	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
+	"github.com/esmailemami/eshop/models"
 )
 
 // GetOrders godoc
@@ -58,12 +59,51 @@ func GetOrder(ctx *app.HttpContext) error {
 	return ctx.JSON(data, http.StatusOK)
 }
 
-// GetOrders godoc
+// CheckoutOrder godoc
 // @Tags Orders
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Success 200 {object} appmodels.OrderOutPutModel
+// @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /order [get]
+// @Router /order/checkout [post]
+func CheckoutOrder(ctx *app.HttpContext) error {
+	user, err := ctx.GetUser()
+	if err != nil {
+		return errors.NewUnauthorizedError(err.Error(), err)
+	}
+
+	baseDB := db.MustGormDBConn(ctx)
+	baseTx := baseDB.Begin()
+
+	var order models.Order
+
+	if err := baseDB.Model(&models.Order{}).First(&order, "status = 0 AND created_by_id = ?", *user.ID).Error; err != nil {
+		baseTx.Rollback()
+		return errors.NewRecordNotFoundError(consts.RecordNotFound, err)
+	}
+
+	// update the prices of order items
+	baseTx.Table("order_item oi").Where("oi.order_id=?", *order.ID).Update("price", baseDB.Model(&models.ProductItem{}).
+		Select("price").
+		Where("id= oi.product_item_id").
+		Limit(1),
+	)
+
+	// update order price
+	if err := baseTx.Model(&models.Order{}).
+		Where("id=?", *order.ID).UpdateColumns(map[string]interface{}{
+		"status": models.OrderStatusPaid,
+		"price":  baseTx.Model(&models.OrderItem{}).Select("SUM(price)").Where("order_id=?", *order.ID),
+	}).Error; err != nil {
+		baseTx.Rollback()
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	if err := baseTx.Commit().Error; err != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	return ctx.QuickResponse(consts.ProcessDone, http.StatusOK)
+}

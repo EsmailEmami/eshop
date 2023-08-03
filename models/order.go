@@ -6,6 +6,7 @@ type Order struct {
 	Code   string      `gorm:"column:code"                       json:"code"`
 	Items  []OrderItem `gorm:"foreignKey:order_id;references:id" json:"items"`
 	Status OrderStatus `gorm:"column:status"                     json:"status"`
+	Price  float64     `gorm:"column:price"                      json:"price"`
 }
 
 func (Order) TableName() string {
