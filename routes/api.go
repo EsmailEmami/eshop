@@ -137,6 +137,10 @@ func LoadApiRoutes(root *chi.Mux) {
 			// order
 			r.Get("/order", app.Handler(controllers.GetOrder))
 			r.Post("/order/checkout", app.Handler(controllers.CheckoutOrder))
+
+			// user
+			r.Get("/user", app.Handler(controllers.GetUser))
+			r.Get("/user/orders", app.Handler(controllers.GetUserOrders))
 		})
 	})
 }

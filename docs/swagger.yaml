@@ -473,6 +473,8 @@ definitions:
         items:
           $ref: '#/definitions/models.OrderItem'
         type: array
+      price:
+        type: number
       status:
         type: integer
       updatedAt:
@@ -996,6 +998,38 @@ definitions:
         type: string
       username:
         type: string
+    type: object
+  models.UserDashboardInfoOutPutModel:
+    properties:
+      firstName:
+        type: string
+      id:
+        type: string
+      lastName:
+        type: string
+      mobile:
+        type: string
+      roleName:
+        type: string
+      username:
+        type: string
+    type: object
+  models.UserOrderOutPutModel:
+    properties:
+      code:
+        type: string
+      createdAt:
+        type: string
+      fileUrls:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      price:
+        type: number
+      status:
+        type: integer
     type: object
 info:
   contact: {}
@@ -3034,6 +3068,58 @@ paths:
       - Bearer: []
       tags:
       - ProductItems
+  /user:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserDashboardInfoOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Users
+  /user/orders:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.UserOrderOutPutModel'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Users
 securityDefinitions:
   Bearer:
     description: Type "Bearer" followed by a space and JWT token.

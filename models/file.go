@@ -56,3 +56,7 @@ func (ft FileType) GetDirectory() string {
 		panic("invalid file type")
 	}
 }
+
+func GetFileUrl(ft FileType, uniqueFileName string) string {
+	return ft.GetDirectory() + "/" + uniqueFileName
+}
