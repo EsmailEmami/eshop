@@ -57,3 +57,13 @@ func GetOrder(ctx *app.HttpContext) error {
 
 	return ctx.JSON(data, http.StatusOK)
 }
+
+// GetOrders godoc
+// @Tags Orders
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} appmodels.OrderOutPutModel
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /order [get]

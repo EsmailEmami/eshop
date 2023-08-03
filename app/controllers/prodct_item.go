@@ -103,6 +103,38 @@ func GetProductItem(ctx *app.HttpContext) error {
 	return ctx.JSON(data, http.StatusOK)
 }
 
+// GetProductItem godoc
+// @Tags ProductItems
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param productId  path  string  true  "Product ID"
+// @Success 200 {object} []appmodels.ProductOutPutModel
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /productItem/product/{productId} [get]
+func GetProductItems(ctx *app.HttpContext) error {
+	productID, err := uuid.Parse(ctx.GetPathParam("productId"))
+
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+	baseDB := db.MustGormDBConn(ctx)
+
+	var data []appmodels.ProductItemOutPutModel
+
+	if err := baseDB.Table("product_item pi2").
+		Joins("INNER JOIN product p ON P.id = pi2 .product_id").
+		Joins("INNER JOIN color c ON C.id = pi2.color_id").
+		Select(`pi2.id, pi2.price,pi2.status, pi2 .color_id, pi2.product_id, pi2.quantity,
+		p."name" AS product_title, p.code AS product_code, c."name" AS color_name`).
+		Find(&data, "p.id = ? AND pi2.deleted_at IS NULL", productID).Error; err != nil {
+		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
+	}
+
+	return ctx.JSON(data, http.StatusOK)
+}
+
 // Create ProductItem godoc
 // @Tags ProductItems
 // @Accept json

@@ -98,22 +98,14 @@ func LoadApiRoutes(root *chi.Mux) {
 			r.Post("/productItem", app.Handler(controllers.CreateProductItem))
 			r.Post("/productItem/edit/{id}", app.Handler(controllers.EditProductItem))
 			r.Post("/productItem/delete/{id}", app.Handler(controllers.DeleteProductItem))
+			r.Get("/productItem/product/{productId}", app.Handler(controllers.GetProductItems))
 
 			// productFeatureCategory
 			r.Get("/productFeatureCategory", app.Handler(controllers.GetProductFeatureCategories))
-			r.Get(
-				"/productFeatureCategory/{id}",
-				app.Handler(controllers.GetProductFeatureCategory),
-			)
+			r.Get("/productFeatureCategory/{id}", app.Handler(controllers.GetProductFeatureCategory))
 			r.Post("/productFeatureCategory", app.Handler(controllers.CreateProductFeatureCategory))
-			r.Post(
-				"/productFeatureCategory/edit/{id}",
-				app.Handler(controllers.EditProductFeatureCategory),
-			)
-			r.Post(
-				"/productFeatureCategory/delete/{id}",
-				app.Handler(controllers.DeleteProductFeatureCategory),
-			)
+			r.Post("/productFeatureCategory/edit/{id}", app.Handler(controllers.EditProductFeatureCategory))
+			r.Post("/productFeatureCategory/delete/{id}", app.Handler(controllers.DeleteProductFeatureCategory))
 
 			// productFeatureKey
 			r.Get("/productFeatureKey", app.Handler(controllers.GetProductFeatureKeys))

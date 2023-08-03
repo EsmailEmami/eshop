@@ -103,6 +103,18 @@ func (model ProductItemReqModel) MergeWithDBData(dbmodel *dbmodels.ProductItem) 
 	dbmodel.Quantity = model.Quantity
 }
 
+type ProductItemOutPutModel struct {
+	ID           *uuid.UUID             `gorm:"column:id"                        json:"id"`
+	Price        float64                `gorm:"column:price"                     json:"price"`
+	Status       dbmodels.ProductStatus `gorm:"column:status"                    json:"status"`
+	ColorID      uuid.UUID              `gorm:"column:color_id"                  json:"colorId"`
+	ColorName    string                 `gorm:"column:color_name"                json:"color"`
+	ProductID    uuid.UUID              `gorm:"column:product_id"                json:"productId"`
+	ProductTitle string                 `gorm:"column:product_title"             json:"productTitle"`
+	ProductCode  string                 `gorm:"column:product_code"              json:"productCode"`
+	Quantity     int                    `gorm:"column:quantity"                  json:"quantity"`
+}
+
 type ProductItemInfoOutPutModel struct {
 	ID                      *uuid.UUID                        `gorm:"column:id"                        json:"id"`
 	Price                   float64                           `gorm:"column:price"                     json:"price"`
