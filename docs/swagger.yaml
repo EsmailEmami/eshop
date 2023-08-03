@@ -23,6 +23,77 @@ definitions:
       message:
         type: string
     type: object
+  models.Address:
+    properties:
+      address:
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: string
+      lastName:
+        type: string
+      nationalCode:
+        type: string
+      phoneNumber:
+        type: string
+      plaque:
+        type: integer
+      postalCode:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+    type: object
+  models.AddressOutPutModel:
+    properties:
+      address:
+        type: string
+      createdAt:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: string
+      lastName:
+        type: string
+      nationalCode:
+        type: string
+      phoneNumber:
+        type: string
+      plaque:
+        type: integer
+      postalCode:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.AddressReqModel:
+    properties:
+      address:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      nationalCode:
+        type: string
+      phoneNumber:
+        type: string
+      plaque:
+        type: integer
+      postalCode:
+        type: string
+    type: object
   models.AppPic:
     properties:
       appPicType:
@@ -964,6 +1035,10 @@ definitions:
     type: object
   models.User:
     properties:
+      addresses:
+        items:
+          $ref: '#/definitions/models.Address'
+        type: array
       authTokens:
         items:
           $ref: '#/definitions/models.AuthToken'
@@ -1038,6 +1113,163 @@ definitions:
 info:
   contact: {}
 paths:
+  /address:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.AddressOutPutModel'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Addresses
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Address model
+        in: body
+        name: Address
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddressReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Addresses
+  /address/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AddressOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Addresses
+  /address/delete/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Addresses
+  /address/edit/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Address model
+        in: body
+        name: Address
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddressReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Addresses
   /appPic:
     get:
       consumes:

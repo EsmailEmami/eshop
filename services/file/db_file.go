@@ -95,6 +95,7 @@ func GenrateFileWhereClause(
 	case models.FileTypeProduct:
 		return db.Model(&models.ProductFileMap{}).
 				Where("product_id = ?", itemID).
+				Order("priority ASC").
 				Select("file_id"),
 			true
 	case models.FileTypeBrand:

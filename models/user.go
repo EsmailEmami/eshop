@@ -18,6 +18,7 @@ type User struct {
 	Enabled    bool        `gorm:"column:enabled"                         json:"enabled"`
 	AuthTokens []AuthToken `gorm:"foreignKey:user_id;references:id"       json:"authTokens"`
 	Comments   []Comment   `gorm:"foreignKey:created_by_id;references:id" json:"comments"`
+	Addresses  []Address   `gorm:"foreignKey:created_by_id;references:id" json:"addresses"`
 }
 
 func (User) TableName() string {

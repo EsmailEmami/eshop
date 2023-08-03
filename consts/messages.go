@@ -68,4 +68,6 @@ const (
 	InvalidQuantity                  = "The entered quantity is not allowed."
 	PasswordMismatch                 = "Password confirmation does not match the password."
 	InvalidFileType                  = "Invalid file type"
+	InvalidNationalCode              = "Invalid national code entered."
+	InvalidPostalCode                = "Invalid postal code entered."
 )

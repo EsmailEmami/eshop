@@ -161,6 +161,11 @@ func CreateProductItem(ctx *app.HttpContext) error {
 	}
 
 	dbModel := inputModel.ToDBModel()
+
+	if db.Exists(baseDB, &models.ProductItem{}, "color_id=? AND product_id=?", dbModel.ColorID, dbModel.ProductID) {
+		return errors.NewBadRequestError("The item with the entered color has been previously registered.", nil)
+	}
+
 	if err := baseTx.Create(dbModel).Error; err != nil {
 		baseTx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, err)
@@ -220,6 +225,11 @@ func EditProductItem(ctx *app.HttpContext) error {
 	}
 
 	inputModel.MergeWithDBData(&dbModel)
+
+	if db.Exists(baseDB, &models.ProductItem{}, "color_id=? AND product_id=? AND id!=?", dbModel.ColorID, dbModel.ProductID, *dbModel.ID) {
+		return errors.NewBadRequestError("The item with the entered color has been previously registered.", nil)
+	}
+
 	if baseTx.Save(&dbModel).Error != nil {
 		baseTx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, err)
