@@ -4613,6 +4613,9 @@ const docTemplate = `{
         "models.ProductOutPutModel": {
             "type": "object",
             "properties": {
+                "brandFileUrl": {
+                    "type": "string"
+                },
                 "brandId": {
                     "type": "string"
                 },

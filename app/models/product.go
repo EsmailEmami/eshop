@@ -164,11 +164,14 @@ type ProductWithItemOutPutModel struct {
 }
 
 type ProductOutPutModel struct {
-	ID           *uuid.UUID `gorm:"column:id"               json:"id"`
-	Name         string     `gorm:"column:name"             json:"name"`
-	Code         string     `gorm:"column:code"             json:"code"`
-	BrandID      uuid.UUID  `gorm:"column:brand_id"         json:"brandId"`
-	BrandName    string     `gorm:"column:brand_name"       json:"brandName"`
-	CategoryID   uuid.UUID  `gorm:"column:category_id"      json:"categoryId"`
-	CategoryName string     `gorm:"column:category_name"    json:"categoryName"`
+	ID            *uuid.UUID        `gorm:"column:id"               json:"id"`
+	Name          string            `gorm:"column:name"             json:"name"`
+	Code          string            `gorm:"column:code"             json:"code"`
+	BrandID       uuid.UUID         `gorm:"column:brand_id"         json:"brandId"`
+	BrandName     string            `gorm:"column:brand_name"       json:"brandName"`
+	CategoryID    uuid.UUID         `gorm:"column:category_id"      json:"categoryId"`
+	CategoryName  string            `gorm:"column:category_name"    json:"categoryName"`
+	BrandFileType dbmodels.FileType `gorm:"column:brand_file_type"  json:"-"`
+	BrandFileName string            `gorm:"column:brand_file_name"  json:"-"`
+	BrandFileUrl  string            `gorm:"column:brand_file_url"   json:"brandFileUrl"`
 }

@@ -861,6 +861,8 @@ definitions:
     type: object
   models.ProductOutPutModel:
     properties:
+      brandFileUrl:
+        type: string
       brandId:
         type: string
       brandName:

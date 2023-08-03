@@ -154,12 +154,18 @@ func GetProductsList(ctx *app.HttpContext) error {
 
 	if err := baseDB.Debug().Table("product as p").
 		Joins(`INNER JOIN brand b ON b.id = p.brand_id`).
+		Joins("INNER JOIN file f on f.id = b.file_id").
 		Joins(`INNER JOIN category c ON c.id = p.category_id`).
 		Select(`p.id, p."name", p.code, p.brand_id, 
-		b."name" AS brand_name, p.category_id, c."name" AS category_name`).
+		b."name" AS brand_name, p.category_id, c."name" AS category_name, f.file_type AS brand_file_type, f.unique_file_name AS brand_file_name`).
 		Where("p.deleted_at IS NULL").
 		Find(&data).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
+	}
+
+	for i, product := range data {
+		product.BrandFileUrl = models.GetFileUrl(product.BrandFileType, product.BrandFileName)
+		data[i] = product
 	}
 
 	return ctx.JSON(data, http.StatusOK)
