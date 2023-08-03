@@ -105,7 +105,7 @@ loop:
 	}
 
 	if len(files) == 0 {
-		return ctx.QuickResponse("فایلی به سرور ارسال نشده است.", http.StatusBadRequest)
+		return ctx.QuickResponse(consts.FileNotSentToServer, http.StatusBadRequest)
 	}
 
 	if err := baseTx.CreateInBatches(files, len(files)).Error; err != nil {
@@ -124,7 +124,7 @@ loop:
 
 	baseTx.Commit()
 
-	return ctx.QuickResponse("عملیات با موفقیت به پایان رسید", http.StatusOK)
+	return ctx.QuickResponse(consts.OperationDone, http.StatusOK)
 }
 
 // DeleteFile godoc

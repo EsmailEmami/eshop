@@ -149,12 +149,12 @@ func (c *HttpContext) GetParam(key string) (string, bool) {
 func (c *HttpContext) GetUser() (*models.User, error) {
 	userCtx, ok := c.Get(consts.UserContext)
 	if !ok {
-		return nil, errors.New("کاربر یافت نشد")
+		return nil, errors.New(consts.UnauthorizedError)
 	}
 
 	user, ok := userCtx.(models.User)
 	if !ok {
-		return nil, errors.New("کاربر یافت نشد")
+		return nil, errors.New(consts.UnauthorizedError)
 	}
 
 	return &user, nil

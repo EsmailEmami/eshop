@@ -53,14 +53,14 @@ func (model RegisterInputModel) Validate() error {
 		validation.Field(&model.Username, validation.Required.Error(consts.Required), validation.By(validations.UserName()),
 			validation.By(func(value interface{}) error {
 				if db.Exists(db.MustGormDBConn(context.Background()), &models.User{}, "username = ?", value) {
-					return errors.New("کاربری قبلا با مشخصات شما ثبت نام کرده است")
+					return errors.New(consts.UsernameAlreadyExists)
 				}
 
 				return nil
 			})),
 		validation.Field(&model.Password, validation.Required.Error(consts.Required), validation.By(validations.StrongPassword()), validation.By(func(value interface{}) error {
 			if value.(string) != model.PasswordConfirmation {
-				return errors.New("تکرار رمز عبور با رمزعبور مغایرت دارد")
+				return errors.New(consts.PasswordMismatch)
 			}
 			return nil
 		})),

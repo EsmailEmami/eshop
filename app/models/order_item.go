@@ -29,7 +29,7 @@ func (model OrderItemReqModel) ValidateCreate(db *gorm.DB) error {
 			validation.By(func(value interface{}) error {
 
 				if !dbpkg.Exists(db, &dbmodels.ProductItem{}, "id=?", value) {
-					return errors.New("کالای مورد نظر یافت نشد")
+					return errors.New(consts.ModelProductNotFound)
 				}
 
 				return nil
@@ -49,7 +49,7 @@ func (model OrderItemReqModel) ValidateUpdate(db *gorm.DB) error {
 			validation.By(func(value interface{}) error {
 
 				if !dbpkg.Exists(db, &dbmodels.ProductItem{}, "id=?", value) {
-					return errors.New("کالای مورد نظر یافت نشد")
+					return errors.New(consts.ModelProductNotFound)
 				}
 
 				return nil

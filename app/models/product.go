@@ -53,7 +53,7 @@ func (model ProductReqModel) ValidateCreate(db *gorm.DB) error {
 			validation.By(func(value interface{}) error {
 
 				if !dbpkg.Exists(db, &dbmodels.Brand{}, "id=?", value) {
-					return errors.New("برند مورد نظر یافت نشد")
+					return errors.New(consts.ModelBrandNotFound)
 				}
 
 				return nil
@@ -64,7 +64,7 @@ func (model ProductReqModel) ValidateCreate(db *gorm.DB) error {
 			validation.By(func(value interface{}) error {
 
 				if !dbpkg.Exists(db, &dbmodels.Category{}, "id=?", value) {
-					return errors.New("دسته بندی مورد نظر یافت نشد")
+					return errors.New(consts.ModelCategoryNotFound)
 				}
 
 				return nil
@@ -105,7 +105,7 @@ func (model ProductReqModel) ValidateUpdate(db *gorm.DB) error {
 			validation.By(func(value interface{}) error {
 
 				if !dbpkg.Exists(db, &dbmodels.Brand{}, "id=?", value) {
-					return errors.New("برند مورد نظر یافت نشد")
+					return errors.New(consts.ModelBrandNotFound)
 				}
 
 				return nil
@@ -116,7 +116,7 @@ func (model ProductReqModel) ValidateUpdate(db *gorm.DB) error {
 			validation.By(func(value interface{}) error {
 
 				if !dbpkg.Exists(db, &dbmodels.Category{}, "id=?", value) {
-					return errors.New("دسته بندی مورد نظر یافت نشد")
+					return errors.New(consts.ModelCategoryNotFound)
 				}
 
 				return nil

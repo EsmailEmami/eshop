@@ -36,7 +36,7 @@ func (model CommentReqModel) ValidateCreate(db *gorm.DB) error {
 			validation.Required.Error(consts.Required),
 			validation.By(func(value interface{}) error {
 				if !dbpkg.Exists(db, &dbmodels.Product{}, "id=?", value) {
-					return errors.New("کالای مورد نظر یافت نشد")
+					return errors.New(consts.ModelProductNotFound)
 				}
 
 				return nil
@@ -59,7 +59,7 @@ func (model CommentReqModel) ValidateUpdate(db *gorm.DB) error {
 			validation.Required.Error(consts.Required),
 			validation.By(func(value interface{}) error {
 				if !dbpkg.Exists(db, &dbmodels.Product{}, "id=?", value) {
-					return errors.New("کالای مورد نظر یافت نشد")
+					return errors.New(consts.ModelProductNotFound)
 				}
 
 				return nil

@@ -139,7 +139,7 @@ func EditAppPic(ctx *app.HttpContext) error {
 		id,
 		inputModel.AppPicType,
 	) {
-		return errors.NewValidationError("ترتیب وارد شده قبلا در سامانه ثبت شده است", nil)
+		return errors.NewValidationError(consts.OrderAlreadyRegistered, nil)
 	}
 
 	if dbModel.FileID != inputModel.FileID {

@@ -17,7 +17,7 @@ func GetFileExetension(filename string) string {
 	return strings.ToLower(p[len(p)-1])
 }
 
-// GenerateUniqueFilename برای فایل درخواستی در پوشه مورد نظر، یک نام یکتا ایجاد میکند که از تکرار نام وبازنویسی فایل قدیمی جلوگیری شود
+// GenerateUniqueFilename creates a unique name for the requested file in the specified directory to prevent name clashes and overwriting of old files.
 func GenerateUniqueFilename(dir, orginalFilename string, duplicationIndex uint) string {
 	if duplicationIndex == 1 {
 		filePath := fmt.Sprintf("%s/%s", dir, orginalFilename)

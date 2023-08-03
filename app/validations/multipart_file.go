@@ -8,7 +8,7 @@ import (
 	"github.com/esmailemami/eshop/consts"
 )
 
-// MultipartFileHeaderSizeValidator بیشینه مجاز برای فایل آپلود شده را اعتباری سنجی میکند
+// MultipartFileHeaderSizeValidator validates the maximum allowed size for the uploaded file.
 func MultipartFileHeaderSizeValidator(maxAllowedMB int64) func(value interface{}) error {
 	return func(value interface{}) error {
 		v, ok := value.(*multipart.FileHeader)
@@ -16,14 +16,14 @@ func MultipartFileHeaderSizeValidator(maxAllowedMB int64) func(value interface{}
 			return errors.New(consts.InvalidFileHeader)
 		}
 		if v.Size > (maxAllowedMB * 1024 * 1024) {
-			return fmt.Errorf("بیشینه حجم مجاز برای فایل پیوست %d مگابایت است.", maxAllowedMB)
+			return fmt.Errorf("The maximum allowed attachment file size is %d megabytes.", maxAllowedMB)
 		}
 		return nil
 	}
 }
 
-// MultipartFileHeaderMimeTypeValidator نوع فایل آپلود شده را اعتبار سنجی میکند که از لیست مجاز باشد
-func MultipartFileHeaderMimeTypeValidator(allowedTypes []string) func(value interface{}) error {
+// MultipartFileHeaderMimeTypeValidator validates the uploaded file's type against an allowed list.
+func MultipartFileHeaderMimeTypeValidator(allowedTypes ...string) func(value interface{}) error {
 	return func(value interface{}) error {
 		v, ok := value.(*multipart.FileHeader)
 		if !ok {

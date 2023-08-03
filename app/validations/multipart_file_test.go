@@ -54,7 +54,7 @@ func TestMultipartFileHeaderSizeValidator(t *testing.T) {
 func TestMultipartFileHeaderMimeTypeValidator(t *testing.T) {
 
 	t.Run("value is not *multipart.FileHeader", func(t *testing.T) {
-		err := MultipartFileHeaderMimeTypeValidator([]string{"application/pdf"})("string type")
+		err := MultipartFileHeaderMimeTypeValidator("application/pdf")("string type")
 		if err.Error() != consts.InvalidFileContentType {
 			t.Errorf(
 				"peyvastFileMimeTypeRule.Validate() wants error: %v got: %v",
@@ -72,7 +72,7 @@ func TestMultipartFileHeaderMimeTypeValidator(t *testing.T) {
 		fh.Header = make(textproto.MIMEHeader)
 		fh.Header.Set("Content-Type", "not allowed type")
 
-		err := MultipartFileHeaderMimeTypeValidator([]string{"application/pdf"})(&fh)
+		err := MultipartFileHeaderMimeTypeValidator("application/pdf")(&fh)
 		if err == nil || err.Error() != consts.InvalidPeyvastContentType {
 			t.Errorf(
 				"peyvastFileMimeTypeRule.Validate() wants error: %v got: %v",
@@ -91,7 +91,7 @@ func TestMultipartFileHeaderMimeTypeValidator(t *testing.T) {
 		fh.Header = make(textproto.MIMEHeader)
 		fh.Header.Set("Content-Type", "application/pdf")
 
-		err := MultipartFileHeaderMimeTypeValidator([]string{"application/pdf"})(&fh)
+		err := MultipartFileHeaderMimeTypeValidator("application/pdf")(&fh)
 		if err != nil {
 			t.Errorf("peyvastFileMimeTypeRule.Validate() wants no error got: %v", err)
 		}

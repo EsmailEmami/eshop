@@ -63,7 +63,7 @@ func Login(ctx *app.HttpContext) error {
 func IsAuthenticated(ctx *app.HttpContext) error {
 	userCtx, ok := ctx.Get(consts.UserContext)
 	if !ok {
-		return errors.NewBadRequestError("کاربر یافت نشد", nil)
+		return errors.NewBadRequestError(consts.UnauthorizedError, nil)
 	}
 
 	user := userCtx.(dbmodels.User)

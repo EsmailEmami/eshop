@@ -32,7 +32,7 @@ func (model ProductItemReqModel) ValidateCreate(db *gorm.DB) error {
 			validation.Required.Error(consts.Required),
 			validation.By(func(value interface{}) error {
 				if !dbpkg.Exists(db, &dbmodels.Color{}, "id=?", value) {
-					return errors.New("رنگ مورد نظر یافت نشد.")
+					return errors.New(consts.ModelColorNotFound)
 				}
 
 				return nil
@@ -42,7 +42,7 @@ func (model ProductItemReqModel) ValidateCreate(db *gorm.DB) error {
 			validation.Required.Error(consts.Required),
 			validation.By(func(value interface{}) error {
 				if !dbpkg.Exists(db, &dbmodels.Product{}, "id=?", value) {
-					return errors.New("کالا مورد نظر یافت نشد.")
+					return errors.New(consts.ModelProductNotFound)
 				}
 
 				return nil
@@ -62,7 +62,7 @@ func (model ProductItemReqModel) ValidateUpdate(db *gorm.DB) error {
 			validation.Required.Error(consts.Required),
 			validation.By(func(value interface{}) error {
 				if !dbpkg.Exists(db, &dbmodels.Color{}, "id=?", value) {
-					return errors.New("رنگ مورد نظر یافت نشد.")
+					return errors.New(consts.ModelColorNotFound)
 				}
 
 				return nil
@@ -72,7 +72,7 @@ func (model ProductItemReqModel) ValidateUpdate(db *gorm.DB) error {
 			validation.Required.Error(consts.Required),
 			validation.By(func(value interface{}) error {
 				if !dbpkg.Exists(db, &dbmodels.Product{}, "id=?", value) {
-					return errors.New("کالا مورد نظر یافت نشد.")
+					return errors.New(consts.ModelProductNotFound)
 				}
 
 				return nil

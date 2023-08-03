@@ -31,7 +31,7 @@ func (model ProductFeatureValueReqModel) ValidateCreate(db *gorm.DB) error {
 			validation.By(func(value interface{}) error {
 
 				if !dbpkg.Exists(db, &dbmodels.ProductFeatureKey{}, "id=?", value) {
-					return errors.New("کلید مورد نظر یافت نشد")
+					return errors.New(consts.ModelProductFeatureKeyNotFound)
 				}
 
 				return nil
@@ -42,7 +42,7 @@ func (model ProductFeatureValueReqModel) ValidateCreate(db *gorm.DB) error {
 			validation.By(func(value interface{}) error {
 
 				if !dbpkg.Exists(db, &dbmodels.Product{}, "id=?", value) {
-					return errors.New("کالای مورد نظر یافت نشد")
+					return errors.New(consts.ModelProductNotFound)
 				}
 
 				return nil
@@ -62,7 +62,7 @@ func (model ProductFeatureValueReqModel) ValidateUpdate(db *gorm.DB) error {
 			validation.By(func(value interface{}) error {
 
 				if !dbpkg.Exists(db, &dbmodels.ProductFeatureKey{}, "id=?", value) {
-					return errors.New("کلید مورد نظر یافت نشد")
+					return errors.New(consts.ModelProductFeatureKeyNotFound)
 				}
 
 				return nil
@@ -73,7 +73,7 @@ func (model ProductFeatureValueReqModel) ValidateUpdate(db *gorm.DB) error {
 			validation.By(func(value interface{}) error {
 
 				if !dbpkg.Exists(db, &dbmodels.Product{}, "id=?", value) {
-					return errors.New("کالای مورد نظر یافت نشد")
+					return errors.New(consts.ModelProductNotFound)
 				}
 
 				return nil

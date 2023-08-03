@@ -69,7 +69,7 @@ func CreateOrderItem(ctx *app.HttpContext) error {
 	productItem.Quantity = productItem.Quantity + lastQuantity - inputModel.Quantity
 
 	if productItem.Quantity < 0 {
-		return errors.NewBadRequestError("تعداد وارد شده مجاز نمیباشد", nil)
+		return errors.NewBadRequestError(consts.InvalidQuantity, nil)
 	}
 
 	// check if order item is existed delete it at first
@@ -122,7 +122,7 @@ func DeleteOrderItem(ctx *app.HttpContext) error {
 	}
 
 	if dbModel.Order.Status != models.OrderStatusOpen {
-		return errors.NewBadRequestError("شما امکان حذف محصول را ندارید", nil)
+		return errors.NewBadRequestError("You do not have permission to delete the product.", nil)
 	}
 
 	var totalItems int64

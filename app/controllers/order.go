@@ -105,5 +105,5 @@ func CheckoutOrder(ctx *app.HttpContext) error {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
-	return ctx.QuickResponse(consts.ProcessDone, http.StatusOK)
+	return ctx.QuickResponse(consts.OperationDone, http.StatusOK)
 }

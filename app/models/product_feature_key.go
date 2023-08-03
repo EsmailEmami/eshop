@@ -38,7 +38,7 @@ func (model ProductFeatureKeyReqModel) ValidateCreate(db *gorm.DB) error {
 			validation.By(func(value interface{}) error {
 
 				if !dbpkg.Exists(db, &dbmodels.ProductFeatureCategory{}, "id=?", value) {
-					return errors.New("دسته بندی مورد نظر یافت نشد")
+					return errors.New(consts.ModelCategoryNotFound)
 				}
 
 				return nil
@@ -58,7 +58,7 @@ func (model ProductFeatureKeyReqModel) ValidateUpdate(db *gorm.DB) error {
 			validation.By(func(value interface{}) error {
 
 				if !dbpkg.Exists(db, &dbmodels.ProductFeatureCategory{}, "id=?", value) {
-					return errors.New("دسته بندی مورد نظر یافت نشد")
+					return errors.New(consts.ModelCategoryNotFound)
 				}
 
 				return nil

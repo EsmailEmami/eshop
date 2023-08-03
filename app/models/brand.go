@@ -56,7 +56,7 @@ func (model BrandReqModel) ValidateUpdate(db *gorm.DB) error {
 			validation.Required.Error(consts.Required),
 			validation.By(func(value interface{}) error {
 				if !dbpkg.Exists(db, &dbmodels.File{}, "id", value) {
-					return errors.New("فایل یافت نشد")
+					return errors.New(consts.ModelFileNotFound)
 				}
 
 				return nil
