@@ -43,3 +43,9 @@ username = ""
 password = ""
 sender-number = ""
 
+[smtp]
+server = "smtp.gmail.com"
+port = "587"
+email = "esmailemami.mail.github@gmail.com"
+password = ""
+

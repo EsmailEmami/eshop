@@ -391,6 +391,32 @@ definitions:
           type: string
         type: array
     type: object
+  models.FavoriteProductItem:
+    properties:
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      id:
+        type: string
+      productItem:
+        $ref: '#/definitions/models.ProductItem'
+      productItemId:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+    type: object
+  models.FavoriteProductItemReqModel:
+    properties:
+      productItemId:
+        type: string
+    type: object
   models.File:
     properties:
       appPics:
@@ -828,9 +854,13 @@ definitions:
         $ref: '#/definitions/models.User'
       createdById:
         type: string
+      favorites:
+        items:
+          $ref: '#/definitions/models.FavoriteProductItem'
+        type: array
       id:
         type: string
-      items:
+      orderItems:
         items:
           $ref: '#/definitions/models.OrderItem'
         type: array
@@ -2435,6 +2465,69 @@ paths:
       - Bearer: []
       tags:
       - Comments
+  /favoriteProductItem:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: FavoriteProductItem model
+        in: body
+        name: FavoriteProductItem
+        required: true
+        schema:
+          $ref: '#/definitions/models.FavoriteProductItemReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - FavoriteProductItems
+  /favoriteProductItem/delete/{productItemId}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Product Item ID
+        in: path
+        name: productItemId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - FavoriteProductItems
   /file/{fileId}:
     get:
       consumes:
@@ -3628,6 +3721,60 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.UserDashboardInfoOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Users
+  /user/favoriteProducts:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      - description: Category ID
+        in: query
+        name: categoryId
+        type: string
+      - description: Brand ID
+        in: query
+        name: brandId
+        type: string
+      - description: Min Price
+        in: query
+        name: minPrice
+        type: number
+      - description: Max Price
+        in: query
+        name: maxPrice
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_ProductWithItemOutPutModel'
         "400":
           description: Bad Request
           schema:

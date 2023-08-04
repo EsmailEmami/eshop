@@ -162,6 +162,7 @@ func LoadApiRoutes(root *chi.Mux) {
 			// user
 			r.Get("/user", app.Handler(controllers.GetUser))
 			r.Get("/user/orders", app.Handler(controllers.GetUserOrders))
+			r.Get("/user/favoriteProducts", app.Handler(controllers.GetUserFavoriteProducts))
 
 			// address
 			r.Get("/address", app.Handler(controllers.GetAddresses))
@@ -169,6 +170,10 @@ func LoadApiRoutes(root *chi.Mux) {
 			r.Post("/address", app.Handler(controllers.CreateAddress))
 			r.Post("/address/edit/{id}", app.Handler(controllers.EditAddress))
 			r.Post("/address/delete/{id}", app.Handler(controllers.DeleteAddress))
+
+			// favoriteProductItem
+			r.Post("/favoriteProductItem", app.Handler(controllers.CreateFavoriteProductItem))
+			r.Post("/favoriteProductItem/delete/{productItemId}", app.Handler(controllers.DeleteFavoriteProductItem))
 		})
 	})
 }
