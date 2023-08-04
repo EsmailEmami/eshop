@@ -14,7 +14,6 @@ import (
 	dbpkg "github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
 	"github.com/esmailemami/eshop/models"
-	"github.com/esmailemami/eshop/services/file"
 	service "github.com/esmailemami/eshop/services/file"
 	"github.com/google/uuid"
 )
@@ -350,7 +349,7 @@ func FileChangePriority(ctx *app.HttpContext) error {
 		return errors.NewRecordNotFoundError(consts.ModelFileNotFound, nil)
 	}
 
-	multiple, err := file.ValidateItem(baseDB, itemID, dbFile.FileType)
+	multiple, err := service.ValidateItem(baseDB, itemID, dbFile.FileType)
 
 	if err != nil {
 		return errors.NewBadRequestError(err.Error(), err)
@@ -361,7 +360,7 @@ func FileChangePriority(ctx *app.HttpContext) error {
 	}
 
 	baseTx := baseDB.Begin()
-	if err := file.ChangeFilePriority(baseDB, baseTx, itemID, fileID, dbFile.FileType, priority); err != nil {
+	if err := service.ChangeFilePriority(baseDB, baseTx, itemID, fileID, dbFile.FileType, priority); err != nil {
 		baseTx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}

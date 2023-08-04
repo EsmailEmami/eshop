@@ -9,6 +9,7 @@ import (
 	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
 	"github.com/esmailemami/eshop/models"
+	"github.com/google/uuid"
 )
 
 // GetOrders godoc
@@ -65,14 +66,19 @@ func GetOrder(ctx *app.HttpContext) error {
 // @Accept json
 // @Produce json
 // @Security Bearer
+// @Param addressId  path  string  true  "Record ID"
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /order/checkout [post]
+// @Router /order/checkout/{addressId} [post]
 func CheckoutOrder(ctx *app.HttpContext) error {
 	user, err := ctx.GetUser()
 	if err != nil {
 		return errors.NewUnauthorizedError(err.Error(), err)
+	}
+	addressID, err := uuid.Parse(ctx.GetPathParam("addressId"))
+	if err != nil {
+		return errors.NewBadRequestError(consts.ModelAddressNotFound, err)
 	}
 
 	baseDB := db.MustGormDBConn(ctx)
@@ -82,7 +88,14 @@ func CheckoutOrder(ctx *app.HttpContext) error {
 
 	if err := baseDB.Model(&models.Order{}).First(&order, "status = 0 AND created_by_id = ?", *user.ID).Error; err != nil {
 		baseTx.Rollback()
-		return errors.NewRecordNotFoundError(consts.RecordNotFound, err)
+		return errors.NewRecordNotFoundError(consts.ModelOrderNotFound, err)
+	}
+
+	var address models.Address
+
+	if err := baseDB.Model(&models.Address{}).First(&address, "id=? AND user_id=?", addressID, *user.ID).Error; err != nil {
+		baseTx.Rollback()
+		return errors.NewRecordNotFoundError(consts.ModelAddressNotFound, err)
 	}
 
 	// update the prices of order items
@@ -95,8 +108,15 @@ func CheckoutOrder(ctx *app.HttpContext) error {
 	// update order price
 	if err := baseTx.Model(&models.Order{}).
 		Where("id=?", *order.ID).UpdateColumns(map[string]interface{}{
-		"status": models.OrderStatusPaid,
-		"price":  baseTx.Model(&models.OrderItem{}).Select("SUM(price)").Where("order_id=?", *order.ID),
+		"status":        models.OrderStatusPaid,
+		"price":         baseTx.Model(&models.OrderItem{}).Select("SUM(price)").Where("order_id=?", *order.ID),
+		"first_name":    address.FirstName,
+		"last_name":     address.LastName,
+		"plaque":        address.Plaque,
+		"phone_number":  address.PhoneNumber,
+		"national_code": address.NationalCode,
+		"postal_code":   address.PostalCode,
+		"address":       address.Address,
 	}).Error; err != nil {
 		baseTx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, err)

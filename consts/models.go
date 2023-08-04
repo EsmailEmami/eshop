@@ -7,4 +7,6 @@ const (
 	ModelProductFeatureKeyNotFound = "Product feature key not found."
 	ModelColorNotFound             = "Color not found."
 	ModelBrandNotFound             = "Brand not found."
+	ModelAddressNotFound           = "Address not found."
+	ModelOrderNotFound             = "Order not found."
 )

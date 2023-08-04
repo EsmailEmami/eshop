@@ -717,14 +717,31 @@ const docTemplate = `{
                 "tags": [
                     "Brands"
                 ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page size",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "length of records to show",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search for item",
+                        "name": "searchTerm",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.BrandOutPutModel"
-                            }
+                            "$ref": "#/definitions/parameter.ListResponse-models_BrandOutPutModel"
                         }
                     },
                     "400": {
@@ -2057,7 +2074,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/order/checkout": {
+        "/order/checkout/{addressId}": {
             "post": {
                 "security": [
                     {
@@ -2072,6 +2089,15 @@ const docTemplate = `{
                 ],
                 "tags": [
                     "Orders"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Record ID",
+                        "name": "addressId",
+                        "in": "path",
+                        "required": true
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -2228,6 +2254,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "search for item",
+                        "name": "searchTerm",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "Category ID",
                         "name": "categoryId",
                         "in": "query"
@@ -2249,19 +2281,13 @@ const docTemplate = `{
                         "description": "Max Price",
                         "name": "maxPrice",
                         "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "search for product name",
-                        "name": "searchTerm",
-                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/helpers.ListResponse-models_ProductWithItemOutPutModel"
+                            "$ref": "#/definitions/parameter.ListResponse-models_ProductWithItemOutPutModel"
                         }
                     },
                     "400": {
@@ -3605,35 +3631,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "helpers.ListResponse-models_ProductWithItemOutPutModel": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.ProductWithItemOutPutModel"
-                    }
-                },
-                "from": {
-                    "type": "integer"
-                },
-                "last_page": {
-                    "type": "integer"
-                },
-                "limit": {
-                    "type": "integer"
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "to": {
-                    "type": "integer"
-                },
-                "total": {
-                    "type": "integer"
-                }
-            }
-        },
         "helpers.SuccessResponse": {
             "type": "object",
             "properties": {
@@ -4412,6 +4409,9 @@ const docTemplate = `{
         "models.Order": {
             "type": "object",
             "properties": {
+                "address": {
+                    "type": "string"
+                },
                 "code": {
                     "type": "string"
                 },
@@ -4424,6 +4424,10 @@ const docTemplate = `{
                 "createdById": {
                     "type": "string"
                 },
+                "firstName": {
+                    "description": "keep the address",
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -4432,6 +4436,21 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.OrderItem"
                     }
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "nationalCode": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "plaque": {
+                    "type": "integer"
+                },
+                "postalCode": {
+                    "type": "string"
                 },
                 "price": {
                     "type": "number"
@@ -5292,6 +5311,64 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "parameter.ListResponse-models_BrandOutPutModel": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.BrandOutPutModel"
+                    }
+                },
+                "from": {
+                    "type": "integer"
+                },
+                "last_page": {
+                    "type": "integer"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "parameter.ListResponse-models_ProductWithItemOutPutModel": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ProductWithItemOutPutModel"
+                    }
+                },
+                "from": {
+                    "type": "integer"
+                },
+                "last_page": {
+                    "type": "integer"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "integer"
+                },
+                "total": {
                     "type": "integer"
                 }
             }

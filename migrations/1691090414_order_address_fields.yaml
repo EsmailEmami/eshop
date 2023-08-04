@@ -1,0 +1,18 @@
+---
+up: |
+  ALTER TABLE public."order" ADD first_name    varchar(1024) NULL;
+  ALTER TABLE public."order" ADD last_name     varchar(1024) NULL;
+  ALTER TABLE public."order" ADD plaque        INT NULL;
+  ALTER TABLE public."order" ADD phone_number  varchar(11) NULL;
+  ALTER TABLE public."order" ADD national_code varchar(10);
+  ALTER TABLE public."order" ADD address       varchar(3000) NULL;
+  ALTER TABLE public."order" ADD postal_code   varchar(10) NULL;
+
+down: |
+  ALTER TABLE public."order" DROP COLUMN IF EXISTS first_name;
+  ALTER TABLE public."order" DROP COLUMN IF EXISTS last_name;
+  ALTER TABLE public."order" DROP COLUMN IF EXISTS plaque ;      
+  ALTER TABLE public."order" DROP COLUMN IF EXISTS phone_number;
+  ALTER TABLE public."order" DROP COLUMN IF EXISTS national_code;
+  ALTER TABLE public."order" DROP COLUMN IF EXISTS address;
+  ALTER TABLE public."order" DROP COLUMN IF EXISTS postal_code;

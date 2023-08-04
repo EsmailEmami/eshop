@@ -5,6 +5,7 @@ import (
 
 	"github.com/esmailemami/eshop/app"
 	appmodels "github.com/esmailemami/eshop/app/models"
+	"github.com/esmailemami/eshop/app/parameter"
 	"github.com/esmailemami/eshop/consts"
 	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
@@ -18,28 +19,30 @@ import (
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Success 200 {object} []appmodels.BrandOutPutModel
+// @Param page  query  string  false  "page size"
+// @Param limit  query  string  false  "length of records to show"
+// @Param searchTerm  query  string  false  "search for item"
+// @Success 200 {object} parameter.ListResponse[appmodels.BrandOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /brand [get]
 func GetBrands(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 
-	var data []appmodels.BrandOutPutModel
+	parameter := parameter.New[appmodels.BrandOutPutModel](ctx)
 
-	if err := baseDB.Table("brand b").
-		Joins("INNER JOIN file f on f.id = b.file_id").
-		Select("b.id, b.created_at, b.updated_at,b.name,b.code, b.file_id, f.unique_file_name as file_name,f.file_type").
-		Find(&data).Error; err != nil {
-		return errors.NewInternalServerError(consts.InternalServerError, err)
+	baseDB = baseDB.Table("brand b").
+		Joins("INNER JOIN file f on f.id = b.file_id")
+
+	response, err := parameter.SelectColumns("b.id, b.created_at, b.updated_at,b.name,b.code, b.file_id, f.unique_file_name as file_name,f.file_type").
+		WithSortDescending("b.created_at", "b.name").
+		Execute(baseDB)
+
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
 	}
 
-	for i := 0; i < len(data); i++ {
-		brand := data[i]
-		data[i].FileUrl = brand.FileType.GetDirectory() + "/" + brand.FileName
-	}
-
-	return ctx.JSON(data, http.StatusOK)
+	return ctx.JSON(*response, http.StatusOK)
 }
 
 // GetBrand godoc

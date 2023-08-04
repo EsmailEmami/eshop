@@ -1,15 +1,11 @@
 package controllers
 
 import (
-	"context"
 	"net/http"
-	"strconv"
-	"strings"
-	"sync"
 
 	"github.com/esmailemami/eshop/app"
-	"github.com/esmailemami/eshop/app/helpers"
 	appmodels "github.com/esmailemami/eshop/app/models"
+	"github.com/esmailemami/eshop/app/parameter"
 	"github.com/esmailemami/eshop/consts"
 	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
@@ -24,35 +20,19 @@ import (
 // @Security Bearer
 // @Param page  query  string  false  "page size"
 // @Param limit  query  string  false  "length of records to show"
+// @Param searchTerm  query  string  false  "search for item"
 // @Param categoryId  query  string  false  "Category ID"
 // @Param brandId  query  string  false  "Brand ID"
 // @Param minPrice  query  float64  false  "Min Price"
 // @Param maxPrice  query  float64  false  "Max Price"
-// @Param searchTerm  query  string  false  "search for product name"
-// @Success 200 {object} helpers.ListResponse[appmodels.ProductWithItemOutPutModel]
+// @Success 200 {object} parameter.ListResponse[appmodels.ProductWithItemOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /product [get]
 func GetProducts(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 
-	page, ok := ctx.GetParam("page")
-	if !ok {
-		page = "1"
-	}
-	pageInt, err := strconv.Atoi(page)
-
-	if err != nil {
-		return errors.NewBadRequestError(consts.BadRequest, err)
-	}
-	limit, ok := ctx.GetParam("limit")
-	if !ok {
-		limit = "25"
-	}
-	limitInt, err := strconv.Atoi(limit)
-	if err != nil {
-		return errors.NewBadRequestError(consts.BadRequest, err)
-	}
+	parameter := parameter.New[appmodels.ProductWithItemOutPutModel](ctx)
 
 	baseDB = baseDB.Table("product as p").
 		Joins("CROSS JOIN LATERAL (?) as pi2", baseDB.Table("product_item pi2").
@@ -86,55 +66,17 @@ func GetProducts(ctx *app.HttpContext) error {
 		baseDB = baseDB.Where("pi2.price <= ?", maxPrice)
 	}
 
-	if searchTerm, ok := ctx.GetParam("searchTerm"); ok {
-		baseDB = baseDB.Where("p.name LIKE ?", "%"+strings.TrimSpace(searchTerm)+"%")
+	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name").
+		SearchColumns("p.name").
+		WithEachItemProcess(func(item *appmodels.ProductWithItemOutPutModel) {
+			item.FileUrl = item.FileType.GetDirectory() + "/" + item.FileName
+		}).
+		Execute(baseDB)
+
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
 	}
 
-	var total int64
-	var data []appmodels.ProductWithItemOutPutModel
-
-	var wg sync.WaitGroup
-	wg.Add(2)
-	errChan := make(chan error, 2)
-
-	go func() {
-		defer wg.Done()
-
-		db := baseDB.WithContext(context.Background())
-		if err := db.Count(&total).Error; err != nil {
-			errChan <- err
-		}
-	}()
-
-	go func() {
-		defer wg.Done()
-
-		db := baseDB.WithContext(context.Background())
-		db = db.Offset(limitInt * (pageInt - 1)).Limit(limitInt)
-		if err := db.Select("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name").Find(&data).Error; err != nil {
-			errChan <- err
-		}
-	}()
-
-	wg.Wait()
-
-	select {
-	case err := <-errChan:
-		{
-			return errors.NewBadRequestError(consts.BadRequest, err)
-		}
-	default:
-		{
-
-		}
-	}
-
-	for i := 0; i < len(data); i++ {
-		product := data[i]
-		data[i].FileUrl = product.FileType.GetDirectory() + "/" + product.FileName
-	}
-
-	response := helpers.NewListResponse[appmodels.ProductWithItemOutPutModel](int(pageInt), int(limitInt), total, data)
 	return ctx.JSON(*response, http.StatusOK)
 }
 
@@ -152,7 +94,7 @@ func GetProductsList(ctx *app.HttpContext) error {
 
 	var data []appmodels.ProductOutPutModel
 
-	if err := baseDB.Debug().Table("product as p").
+	if err := baseDB.Table("product as p").
 		Joins(`INNER JOIN brand b ON b.id = p.brand_id`).
 		Joins("INNER JOIN file f on f.id = b.file_id").
 		Joins(`INNER JOIN category c ON c.id = p.category_id`).
