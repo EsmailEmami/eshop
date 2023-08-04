@@ -22,9 +22,18 @@ type LoginInputModel struct {
 }
 
 func (model LoginInputModel) Validate() error {
-	return validation.ValidateStruct(&model,
-		validation.Field(&model.Username, validation.Required.Error(consts.Required), validation.By(validations.UserName())),
-		validation.Field(&model.Password, validation.Required.Error(consts.Required), validation.By(validations.StrongPassword())),
+	return validation.ValidateStruct(
+		&model,
+		validation.Field(
+			&model.Username,
+			validation.Required.Error(consts.Required),
+			validation.By(validations.UserName()),
+		),
+		validation.Field(
+			&model.Password,
+			validation.Required.Error(consts.Required),
+			validation.By(validations.StrongPassword()),
+		),
 	)
 }
 
@@ -49,21 +58,36 @@ type RegisterInputModel struct {
 }
 
 func (model RegisterInputModel) Validate() error {
-	return validation.ValidateStruct(&model,
-		validation.Field(&model.Username, validation.Required.Error(consts.Required), validation.By(validations.UserName()),
+	return validation.ValidateStruct(
+		&model,
+		validation.Field(
+			&model.Username,
+			validation.Required.Error(consts.Required),
+			validation.By(validations.UserName()),
 			validation.By(func(value interface{}) error {
-				if db.Exists(db.MustGormDBConn(context.Background()), &models.User{}, "username = ?", value) {
+				if db.Exists(
+					db.MustGormDBConn(context.Background()),
+					&models.User{},
+					"username = ?",
+					value,
+				) {
 					return errors.New(consts.UsernameAlreadyExists)
 				}
 
 				return nil
-			})),
-		validation.Field(&model.Password, validation.Required.Error(consts.Required), validation.By(validations.StrongPassword()), validation.By(func(value interface{}) error {
-			if value.(string) != model.PasswordConfirmation {
-				return errors.New(consts.PasswordMismatch)
-			}
-			return nil
-		})),
+			}),
+		),
+		validation.Field(
+			&model.Password,
+			validation.Required.Error(consts.Required),
+			validation.By(validations.StrongPassword()),
+			validation.By(func(value interface{}) error {
+				if value.(string) != model.PasswordConfirmation {
+					return errors.New(consts.PasswordMismatch)
+				}
+				return nil
+			}),
+		),
 	)
 }
 
@@ -80,4 +104,40 @@ func (model RegisterInputModel) ToDBModel() *models.User {
 		Username: model.Username,
 		Password: string(pass),
 	}
+}
+
+type RecoveryPasswordModel struct {
+	Password             string `json:"password"`
+	PasswordConfirmation string `json:"passwordConfirmation"`
+}
+
+func (model RecoveryPasswordModel) Validate() error {
+	return validation.ValidateStruct(
+		&model,
+		validation.Field(
+			&model.Password,
+			validation.Required.Error(consts.Required),
+			validation.By(validations.StrongPassword()),
+			validation.By(func(value interface{}) error {
+				if value.(string) != model.PasswordConfirmation {
+					return errors.New(consts.PasswordMismatch)
+				}
+				return nil
+			}),
+		),
+	)
+}
+
+type RecoveryPasswordReqModel struct {
+	PhoneNumberOrEmailAddress string `json:"phoneNumberOrEmailAddress"`
+}
+
+func (model RecoveryPasswordReqModel) Validate() error {
+	return validation.ValidateStruct(
+		&model,
+		validation.Field(
+			&model.PhoneNumberOrEmailAddress,
+			validation.Required.Error(consts.Required),
+		),
+	)
 }

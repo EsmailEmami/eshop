@@ -5,7 +5,7 @@ type EmailDriver interface {
 	GetDriverName() string
 }
 
-func NewEmailNotifier(driverName string) emailNotifier {
+func NewNotifier(driverName string) emailNotifier {
 	switch driverName {
 	case "gmail":
 		{

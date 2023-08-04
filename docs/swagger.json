@@ -638,6 +638,115 @@
                 }
             }
         },
+        "/auth/recoveryPasword": {
+            "post": {
+                "description": "recovery user password.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "recovery user password.",
+                "parameters": [
+                    {
+                        "description": "Recovery password model",
+                        "name": "RecoveryPasswordInput",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RecoveryPasswordReqModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/recoveryPasword/{key}": {
+            "post": {
+                "description": "recovery user password.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "recovery user password.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Recovery password model",
+                        "name": "RecoveryPasswordInput",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RecoveryPasswordModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/auth/register": {
             "post": {
                 "description": "register a new user.",
@@ -5194,6 +5303,25 @@
                 }
             }
         },
+        "models.RecoveryPasswordModel": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "passwordConfirmation": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RecoveryPasswordReqModel": {
+            "type": "object",
+            "properties": {
+                "phoneNumberOrEmailAddress": {
+                    "type": "string"
+                }
+            }
+        },
         "models.RegisterInputModel": {
             "type": "object",
             "properties": {
@@ -5279,6 +5407,9 @@
                 "createdById": {
                     "type": "string"
                 },
+                "email": {
+                    "type": "string"
+                },
                 "enabled": {
                     "type": "boolean"
                 },
@@ -5295,6 +5426,9 @@
                     "type": "string"
                 },
                 "mobile": {
+                    "type": "string"
+                },
+                "recoveryPasswordKey": {
                     "type": "string"
                 },
                 "role": {

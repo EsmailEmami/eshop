@@ -1,5 +1,7 @@
 package email
 
+import "github.com/esmailemami/eshop/services/file"
+
 type Key int
 
 const (
@@ -7,9 +9,10 @@ const (
 )
 
 func (k Key) getTemplatePath() string {
+	path := file.GetPath("services", "notifier", "email", "templates")
 	switch k {
 	case KeyForgotPassword:
-		return "./templates/forgot-password.html"
+		return path + "/forgot-password.html"
 	}
 
 	panic("invalid template key!")

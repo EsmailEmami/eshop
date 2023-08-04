@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/esmailemami/eshop/app"
 	"github.com/esmailemami/eshop/app/models"
@@ -10,8 +12,11 @@ import (
 	"github.com/esmailemami/eshop/errors"
 	dbmodels "github.com/esmailemami/eshop/models"
 	"github.com/esmailemami/eshop/services/authentication"
+	"github.com/esmailemami/eshop/services/notifier/email"
 	"github.com/esmailemami/eshop/services/token"
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 // LoginCustomer godoc
@@ -144,4 +149,104 @@ func Register(ctx *app.HttpContext) error {
 	}
 
 	return ctx.QuickResponse(consts.RegistrationDone, http.StatusOK)
+}
+
+// Recovery Password godoc
+// @Summary recovery user password.
+// @Description recovery user password.
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param key  path  string  true  "key"
+// @Param RecoveryPasswordInput  body  models.RecoveryPasswordModel  true  "Recovery password model"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /auth/recoveryPasword/{key} [post]
+func RecoveryPassword(ctx *app.HttpContext) error {
+	key, err := uuid.Parse(ctx.GetPathParam("key"))
+	if err != nil {
+		return errors.NewBadRequestError("invalid key", err)
+	}
+
+	var input models.RecoveryPasswordModel
+	if err := ctx.BlindBind(&input); err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	if err := input.Validate(); err != nil {
+		return errors.NewValidationError(consts.ValidationError, err)
+	}
+
+	db := dbpkg.MustGormDBConn(ctx)
+
+	if !dbpkg.Exists(db, &dbmodels.User{}, "recovery_password_key=?", key) {
+		return errors.NewBadRequestError(consts.BadRequest, nil)
+	}
+
+	// encrypt password
+	pass, _ := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+
+	if err := db.Model(&dbmodels.User{}).Where("recovery_password_key=?", key).UpdateColumns(map[string]interface{}{
+		"password":              string(pass),
+		"recovery_password_key": uuid.New(),
+	}).Error; err != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	return ctx.QuickResponse(consts.OperationDone, http.StatusOK)
+}
+
+// Recovery Password godoc
+// @Summary recovery user password.
+// @Description recovery user password.
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param RecoveryPasswordInput  body  models.RecoveryPasswordReqModel  true  "Recovery password model"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /auth/recoveryPasword [post]
+func SendRecoveryPasswordRequest(ctx *app.HttpContext) error {
+	var input models.RecoveryPasswordReqModel
+	if err := ctx.BlindBind(&input); err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	if err := input.Validate(); err != nil {
+		return errors.NewValidationError(consts.ValidationError, err)
+	}
+
+	db := dbpkg.MustGormDBConn(ctx)
+
+	var user dbmodels.User
+
+	if err := db.Model(&dbmodels.User{}).
+		Where("mobile=?", input.PhoneNumberOrEmailAddress).
+		Or("email=?", input.PhoneNumberOrEmailAddress).First(&user).Error; err != nil {
+		if err != gorm.ErrRecordNotFound {
+			return errors.NewInternalServerError(consts.InternalServerError, err)
+		} else {
+			return ctx.QuickResponse(consts.RecoveryPasswordReqDone, http.StatusOK)
+		}
+	}
+
+	if strings.TrimSpace(user.Email) == "" {
+		return ctx.QuickResponse(consts.RecoveryPasswordReqDone, http.StatusOK)
+	}
+
+	// send email
+	notifier := email.NewNotifier("gmail")
+	go func() {
+		err := notifier.Send([]string{user.Email}, email.KeyForgotPassword, email.ForgotPassword{
+			Username:    user.Username,
+			RecoveryUrl: "http://127.0.0.1:3000/recoveryPassword/" + user.RecoveryPasswordKey.String(),
+		})
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+	}()
+
+	return ctx.QuickResponse(consts.RecoveryPasswordReqDone, http.StatusOK)
 }

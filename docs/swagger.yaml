@@ -993,6 +993,18 @@ definitions:
       price:
         type: number
     type: object
+  models.RecoveryPasswordModel:
+    properties:
+      password:
+        type: string
+      passwordConfirmation:
+        type: string
+    type: object
+  models.RecoveryPasswordReqModel:
+    properties:
+      phoneNumberOrEmailAddress:
+        type: string
+    type: object
   models.RegisterInputModel:
     properties:
       password:
@@ -1049,6 +1061,8 @@ definitions:
         $ref: '#/definitions/models.User'
       createdById:
         type: string
+      email:
+        type: string
       enabled:
         type: boolean
       firstName:
@@ -1060,6 +1074,8 @@ definitions:
       lastName:
         type: string
       mobile:
+        type: string
+      recoveryPasswordKey:
         type: string
       role:
         $ref: '#/definitions/models.Role'
@@ -1644,6 +1660,79 @@ paths:
       security:
       - Bearer: []
       summary: Logout the user.
+      tags:
+      - Auth
+  /auth/recoveryPasword:
+    post:
+      consumes:
+      - application/json
+      description: recovery user password.
+      parameters:
+      - description: Recovery password model
+        in: body
+        name: RecoveryPasswordInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.RecoveryPasswordReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: recovery user password.
+      tags:
+      - Auth
+  /auth/recoveryPasword/{key}:
+    post:
+      consumes:
+      - application/json
+      description: recovery user password.
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Recovery password model
+        in: body
+        name: RecoveryPasswordInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.RecoveryPasswordModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: recovery user password.
       tags:
       - Auth
   /auth/register:

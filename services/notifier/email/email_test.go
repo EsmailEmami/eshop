@@ -15,7 +15,7 @@ func TestGmailSendEmail(t *testing.T) {
 
 	viper.ReadInConfig()
 
-	notifier := NewEmailNotifier("gmail")
+	notifier := NewNotifier("gmail")
 	err := notifier.Send(
 		[]string{"esmailemami84@gmail.com", "alireza83safarii@gmail.com"},
 		KeyForgotPassword,

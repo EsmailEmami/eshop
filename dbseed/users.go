@@ -25,6 +25,7 @@ func seedUser(dbConn *gorm.DB) error {
 			IsSystem:  true,
 			Mobile:    "09903669556",
 			Enabled:   true,
+			Email:     "esmailemami84@gmail.com",
 			RoleID: func() *uuid.UUID {
 				id := uuid.MustParse(consts.ROLE_ROOT_ID)
 				return &id
@@ -43,6 +44,7 @@ func seedUser(dbConn *gorm.DB) error {
 			Password:  "$2a$10$2oV2MylgwZftP47vL/ndteC6tzmcY85qRNo/5FTCeS403eL8zo9Yq",
 			IsSystem:  true,
 			Mobile:    "09903669556",
+			Email:     "alireza83safarii@gmail.com",
 			Enabled:   true,
 			RoleID: func() *uuid.UUID {
 				id := uuid.MustParse(consts.ROLE_ROOT_ID)
@@ -76,6 +78,7 @@ func seedUser(dbConn *gorm.DB) error {
 				"enabled":    item.Enabled,
 				"role_id":    item.RoleID.String(),
 				"updated_at": time.Now(),
+				"email":      item.Email,
 			}).Error
 			if err != nil {
 				return err
