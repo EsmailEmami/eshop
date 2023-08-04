@@ -5,6 +5,7 @@ import (
 
 	"github.com/esmailemami/eshop/app"
 	appmodels "github.com/esmailemami/eshop/app/models"
+	"github.com/esmailemami/eshop/app/parameter"
 	"github.com/esmailemami/eshop/consts"
 	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
@@ -17,20 +18,27 @@ import (
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Success 200 {object} []appmodels.ProductFeatureCategoryOutPutModel
+// @Param page  query  string  false  "page size"
+// @Param limit  query  string  false  "length of records to show"
+// @Param searchTerm  query  string  false  "search for item"
+// @Success 200 {object} parameter.ListResponse[appmodels.ProductFeatureCategoryOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /productFeatureCategory [get]
 func GetProductFeatureCategories(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Model(&models.ProductFeatureCategory{})
 
-	var data []appmodels.ProductFeatureCategoryOutPutModel
+	parameter := parameter.New[appmodels.ProductFeatureCategoryOutPutModel](ctx)
 
-	if err := baseDB.Find(&data).Error; err != nil {
+	data, err := parameter.SearchColumns("name", "code").
+		SortDescending("created_at").
+		Execute(baseDB)
+
+	if err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
-	return ctx.JSON(data, http.StatusOK)
+	return ctx.JSON(*data, http.StatusOK)
 }
 
 // GetProductFeatureCategory godoc

@@ -5,6 +5,7 @@ import (
 
 	"github.com/esmailemami/eshop/app"
 	appmodels "github.com/esmailemami/eshop/app/models"
+	"github.com/esmailemami/eshop/app/parameter"
 	"github.com/esmailemami/eshop/consts"
 	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
@@ -17,20 +18,27 @@ import (
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Success 200 {object} []appmodels.ColorOutPutModel
+// @Param page  query  string  false  "page size"
+// @Param limit  query  string  false  "length of records to show"
+// @Param searchTerm  query  string  false  "search for item"
+// @Success 200 {object} parameter.ListResponse[appmodels.ColorOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /color [get]
 func GetColors(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Model(&models.Color{})
 
-	var data []appmodels.ColorOutPutModel
+	parameter := parameter.New[appmodels.ColorOutPutModel](ctx)
 
-	if err := baseDB.Find(&data).Error; err != nil {
+	data, err := parameter.SearchColumns("name", "code", "color_hex").
+		SortDescending("created_at").
+		Execute(baseDB)
+
+	if err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
-	return ctx.JSON(data, http.StatusOK)
+	return ctx.JSON(*data, http.StatusOK)
 }
 
 // GetColor godoc

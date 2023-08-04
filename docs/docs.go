@@ -1247,14 +1247,31 @@ const docTemplate = `{
                 "tags": [
                     "Colors"
                 ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page size",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "length of records to show",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search for item",
+                        "name": "searchTerm",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.ColorOutPutModel"
-                            }
+                            "$ref": "#/definitions/parameter.ListResponse-models_ColorOutPutModel"
                         }
                     },
                     "400": {
@@ -2588,14 +2605,31 @@ const docTemplate = `{
                 "tags": [
                     "ProductFeatureCategories"
                 ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page size",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "length of records to show",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search for item",
+                        "name": "searchTerm",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.ProductFeatureCategoryOutPutModel"
-                            }
+                            "$ref": "#/definitions/parameter.ListResponse-models_ProductFeatureCategoryOutPutModel"
                         }
                     },
                     "400": {
@@ -2839,13 +2873,19 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Product Feature Category ID",
-                        "name": "categoryId",
+                        "description": "page size",
+                        "name": "page",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Search Term",
+                        "description": "length of records to show",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search for item",
                         "name": "searchTerm",
                         "in": "query"
                     }
@@ -2854,10 +2894,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.ProductFeatureKeyOutPutModel"
-                            }
+                            "$ref": "#/definitions/parameter.ListResponse-models_ProductFeatureKeyOutPutModel"
                         }
                     },
                     "400": {
@@ -3113,7 +3150,19 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Search Term",
+                        "description": "page size",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "length of records to show",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search for item",
                         "name": "searchTerm",
                         "in": "query"
                     }
@@ -3122,10 +3171,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.ProductFeatureValueOutPutModel"
-                            }
+                            "$ref": "#/definitions/parameter.ListResponse-models_ProductFeatureValueOutPutModel"
                         }
                     },
                     "400": {
@@ -5368,6 +5414,122 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.CategoryOutPutModel"
+                    }
+                },
+                "from": {
+                    "type": "integer"
+                },
+                "last_page": {
+                    "type": "integer"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "parameter.ListResponse-models_ColorOutPutModel": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ColorOutPutModel"
+                    }
+                },
+                "from": {
+                    "type": "integer"
+                },
+                "last_page": {
+                    "type": "integer"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "parameter.ListResponse-models_ProductFeatureCategoryOutPutModel": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ProductFeatureCategoryOutPutModel"
+                    }
+                },
+                "from": {
+                    "type": "integer"
+                },
+                "last_page": {
+                    "type": "integer"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "parameter.ListResponse-models_ProductFeatureKeyOutPutModel": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ProductFeatureKeyOutPutModel"
+                    }
+                },
+                "from": {
+                    "type": "integer"
+                },
+                "last_page": {
+                    "type": "integer"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "parameter.ListResponse-models_ProductFeatureValueOutPutModel": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ProductFeatureValueOutPutModel"
                     }
                 },
                 "from": {

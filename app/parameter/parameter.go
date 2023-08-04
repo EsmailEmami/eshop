@@ -99,6 +99,17 @@ func (p *Parameter[T]) Execute(db *gorm.DB) (*ListResponse[T], error) {
 		wg           sync.WaitGroup
 	)
 
+	// search part
+	if searchTerm, ok := p.DBLikeSearch(); ok {
+		for i, column := range p.searchColumns {
+			if i == 0 {
+				db = db.Where(column+" LIKE ?", searchTerm)
+			} else {
+				db = db.Or(column+" LIKE ?", searchTerm)
+			}
+		}
+	}
+
 	wg.Add(2)
 	errChan := make(chan error, 2)
 
@@ -112,16 +123,6 @@ func (p *Parameter[T]) Execute(db *gorm.DB) (*ListResponse[T], error) {
 	go func() {
 		defer wg.Done()
 		qry := db.WithContext(context.Background())
-
-		if searchTerm, ok := p.DBLikeSearch(); ok {
-			for i, column := range p.searchColumns {
-				if i == 0 {
-					qry = qry.Where(column+" LIKE ?", searchTerm)
-				} else {
-					qry = qry.Or(column+" LIKE ?", searchTerm)
-				}
-			}
-		}
 
 		if len(p.selectColumns) > 0 {
 			fields := strings.Join(p.selectColumns, ",")

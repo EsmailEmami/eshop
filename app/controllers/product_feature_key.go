@@ -5,6 +5,7 @@ import (
 
 	"github.com/esmailemami/eshop/app"
 	appmodels "github.com/esmailemami/eshop/app/models"
+	"github.com/esmailemami/eshop/app/parameter"
 	"github.com/esmailemami/eshop/consts"
 	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
@@ -17,33 +18,31 @@ import (
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Param categoryId  query  string  false  "Product Feature Category ID"
-// @Param searchTerm  query  string  false  "Search Term"
-// @Success 200 {object} []appmodels.ProductFeatureKeyOutPutModel
+// @Param page  query  string  false  "page size"
+// @Param limit  query  string  false  "length of records to show"
+// @Param searchTerm  query  string  false  "search for item"
+// @Success 200 {object} parameter.ListResponse[appmodels.ProductFeatureKeyOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /productFeatureKey [get]
 func GetProductFeatureKeys(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Model(&models.ProductFeatureKey{})
+	parameter := parameter.New[appmodels.ProductFeatureKeyOutPutModel](ctx)
 
 	categoryID, ok := ctx.GetParam("categoryId")
 	if ok {
 		baseDB = baseDB.Where("product_feature_category_id = ?", categoryID)
 	}
 
-	searchTerm, ok := ctx.GetParam("searchTerm")
-	if ok {
-		searchTerm = "%" + searchTerm + "%"
-		baseDB = baseDB.Where("name LIKE ?", searchTerm)
-	}
+	data, err := parameter.SearchColumns("name").
+		SortDescending("created_at").
+		Execute(baseDB)
 
-	var data []appmodels.ProductFeatureKeyOutPutModel
-
-	if err := baseDB.Find(&data).Error; err != nil {
+	if err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
-	return ctx.JSON(data, http.StatusOK)
+	return ctx.JSON(*data, http.StatusOK)
 }
 
 // GetProductFeatureKey godoc
