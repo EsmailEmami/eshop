@@ -67,13 +67,13 @@ func (p *Parameter[T]) SelectColumns(columns ...string) *Parameter[T] {
 	return p
 }
 
-func (p *Parameter[T]) WithSortAscending(columns ...string) *Parameter[T] {
+func (p *Parameter[T]) SortAscending(columns ...string) *Parameter[T] {
 	p.sortColumns = columns
 	p.sortOrder = "ASC"
 	return p
 }
 
-func (p *Parameter[T]) WithSortDescending(columns ...string) *Parameter[T] {
+func (p *Parameter[T]) SortDescending(columns ...string) *Parameter[T] {
 	p.sortColumns = columns
 	p.sortOrder = "DESC"
 	return p
@@ -85,7 +85,7 @@ func (p *Parameter[T]) SearchColumns(columns ...string) *Parameter[T] {
 	return p
 }
 
-func (p *Parameter[T]) WithEachItemProcess(fn func(*T)) *Parameter[T] {
+func (p *Parameter[T]) EachItemProcess(fn func(*T)) *Parameter[T] {
 	p.processEachItemFn = fn
 	p.processEachItem = true
 
@@ -116,7 +116,7 @@ func (p *Parameter[T]) Execute(db *gorm.DB) (*ListResponse[T], error) {
 		if searchTerm, ok := p.DBLikeSearch(); ok {
 			for i, column := range p.searchColumns {
 				if i == 0 {
-					qry = qry.Debug().Where(column+" LIKE ?", searchTerm)
+					qry = qry.Where(column+" LIKE ?", searchTerm)
 				} else {
 					qry = qry.Or(column+" LIKE ?", searchTerm)
 				}

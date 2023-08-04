@@ -35,7 +35,11 @@ func GetBrands(ctx *app.HttpContext) error {
 		Joins("INNER JOIN file f on f.id = b.file_id")
 
 	response, err := parameter.SelectColumns("b.id, b.created_at, b.updated_at,b.name,b.code, b.file_id, f.unique_file_name as file_name,f.file_type").
-		WithSortDescending("b.created_at", "b.name").
+		SearchColumns("b.name").
+		EachItemProcess(func(t *appmodels.BrandOutPutModel) {
+			t.FileUrl = models.GetFileUrl(t.FileType, t.FileName)
+		}).
+		SortDescending("b.created_at", "b.name").
 		Execute(baseDB)
 
 	if err != nil {

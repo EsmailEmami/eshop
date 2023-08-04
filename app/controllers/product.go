@@ -68,7 +68,7 @@ func GetProducts(ctx *app.HttpContext) error {
 
 	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name").
 		SearchColumns("p.name").
-		WithEachItemProcess(func(item *appmodels.ProductWithItemOutPutModel) {
+		EachItemProcess(func(item *appmodels.ProductWithItemOutPutModel) {
 			item.FileUrl = item.FileType.GetDirectory() + "/" + item.FileName
 		}).
 		Execute(baseDB)
