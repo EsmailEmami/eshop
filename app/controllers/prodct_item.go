@@ -61,36 +61,40 @@ func GetProductItem(ctx *app.HttpContext) error {
 	// features
 	data.Features = []appmodels.ProductItemCategoryFeatureModel{}
 
-	var featureData []map[string]interface{}
+	featureData := []struct {
+		Category string `gorm:"column:category"`
+		Key      string `gorm:"column:key"`
+		Value    string `gorm:"column:value"`
+	}{}
 
 	if err := baseDB.Table("product_feature_value pfv").
 		Joins("INNER JOIN product_feature_key pfk ON pfk.id = pfv.product_feature_key_id").
 		Joins("INNER JOIN product_feature_category pfc ON pfc.id = pfk.product_feature_category_id").
 		Where("pfv.product_id = ?", data.ProductID).
 		Select("pfk.name as key,pfv.value, pfc.name as category").Find(&featureData).Error; err != nil {
-		return errors.NewInternalServerError(consts.InternalServerError, nil)
+		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
 	features := map[string][]appmodels.ProductItemFeatureModel{}
 
 	for _, v := range featureData {
-		data, exists := features[v["category"].(string)]
+		data, exists := features[v.Category]
 
 		if exists {
 			data = append(data, appmodels.ProductItemFeatureModel{
-				Key:   v["key"].(string),
-				Value: v["value"].(string),
+				Key:   v.Key,
+				Value: v.Value,
 			})
 		} else {
 			data = []appmodels.ProductItemFeatureModel{
 				{
-					Key:   v["key"].(string),
-					Value: v["value"].(string),
+					Key:   v.Key,
+					Value: v.Value,
 				},
 			}
 		}
 
-		features[v["category"].(string)] = data
+		features[v.Category] = data
 	}
 
 	for categoryName, keys := range features {
@@ -99,6 +103,18 @@ func GetProductItem(ctx *app.HttpContext) error {
 			Items:    keys,
 		})
 	}
+
+	// colors
+	var colors []appmodels.ProductItemInfoColorOutPutModel
+
+	if err := baseDB.Table("product_item pi2").
+		Joins("INNER JOIN color c ON c.id = pi2.color_id").
+		Where("pi2.deleted_at IS NULL AND pi2.product_id=?", data.ProductID).
+		Select("pi2.id AS product_item_id, c.name, c.color_hex").Find(&colors).Error; err != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	data.Colors = colors
 
 	return ctx.JSON(data, http.StatusOK)
 }

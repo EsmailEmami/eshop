@@ -129,6 +129,7 @@ type ProductItemInfoOutPutModel struct {
 	ProductDescription      string                            `gorm:"column:product_description"       json:"productDescription"`
 	Files                   []ProductItemFileOutPutModel      `gorm:"-"                                json:"files"`
 	Features                []ProductItemCategoryFeatureModel `gorm:"-"                                json:"features"`
+	Colors                  []ProductItemInfoColorOutPutModel `gorm:"-"                                json:"colors"`
 }
 
 type ProductItemCategoryFeatureModel struct {
@@ -147,4 +148,10 @@ type ProductItemFileOutPutModel struct {
 	UniqueFileName string          `gorm:"column:unique_file_name" json:"uniqueFineName"`
 	FileType       models.FileType `gorm:"column:file_type"        json:"fileType"`
 	FileUrl        string          `gorm:"-"                       json:"fileUrl"`
+}
+
+type ProductItemInfoColorOutPutModel struct {
+	Name          string    `gorm:"column:name"                   json:"name"`
+	ColorHex      string    `gorm:"column:color_hex"              json:"colorHex"`
+	ProductItemID uuid.UUID `gorm:"column:product_item_id"        json:"productItemId"`
 }

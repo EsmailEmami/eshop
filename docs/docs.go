@@ -5374,6 +5374,20 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ProductItemInfoColorOutPutModel": {
+            "type": "object",
+            "properties": {
+                "colorHex": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "productItemId": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ProductItemInfoOutPutModel": {
             "type": "object",
             "properties": {
@@ -5382,6 +5396,12 @@ const docTemplate = `{
                 },
                 "colorId": {
                     "type": "string"
+                },
+                "colors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ProductItemInfoColorOutPutModel"
+                    }
                 },
                 "features": {
                     "type": "array",

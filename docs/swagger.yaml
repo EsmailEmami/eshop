@@ -910,12 +910,25 @@ definitions:
       uniqueFineName:
         type: string
     type: object
+  models.ProductItemInfoColorOutPutModel:
+    properties:
+      colorHex:
+        type: string
+      name:
+        type: string
+      productItemId:
+        type: string
+    type: object
   models.ProductItemInfoOutPutModel:
     properties:
       color:
         type: string
       colorId:
         type: string
+      colors:
+        items:
+          $ref: '#/definitions/models.ProductItemInfoColorOutPutModel'
+        type: array
       features:
         items:
           $ref: '#/definitions/models.ProductItemCategoryFeatureModel'

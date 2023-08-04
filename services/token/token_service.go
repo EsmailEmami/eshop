@@ -49,7 +49,7 @@ func NewToken(payload map[string]interface{}) jwt.Token {
 	// IssuedAtKey and NotBeforeKey and ExpirationKey could be override by payload
 	_ = token.Set(jwt.IssuedAtKey, time.Now().Add(time.Second*-1).UTC())
 	_ = token.Set(jwt.NotBeforeKey, time.Now().Add(time.Second*-1).UTC())
-	tokenExp := time.Now().UTC().Add(9 * time.Hour)
+	tokenExp := time.Now().UTC().Add(24 * 29 * time.Hour)
 	_ = token.Set(jwt.ExpirationKey, tokenExp)
 
 	_ = token.Set(jwt.JwtIDKey, uuid.New().String())
