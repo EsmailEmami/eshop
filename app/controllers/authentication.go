@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/esmailemami/eshop/app"
 	"github.com/esmailemami/eshop/app/models"
@@ -157,52 +158,6 @@ func Register(ctx *app.HttpContext) error {
 // @Tags Auth
 // @Accept json
 // @Produce json
-// @Param key  path  string  true  "key"
-// @Param RecoveryPasswordInput  body  models.RecoveryPasswordModel  true  "Recovery password model"
-// @Success 200 {object} map[string]string
-// @Failure 400 {object} map[string]any
-// @Failure 401 {object} map[string]any
-// @Router /auth/recoveryPasword/{key} [post]
-func RecoveryPassword(ctx *app.HttpContext) error {
-	key, err := uuid.Parse(ctx.GetPathParam("key"))
-	if err != nil {
-		return errors.NewBadRequestError("invalid key", err)
-	}
-
-	var input models.RecoveryPasswordModel
-	if err := ctx.BlindBind(&input); err != nil {
-		return errors.NewBadRequestError(consts.BadRequest, err)
-	}
-
-	if err := input.Validate(); err != nil {
-		return errors.NewValidationError(consts.ValidationError, err)
-	}
-
-	db := dbpkg.MustGormDBConn(ctx)
-
-	if !dbpkg.Exists(db, &dbmodels.User{}, "recovery_password_key=?", key) {
-		return errors.NewBadRequestError(consts.BadRequest, nil)
-	}
-
-	// encrypt password
-	pass, _ := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
-
-	if err := db.Model(&dbmodels.User{}).Where("recovery_password_key=?", key).UpdateColumns(map[string]interface{}{
-		"password":              string(pass),
-		"recovery_password_key": uuid.New(),
-	}).Error; err != nil {
-		return errors.NewInternalServerError(consts.InternalServerError, err)
-	}
-
-	return ctx.QuickResponse(consts.OperationDone, http.StatusOK)
-}
-
-// Recovery Password godoc
-// @Summary recovery user password.
-// @Description recovery user password.
-// @Tags Auth
-// @Accept json
-// @Produce json
 // @Param RecoveryPasswordInput  body  models.RecoveryPasswordReqModel  true  "Recovery password model"
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]any
@@ -236,12 +191,33 @@ func SendRecoveryPasswordRequest(ctx *app.HttpContext) error {
 		return ctx.QuickResponse(consts.RecoveryPasswordReqDone, http.StatusOK)
 	}
 
+	// check that is there any not expired verification code
+	if dbpkg.Exists(db, &dbmodels.VerificationCode{}, "scope=? AND key=? AND expire_at>? AND verified = false", dbmodels.VerificationCodeScopeEmail, user.Email, time.Now()) {
+		return errors.NewValidationError("We have been sent you an email. If you do not receive the email try again later", nil)
+	}
+
+	verificaationCode := dbmodels.VerificationCode{
+		BasicModel: dbmodels.BasicModel{
+			ID: dbmodels.NewID(),
+		},
+		ExpireAt:   time.Now().Add(5 * time.Minute),
+		MaxRetires: 3,
+		Scope:      dbmodels.VerificationCodeScopeEmail,
+		Key:        user.Email,
+		Value:      uuid.NewString(),
+		Verified:   false,
+	}
+
+	if err := db.Create(&verificaationCode).Error; err != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
 	// send email
 	notifier := email.NewNotifier("gmail")
 	go func() {
 		err := notifier.Send([]string{user.Email}, email.KeyForgotPassword, email.ForgotPassword{
 			Username:    user.Username,
-			RecoveryUrl: "http://127.0.0.1:3000/recoveryPassword/" + user.RecoveryPasswordKey.String(),
+			RecoveryUrl: "http://127.0.0.1:3000/recoveryPassword/" + verificaationCode.Value,
 		})
 		if err != nil {
 			fmt.Println(err.Error())
@@ -249,4 +225,58 @@ func SendRecoveryPasswordRequest(ctx *app.HttpContext) error {
 	}()
 
 	return ctx.QuickResponse(consts.RecoveryPasswordReqDone, http.StatusOK)
+}
+
+// Recovery Password godoc
+// @Summary recovery user password.
+// @Description recovery user password.
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param key  path  string  true  "key"
+// @Param RecoveryPasswordInput  body  models.RecoveryPasswordModel  true  "Recovery password model"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /auth/recoveryPasword/{key} [post]
+func RecoveryPassword(ctx *app.HttpContext) error {
+	key, err := uuid.Parse(ctx.GetPathParam("key"))
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	db := dbpkg.MustGormDBConn(ctx)
+
+	var verificationCode dbmodels.VerificationCode
+
+	if err := db.Model(&dbmodels.VerificationCode{}).Order("expire_at DESC").
+		Find(&verificationCode, "value=? AND expire_at > now()", key).Error; err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	if verificationCode.Attempts > verificationCode.MaxRetires {
+		return errors.NewBadRequestError("Your effort has exceeded the limit.", nil)
+	}
+
+	// save the user attempts
+	verificationCode.Attempts++
+	db.Save(&verificationCode)
+
+	var input models.RecoveryPasswordModel
+	if err := ctx.BlindBind(&input); err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	if err := input.Validate(); err != nil {
+		return errors.NewValidationError(consts.ValidationError, err)
+	}
+
+	// encrypt password
+	pass, _ := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+
+	if err := db.Model(&dbmodels.User{}).Where("email=?", verificationCode.Key).UpdateColumn("password", string(pass)).Error; err != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	return ctx.QuickResponse(consts.OperationDone, http.StatusOK)
 }

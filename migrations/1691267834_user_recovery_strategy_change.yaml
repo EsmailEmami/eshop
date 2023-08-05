@@ -1,0 +1,6 @@
+---
+up: |
+  ALTER TABLE public."user" DROP COLUMN IF EXISTS recovery_password_key;
+
+down: |
+  ALTER TABLE public."user" ADD recovery_password_key UUID NOT NULL DEFAULT GEN_RANDOM_UUID();
