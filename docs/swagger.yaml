@@ -1084,6 +1084,29 @@ definitions:
       updatedById:
         type: string
     type: object
+  models.SuggestionProductOutPutModel:
+    properties:
+      colorId:
+        type: string
+      colors:
+        items:
+          $ref: '#/definitions/models.ProductItemInfoColorOutPutModel'
+        type: array
+      features:
+        items:
+          type: string
+        type: array
+      files:
+        items:
+          $ref: '#/definitions/models.ProductItemFileOutPutModel'
+        type: array
+      name:
+        type: string
+      productId:
+        type: string
+      productItemId:
+        type: string
+    type: object
   models.User:
     properties:
       addresses:
@@ -1117,8 +1140,6 @@ definitions:
       lastName:
         type: string
       mobile:
-        type: string
-      recoveryPasswordKey:
         type: string
       role:
         $ref: '#/definitions/models.Role'
@@ -1284,6 +1305,25 @@ definitions:
       data:
         items:
           $ref: '#/definitions/models.ProductWithItemOutPutModel'
+        type: array
+      from:
+        type: integer
+      last_page:
+        type: integer
+      limit:
+        type: integer
+      page:
+        type: integer
+      to:
+        type: integer
+      total:
+        type: integer
+    type: object
+  parameter.ListResponse-models_SuggestionProductOutPutModel:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.SuggestionProductOutPutModel'
         type: array
       from:
         type: integer
@@ -3062,6 +3102,52 @@ paths:
             items:
               $ref: '#/definitions/models.ProductOutPutModel'
             type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Products
+  /product/suggestions:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      - description: Category ID
+        in: query
+        name: categoryId
+        type: string
+      - description: Brand ID
+        in: query
+        name: brandId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_SuggestionProductOutPutModel'
         "400":
           description: Bad Request
           schema:

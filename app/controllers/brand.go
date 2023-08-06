@@ -12,6 +12,7 @@ import (
 	"github.com/esmailemami/eshop/models"
 	fileService "github.com/esmailemami/eshop/services/file"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // GetBrands godoc
@@ -29,15 +30,16 @@ import (
 func GetBrands(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 
-	parameter := parameter.New[appmodels.BrandOutPutModel](ctx)
+	parameter := parameter.New[appmodels.BrandOutPutModel](ctx, baseDB)
 
 	baseDB = baseDB.Table("brand b").
 		Joins("INNER JOIN file f on f.id = b.file_id")
 
 	response, err := parameter.SelectColumns("b.id, b.created_at, b.updated_at,b.name,b.code, b.file_id, f.unique_file_name as file_name,f.file_type").
 		SearchColumns("b.name").
-		EachItemProcess(func(t *appmodels.BrandOutPutModel) {
+		EachItemProcess(func(db *gorm.DB, t *appmodels.BrandOutPutModel) error {
 			t.FileUrl = models.GetFileUrl(t.FileType, t.FileName)
+			return nil
 		}).
 		SortDescending("b.created_at", "b.name").
 		Execute(baseDB)

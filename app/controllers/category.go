@@ -28,7 +28,7 @@ import (
 func GetCategories(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Model(&models.Category{})
 
-	parameter := parameter.New[appmodels.CategoryOutPutModel](ctx)
+	parameter := parameter.New[appmodels.CategoryOutPutModel](ctx, baseDB)
 
 	data, err := parameter.SearchColumns("name", "code").
 		SortDescending("created_at").

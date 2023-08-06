@@ -10,6 +10,7 @@ import (
 	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/errors"
 	"github.com/esmailemami/eshop/models"
+	"gorm.io/gorm"
 )
 
 // GetUser godoc
@@ -130,7 +131,7 @@ func GetUserFavoriteProducts(ctx *app.HttpContext) error {
 
 	baseDB := db.MustGormDBConn(ctx)
 
-	parameter := parameter.New[appmodels.ProductWithItemOutPutModel](ctx)
+	parameter := parameter.New[appmodels.ProductWithItemOutPutModel](ctx, baseDB)
 
 	baseDB = baseDB.Table("favorite_product_item fpi").
 		Joins("INNER JOIN product_item pi2 ON pi2.id = fpi.product_item_id").
@@ -162,8 +163,9 @@ func GetUserFavoriteProducts(ctx *app.HttpContext) error {
 
 	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name").
 		SearchColumns("p.name").
-		EachItemProcess(func(item *appmodels.ProductWithItemOutPutModel) {
+		EachItemProcess(func(db *gorm.DB, item *appmodels.ProductWithItemOutPutModel) error {
 			item.FileUrl = item.FileType.GetDirectory() + "/" + item.FileName
+			return nil
 		}).
 		Execute(baseDB)
 

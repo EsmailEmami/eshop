@@ -175,3 +175,15 @@ type ProductOutPutModel struct {
 	BrandFileName string            `gorm:"column:brand_file_name"  json:"-"`
 	BrandFileUrl  string            `gorm:"column:brand_file_url"   json:"brandFileUrl"`
 }
+
+// ------------------- suggestion products -----------------------
+
+type SuggestionProductOutPutModel struct {
+	ProductID     *uuid.UUID                        `gorm:"column:product_id"                json:"productId"`
+	Name          string                            `gorm:"column:name"                      json:"name"`
+	Colors        []ProductItemInfoColorOutPutModel `gorm:"-"                                json:"colors"`
+	Files         []ProductItemFileOutPutModel      `gorm:"-"                                json:"files"`
+	TopFeatures   []string                          `gorm:"-"                                json:"features"`
+	ProductItemID uuid.UUID                         `gorm:"product_item_id"                  json:"productItemId"`
+	ColorID       uuid.UUID                         `gorm:"color_id"                         json:"colorId"`
+}

@@ -18,13 +18,15 @@ type Parameter[T any] struct {
 	searchTerm, sortOrder                     string
 	selectColumns, searchColumns, sortColumns []string
 	processEachItem                           bool
-	processEachItemFn                         func(*T)
+	processEachItemFn                         func(db *gorm.DB, item *T) error
+	db                                        *gorm.DB
 }
 
-func New[T any](ctx *app.HttpContext) *Parameter[T] {
+func New[T any](ctx *app.HttpContext, db *gorm.DB) *Parameter[T] {
 	p := new(Parameter[T])
 	p.ctx = ctx
 	p.processEachItem = false
+	p.db = db.WithContext(context.Background())
 
 	p.loadParams()
 
@@ -85,7 +87,7 @@ func (p *Parameter[T]) SearchColumns(columns ...string) *Parameter[T] {
 	return p
 }
 
-func (p *Parameter[T]) EachItemProcess(fn func(*T)) *Parameter[T] {
+func (p *Parameter[T]) EachItemProcess(fn func(db *gorm.DB, item *T) error) *Parameter[T] {
 	p.processEachItemFn = fn
 	p.processEachItem = true
 
@@ -151,7 +153,7 @@ func (p *Parameter[T]) Execute(db *gorm.DB) (*ListResponse[T], error) {
 	// process each item
 	if p.processEachItem {
 		for i, item := range result {
-			p.processEachItemFn(&item)
+			p.processEachItemFn(p.db, &item)
 			result[i] = item
 		}
 	}

@@ -28,7 +28,7 @@ import (
 func GetColors(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Model(&models.Color{})
 
-	parameter := parameter.New[appmodels.ColorOutPutModel](ctx)
+	parameter := parameter.New[appmodels.ColorOutPutModel](ctx, baseDB)
 
 	data, err := parameter.SearchColumns("name", "code", "color_hex").
 		SortDescending("created_at").

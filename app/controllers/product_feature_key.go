@@ -27,7 +27,7 @@ import (
 // @Router /productFeatureKey [get]
 func GetProductFeatureKeys(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Model(&models.ProductFeatureKey{})
-	parameter := parameter.New[appmodels.ProductFeatureKeyOutPutModel](ctx)
+	parameter := parameter.New[appmodels.ProductFeatureKeyOutPutModel](ctx, baseDB)
 
 	categoryID, ok := ctx.GetParam("categoryId")
 	if ok {

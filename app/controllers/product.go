@@ -11,6 +11,7 @@ import (
 	"github.com/esmailemami/eshop/errors"
 	"github.com/esmailemami/eshop/models"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // GetProducts godoc
@@ -32,7 +33,7 @@ import (
 func GetProducts(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 
-	parameter := parameter.New[appmodels.ProductWithItemOutPutModel](ctx)
+	parameter := parameter.New[appmodels.ProductWithItemOutPutModel](ctx, baseDB)
 
 	baseDB = baseDB.Table("product as p").
 		Joins("CROSS JOIN LATERAL (?) as pi2", baseDB.Table("product_item pi2").
@@ -68,8 +69,10 @@ func GetProducts(ctx *app.HttpContext) error {
 
 	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name").
 		SearchColumns("p.name").
-		EachItemProcess(func(item *appmodels.ProductWithItemOutPutModel) {
+		EachItemProcess(func(db *gorm.DB, item *appmodels.ProductWithItemOutPutModel) error {
 			item.FileUrl = item.FileType.GetDirectory() + "/" + item.FileName
+
+			return nil
 		}).
 		Execute(baseDB)
 
@@ -260,4 +263,81 @@ func DeleteProduct(ctx *app.HttpContext) error {
 	}
 
 	return ctx.QuickResponse(consts.Deleted, http.StatusOK)
+}
+
+// Get Suggestion Products godoc
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param page  query  string  false  "page size"
+// @Param limit  query  string  false  "length of records to show"
+// @Param searchTerm  query  string  false  "search for item"
+// @Param categoryId  query  string  false  "Category ID"
+// @Param brandId  query  string  false  "Brand ID"
+// @Success 200 {object} parameter.ListResponse[appmodels.SuggestionProductOutPutModel]
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /product/suggestions [get]
+func GetSuggestionProducts(ctx *app.HttpContext) error {
+	baseDB := db.MustGormDBConn(ctx)
+	parameter := parameter.New[appmodels.SuggestionProductOutPutModel](ctx, baseDB)
+
+	baseDB = baseDB.Table("product as p").
+		Joins("CROSS JOIN LATERAL (?) as pi2", baseDB.Table("product_item pi2").
+			Select("id, price").
+			Where("pi2.quantity > 0 AND pi2.product_id = p.id").
+			Order("CASE WHEN p.default_product_item_id IS NULL THEN pi2.bought_quantity WHEN pi2.id = p.default_product_item_id THEN 0 ELSE 1 END").
+			Limit(1),
+		).
+		Where("p.deleted_at IS NULL")
+
+	if categoryID, ok := ctx.GetParam("categoryId"); ok {
+		baseDB = baseDB.Where("c.id = ?", categoryID)
+	}
+
+	if brandID, ok := ctx.GetParam("brandId"); ok {
+		baseDB = baseDB.Where("b.id = ?", brandID)
+	}
+
+	response, err := parameter.SelectColumns("p.id as product_id", "p.name", "pi2.id as product_item_id", "pi2.color_id").
+		SearchColumns("p.name", "p.code").
+		EachItemProcess(func(db *gorm.DB, data *appmodels.SuggestionProductOutPutModel) error {
+
+			// files
+			var files []appmodels.ProductItemFileOutPutModel
+
+			if err := baseDB.Table("file as f").
+				Joins("INNER JOIN product_file_map pf ON pf.file_id = f.id").
+				Where("pf.product_id = ?", data.ProductID).Find(&files).Error; err != nil {
+				return errors.NewInternalServerError(consts.InternalServerError, nil)
+			}
+
+			for i := 0; i < len(files); i++ {
+				file := files[i]
+				files[i].FileUrl = file.FileType.GetDirectory() + "/" + file.UniqueFileName
+			}
+
+			data.Files = files
+
+			// colors
+			var colors []appmodels.ProductItemInfoColorOutPutModel
+
+			if err := baseDB.Table("product_item pi2").
+				Joins("INNER JOIN color c ON c.id = pi2.color_id").
+				Where("pi2.deleted_at IS NULL AND pi2.product_id=?", data.ProductID).
+				Select("pi2.id AS product_item_id, c.name, c.color_hex").Find(&colors).Error; err != nil {
+				return errors.NewInternalServerError(consts.InternalServerError, err)
+			}
+
+			data.Colors = colors
+
+			return nil
+		}).Execute(baseDB)
+
+	if err != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	return ctx.JSON(*response, http.StatusOK)
 }

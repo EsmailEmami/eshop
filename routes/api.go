@@ -79,10 +79,7 @@ func LoadApiRoutes(root *chi.Mux) {
 			r.Get("/file/{fileId}", app.Handler(controllers.GetFile))
 			r.Get("/file/stream/{fileId}", app.Handler(controllers.GetStreamingFile))
 			r.Get("/file/{itemId}/{fileType}", app.Handler(controllers.GetItemFiles))
-			r.Post(
-				"/file/changePriority/{fileId}/{itemId}/{priority}",
-				app.Handler(controllers.FileChangePriority),
-			)
+			r.Post("/file/changePriority/{fileId}/{itemId}/{priority}",app.Handler(controllers.FileChangePriority))
 
 			// appPic
 			r.Get("/appPic", app.Handler(controllers.GetAppPics))
@@ -98,6 +95,7 @@ func LoadApiRoutes(root *chi.Mux) {
 			r.Post("/product", app.Handler(controllers.CreateProduct))
 			r.Post("/product/edit/{id}", app.Handler(controllers.EditProduct))
 			r.Post("/product/delete/{id}", app.Handler(controllers.DeleteProduct))
+			r.Get("/product/suggestions", app.Handler(controllers.GetSuggestionProducts))
 
 			// productItem
 			r.Get("/productItem/{id}", app.Handler(controllers.GetProductItem))
