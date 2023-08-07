@@ -264,6 +264,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/product/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Record ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ProductAdminOutPutModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/appPic": {
             "get": {
                 "security": [
@@ -5098,6 +5147,12 @@ const docTemplate = `{
                 "shortDescription": {
                     "type": "string"
                 },
+                "topFeatures": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "updatedAt": {
                     "type": "string"
                 },
@@ -5106,6 +5161,44 @@ const docTemplate = `{
                 },
                 "updatedById": {
                     "type": "string"
+                }
+            }
+        },
+        "models.ProductAdminOutPutModel": {
+            "type": "object",
+            "properties": {
+                "brandId": {
+                    "type": "string"
+                },
+                "brandName": {
+                    "type": "string"
+                },
+                "categoryId": {
+                    "type": "string"
+                },
+                "categoryName": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "shortDescription": {
+                    "type": "string"
+                },
+                "topFeatures": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -5588,6 +5681,12 @@ const docTemplate = `{
                 },
                 "shortDescription": {
                     "type": "string"
+                },
+                "topFeatures": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -5723,12 +5822,6 @@ const docTemplate = `{
                         "$ref": "#/definitions/models.ProductItemInfoColorOutPutModel"
                     }
                 },
-                "features": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
                 "files": {
                     "type": "array",
                     "items": {
@@ -5743,6 +5836,12 @@ const docTemplate = `{
                 },
                 "productItemId": {
                     "type": "string"
+                },
+                "topFeatures": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

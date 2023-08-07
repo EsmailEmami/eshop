@@ -1,0 +1,6 @@
+---
+up: |
+  ALTER TABLE public."product" ADD top_features JSONB NULL;
+
+down: |
+  ALTER TABLE public."product" DROP COLUMN IF EXISTS top_features;

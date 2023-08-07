@@ -1,6 +1,7 @@
 package models
 
 import (
+	datatypes "github.com/esmailemami/eshop/models/data_types"
 	"github.com/google/uuid"
 )
 
@@ -20,6 +21,7 @@ type Product struct {
 	ShortDescription     string                `gorm:"column:short_description"               json:"shortDescription"`
 	DefaultProductItemID *uuid.UUID            `gorm:"column:default_product_item_id"         json:"defaultProductItemId"`
 	Comments             []Comment             `gorm:"foreignKey:product_id;references:id"    json:"comments"`
+	TopFeatures          datatypes.StringArray `gorm:"column:top_features"                    json:"topFeatures"`
 }
 
 func (Product) TableName() string {

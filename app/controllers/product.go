@@ -143,7 +143,6 @@ func GetProduct(ctx *app.HttpContext) error {
 		Select(`p.id, p."name", p.code, p.brand_id, b."name" AS brand_name, 
 			p.category_id, c."name" AS category_name, f.file_type AS brand_file_type, f.unique_file_name AS brand_file_name`).
 		Where("p.id = ? AND p.deleted_at IS NULL", id).
-		Where("p.deleted_at IS NULL").
 		First(&data).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
@@ -283,24 +282,25 @@ func GetSuggestionProducts(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 	parameter := parameter.New[appmodels.SuggestionProductOutPutModel](ctx, baseDB)
 
-	baseDB = baseDB.Table("product as p").
+	qry := baseDB.Table("product as p").
 		Joins("CROSS JOIN LATERAL (?) as pi2", baseDB.Table("product_item pi2").
-			Select("id, price").
+			Select("id, price, color_id").
 			Where("pi2.quantity > 0 AND pi2.product_id = p.id").
 			Order("CASE WHEN p.default_product_item_id IS NULL THEN pi2.bought_quantity WHEN pi2.id = p.default_product_item_id THEN 0 ELSE 1 END").
 			Limit(1),
 		).
-		Where("p.deleted_at IS NULL")
+		Where("p.deleted_at IS NULL AND p.top_features IS NOT NULL AND jsonb_array_length(p.top_features) > 0").
+		Where("EXISTS (SELECT true FROM product_file_map WHERE product_id = p.id)")
 
 	if categoryID, ok := ctx.GetParam("categoryId"); ok {
-		baseDB = baseDB.Where("c.id = ?", categoryID)
+		qry = qry.Where("c.id = ?", categoryID)
 	}
 
 	if brandID, ok := ctx.GetParam("brandId"); ok {
-		baseDB = baseDB.Where("b.id = ?", brandID)
+		qry = qry.Where("b.id = ?", brandID)
 	}
 
-	response, err := parameter.SelectColumns("p.id as product_id", "p.name", "pi2.id as product_item_id", "pi2.color_id").
+	response, err := parameter.SelectColumns("p.id as product_id", "p.name", "pi2.id as product_item_id", "pi2.color_id", "p.top_features").
 		SearchColumns("p.name", "p.code").
 		EachItemProcess(func(db *gorm.DB, data *appmodels.SuggestionProductOutPutModel) error {
 
@@ -333,11 +333,45 @@ func GetSuggestionProducts(ctx *app.HttpContext) error {
 			data.Colors = colors
 
 			return nil
-		}).Execute(baseDB)
+		}).Execute(qry)
 
 	if err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
 	return ctx.JSON(*response, http.StatusOK)
+}
+
+// GetProduct godoc
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id  path  string  true  "Record ID"
+// @Success 200 {object} appmodels.ProductAdminOutPutModel
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /admin/product/{id} [get]
+func GetAdminProduct(ctx *app.HttpContext) error {
+	id, err := uuid.Parse(ctx.GetPathParam("id"))
+
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+	baseDB := db.MustGormDBConn(ctx)
+
+	var data appmodels.ProductAdminOutPutModel
+
+	if err := baseDB.Table("product as p").
+		Joins(`INNER JOIN brand b ON b.id = p.brand_id`).
+		Joins("INNER JOIN file f on f.id = b.file_id").
+		Joins(`INNER JOIN category c ON c.id = p.category_id`).
+		Select(`p.id, p."name", p.code, p.brand_id, b."name" AS brand_name, 
+			p.category_id, c."name" AS category_name, p.description, p.short_description, p.top_features`).
+		Where("p.id = ? AND p.deleted_at IS NULL", id).
+		First(&data, id).Error; err != nil {
+		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
+	}
+
+	return ctx.JSON(data, http.StatusOK)
 }

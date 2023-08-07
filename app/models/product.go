@@ -7,18 +7,20 @@ import (
 	"github.com/esmailemami/eshop/consts"
 	dbpkg "github.com/esmailemami/eshop/db"
 	dbmodels "github.com/esmailemami/eshop/models"
+	datatypes "github.com/esmailemami/eshop/models/data_types"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type ProductReqModel struct {
-	Name             string    `json:"name"`
-	Code             string    `json:"code"`
-	BrandID          uuid.UUID `json:"brandId"`
-	CategoryID       uuid.UUID `json:"categoryId"`
-	Description      string    `json:"description"`
-	ShortDescription string    `json:"shortDescription"`
+	Name             string                `json:"name"`
+	Code             string                `json:"code"`
+	BrandID          uuid.UUID             `json:"brandId"`
+	CategoryID       uuid.UUID             `json:"categoryId"`
+	Description      string                `json:"description"`
+	ShortDescription string                `json:"shortDescription"`
+	TopFeatures      datatypes.StringArray `json:"topFeatures"`
 }
 
 func (model ProductReqModel) ValidateCreate(db *gorm.DB) error {
@@ -136,6 +138,7 @@ func (model *ProductReqModel) ToDBModel() *dbmodels.Product {
 		CategoryID:       model.CategoryID,
 		ShortDescription: model.ShortDescription,
 		Description:      model.Description,
+		TopFeatures:      model.TopFeatures,
 	}
 }
 
@@ -146,6 +149,7 @@ func (model *ProductReqModel) MergeWithDBData(dbmodel *dbmodels.Product) {
 	dbmodel.CategoryID = model.CategoryID
 	dbmodel.ShortDescription = model.ShortDescription
 	dbmodel.Description = model.Description
+	dbmodel.TopFeatures = model.TopFeatures
 }
 
 type ProductWithItemOutPutModel struct {
@@ -183,7 +187,20 @@ type SuggestionProductOutPutModel struct {
 	Name          string                            `gorm:"column:name"                      json:"name"`
 	Colors        []ProductItemInfoColorOutPutModel `gorm:"-"                                json:"colors"`
 	Files         []ProductItemFileOutPutModel      `gorm:"-"                                json:"files"`
-	TopFeatures   []string                          `gorm:"-"                                json:"features"`
 	ProductItemID uuid.UUID                         `gorm:"product_item_id"                  json:"productItemId"`
 	ColorID       uuid.UUID                         `gorm:"color_id"                         json:"colorId"`
+	TopFeatures   datatypes.StringArray             `gorm:"column:top_features"              json:"topFeatures"`
+}
+
+type ProductAdminOutPutModel struct {
+	ID               *uuid.UUID            `gorm:"column:id"                              json:"id"`
+	Name             string                `gorm:"column:name"                            json:"name"`
+	Code             string                `gorm:"column:code"                            json:"code"`
+	BrandID          uuid.UUID             `gorm:"column:brand_id"         json:"brandId"`
+	BrandName        string                `gorm:"column:brand_name"       json:"brandName"`
+	CategoryID       uuid.UUID             `gorm:"column:category_id"      json:"categoryId"`
+	CategoryName     string                `gorm:"column:category_name"    json:"categoryName"`
+	Description      string                `gorm:"column:description"                     json:"description"`
+	ShortDescription string                `gorm:"column:short_description"               json:"shortDescription"`
+	TopFeatures      datatypes.StringArray `gorm:"column:top_features"                    json:"topFeatures"`
 }

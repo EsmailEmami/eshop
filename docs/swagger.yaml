@@ -683,12 +683,41 @@ definitions:
         type: array
       shortDescription:
         type: string
+      topFeatures:
+        items:
+          type: string
+        type: array
       updatedAt:
         type: string
       updatedBy:
         $ref: '#/definitions/models.User'
       updatedById:
         type: string
+    type: object
+  models.ProductAdminOutPutModel:
+    properties:
+      brandId:
+        type: string
+      brandName:
+        type: string
+      categoryId:
+        type: string
+      categoryName:
+        type: string
+      code:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      shortDescription:
+        type: string
+      topFeatures:
+        items:
+          type: string
+        type: array
     type: object
   models.ProductFeatureCategory:
     properties:
@@ -1004,6 +1033,10 @@ definitions:
         type: string
       shortDescription:
         type: string
+      topFeatures:
+        items:
+          type: string
+        type: array
     type: object
   models.ProductStatus:
     enum:
@@ -1092,10 +1125,6 @@ definitions:
         items:
           $ref: '#/definitions/models.ProductItemInfoColorOutPutModel'
         type: array
-      features:
-        items:
-          type: string
-        type: array
       files:
         items:
           $ref: '#/definitions/models.ProductItemFileOutPutModel'
@@ -1106,6 +1135,10 @@ definitions:
         type: string
       productItemId:
         type: string
+      topFeatures:
+        items:
+          type: string
+        type: array
     type: object
   models.User:
     properties:
@@ -1498,6 +1531,37 @@ paths:
       - Bearer: []
       tags:
       - Addresses
+  /admin/product/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ProductAdminOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Products
   /appPic:
     get:
       consumes:
