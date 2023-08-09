@@ -178,7 +178,7 @@ func GetFile(ctx *app.HttpContext) error {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	path := service.GetFilePath(&dbFile)
+	path := service.GetFilePhysicallyPath(&dbFile)
 
 	fileInfo, err := os.Stat(path)
 	if err != nil {
@@ -225,7 +225,7 @@ func GetStreamingFile(ctx *app.HttpContext) error {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	path := service.GetFilePath(&dbFile)
+	path := service.GetFilePhysicallyPath(&dbFile)
 
 	fileInfo, err := os.Stat(path)
 	if err != nil {

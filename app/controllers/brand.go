@@ -38,7 +38,7 @@ func GetBrands(ctx *app.HttpContext) error {
 	response, err := parameter.SelectColumns("b.id, b.created_at, b.updated_at,b.name,b.code, b.file_id, f.unique_file_name as file_name,f.file_type").
 		SearchColumns("b.name").
 		EachItemProcess(func(db *gorm.DB, t *appmodels.BrandOutPutModel) error {
-			t.FileUrl = models.GetFileUrl(t.FileType, t.FileName)
+			t.FileUrl = t.FileType.GetFileUrl(t.FileName)
 			return nil
 		}).
 		SortDescending("b.created_at", "b.name").
@@ -78,7 +78,7 @@ func GetBrand(ctx *app.HttpContext) error {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
-	brand.FileUrl = brand.FileType.GetDirectory() + "/" + brand.FileName
+	brand.FileUrl = brand.FileType.GetFileUrl(brand.FileName)
 
 	return ctx.JSON(brand, http.StatusOK)
 }

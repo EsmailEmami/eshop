@@ -42,21 +42,41 @@ func FileTypeFromInt(value int) (FileType, error) {
 		return 0, errors.New("invalid FileType value")
 	}
 }
-func (ft FileType) GetDirectory() string {
+func (ft FileType) GetInfo() (multiple, hasPriority bool, table, mapTable, foreignColumn, fileColumn, uploadDir string) {
 	switch ft {
 	case FileTypeSystematic:
-		return "uploads/systematic"
+		multiple = true
+		uploadDir = "uploads/systematic"
+
 	case FileTypeProduct:
-		return "uploads/product"
+		multiple = true
+		hasPriority = true
+		table = "product"
+		mapTable = "product_file_map"
+		foreignColumn = "product_id"
+		uploadDir = "uploads/product"
+
 	case FileTypeBrand:
-		return "uploads/brand"
+		table = "brand"
+		uploadDir = "uploads/brand"
+
 	case FileTypeAppPic:
-		return "uploads/app-pic"
+		table = "app_pic"
+		uploadDir = "uploads/app-pic"
+
 	default:
 		panic("invalid file type")
 	}
+
+	return
 }
 
-func GetFileUrl(ft FileType, uniqueFileName string) string {
-	return ft.GetDirectory() + "/" + uniqueFileName
+func (ft FileType) GetDirectory() string {
+	_, _, _, _, _, _, directory := ft.GetInfo()
+	return directory
+}
+
+func (ft FileType) GetFileUrl(fileName string) string {
+
+	return ft.GetDirectory() + "/" + fileName
 }

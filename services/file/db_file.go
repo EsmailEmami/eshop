@@ -11,77 +11,58 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetFilePath(file *models.File) string {
+func GetFilePhysicallyPath(file *models.File) string {
 	return GetPath(file.FileType.GetDirectory(), file.UniqueFileName)
 }
 
 func ValidateItem(db *gorm.DB, itemID uuid.UUID, fileType models.FileType) (multiple bool, err error) {
-	switch fileType {
-	case models.FileTypeSystematic:
-		return true, nil
-	case models.FileTypeProduct:
-		if !dbpkg.Exists(db, &models.Product{}, "id = ?", itemID) {
-			return true, fmt.Errorf("no item found with Id #%s", itemID.String())
-		}
+	multiple, _, table, _, _, _, _ := fileType.GetInfo()
 
-		return true, nil
-	case models.FileTypeBrand:
-		if !dbpkg.Exists(db, &models.Brand{}, "id = ?", itemID) {
-			return false, fmt.Errorf("no item found with Id #%s", itemID.String())
-		}
-
-		return false, nil
-	case models.FileTypeAppPic:
-		if !dbpkg.Exists(db, &models.AppPic{}, "id = ?", itemID) {
-			return false, fmt.Errorf("no item found with Id #%s", itemID.String())
-		}
-		return false, nil
-	default:
-		return true, fmt.Errorf("invalid file type")
+	if !dbpkg.ExistsTable(db, table, "id=? AND deleted_at IS NULL", itemID) {
+		err = fmt.Errorf("no item found with Id #%s", itemID.String())
 	}
+
+	return
 }
 
 func InsertItemFile(db, tx *gorm.DB, itemID uuid.UUID, fileType models.FileType, files ...*models.File) error {
-	switch fileType {
-	case models.FileTypeSystematic:
-		return nil
-	case models.FileTypeProduct:
-		mapItems := []models.ProductFileMap{}
+	multiple, hasPriority, table, mapTable, foreignColumn, fileColumn, _ := fileType.GetInfo()
 
-		var lastPriority int
-		if err := db.Model(&models.ProductFileMap{}).Where("product_id=?", itemID).
-			Select("priority").Order("priority DESC").First(&lastPriority).Error; err != nil {
-			if err != gorm.ErrRecordNotFound {
-				return err
+	if multiple {
+		var (
+			mapItems     = []map[string]interface{}{}
+			lastPriority = 0
+		)
+
+		if hasPriority {
+			if err := db.Table(mapTable).Where(foreignColumn+"=? AND deleted_at IS NULL", itemID).
+				Select("priority").Order("priority DESC").First(&lastPriority).Error; err != nil {
+				if err != gorm.ErrRecordNotFound {
+					return err
+				}
 			}
 		}
 
 		for _, file := range files {
-			lastPriority++
-			mapItems = append(mapItems, models.ProductFileMap{
-				ProductID: itemID,
-				FileID:    *file.ID,
-				Priority:  lastPriority,
-			})
+
+			mapItem := map[string]interface{}{
+				foreignColumn: itemID,
+				fileColumn:    *file.ID,
+				"id":          uuid.New(),
+			}
+
+			if hasPriority {
+				lastPriority++
+				mapItem["priority"] = lastPriority
+			}
+
+			mapItems = append(mapItems, mapItem)
 		}
 
-		return tx.CreateInBatches(mapItems, len(mapItems)).Error
-	case models.FileTypeBrand:
-
-		return tx.Model(&models.Brand{}).
-			Where("id = ?", itemID).
-			UpdateColumn("file_id", *files[0].ID).
-			Error
-
-	case models.FileTypeAppPic:
-
-		return tx.Model(&models.AppPic{}).
-			Where("id = ?", itemID).
-			UpdateColumn("file_id", *files[0].ID).
-			Error
-	default:
-		return nil
+		return tx.Table(mapTable).CreateInBatches(mapItems, len(mapItems)).Error
 	}
+
+	return tx.Model(table).Where("id = ?", itemID).UpdateColumn(fileColumn, *files[0].ID).Error
 }
 
 func GenrateFileWhereClause(
@@ -113,9 +94,9 @@ func DeleteFile(tx *gorm.DB, file *models.File) error {
 		return nil
 	}
 
-	path := GetFilePath(file)
+	path := GetFilePhysicallyPath(file)
 
-	if err := tx.Delete(&file).Error; err != nil {
+	if err := tx.Delete(file).Error; err != nil {
 		return err
 	}
 

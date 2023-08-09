@@ -7,11 +7,7 @@ import (
 	"path/filepath"
 )
 
-func UploadFile(
-	fh *multipart.FileHeader,
-	target string,
-	useRandomName, startFromRoot bool,
-) (uploadedFilePath, fileName string, err error) {
+func UploadFile(fh *multipart.FileHeader, target string, useRandomName, startFromRoot bool) (uploadedFilePath, fileName string, err error) {
 	uploadedFile, err := fh.Open()
 	if err != nil {
 		return "", "", err

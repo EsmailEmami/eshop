@@ -109,7 +109,7 @@ func GetProductsList(ctx *app.HttpContext) error {
 	}
 
 	for i, product := range data {
-		product.BrandFileUrl = models.GetFileUrl(product.BrandFileType, product.BrandFileName)
+		product.BrandFileUrl = product.BrandFileType.GetFileUrl(product.BrandFileName)
 		data[i] = product
 	}
 
@@ -147,7 +147,7 @@ func GetProduct(ctx *app.HttpContext) error {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	data.BrandFileUrl = models.GetFileUrl(data.BrandFileType, data.BrandFileName)
+	data.BrandFileUrl = data.BrandFileType.GetFileUrl(data.BrandFileName)
 
 	return ctx.JSON(data, http.StatusOK)
 }

@@ -98,7 +98,7 @@ func GetUserOrders(ctx *app.HttpContext) error {
 		}
 
 		for _, file := range files {
-			order.FileUrls = append(order.FileUrls, models.GetFileUrl(file.FileType, file.UniqueFileName))
+			order.FileUrls = append(order.FileUrls, file.FileType.GetFileUrl(file.UniqueFileName))
 		}
 
 		orders[i] = order
