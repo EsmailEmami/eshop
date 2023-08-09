@@ -14,3 +14,4 @@ deployments/secrets/REDIS_PASSWORD.txt
 deployments/secrets/POSTGRES_PASSWORD.txt
 deployments/data
 uploads/*
+TODO.txt
