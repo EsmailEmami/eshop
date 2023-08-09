@@ -142,7 +142,7 @@ func EditAppPic(ctx *app.HttpContext) error {
 		return errors.NewValidationError(consts.OrderAlreadyRegistered, nil)
 	}
 
-	if dbModel.FileID != inputModel.FileID {
+	if dbModel.FileID != *inputModel.FileID {
 		err := fileService.DeleteFile(baseTx, dbModel.File)
 
 		if err != nil {

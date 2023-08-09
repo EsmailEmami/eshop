@@ -16,7 +16,7 @@ import (
 type AppPicReqModel struct {
 	Title       string              `json:"title"`
 	Description string              `json:"description"`
-	FileID      uuid.UUID           `json:"fileId,omitempty"`
+	FileID      *uuid.UUID          `json:"fileId,omitempty"`
 	Priority    int                 `json:"priority"`
 	AppPicType  dbmodels.AppPicType `json:"appPicType"`
 }
@@ -31,11 +31,19 @@ func (model AppPicReqModel) ValidateCreate(db *gorm.DB) error {
 		validation.Field(&model.Description,
 			validation.By(validations.ClearText()),
 		),
-		validation.Field(&model.AppPicType,
-			validation.Required.Error(consts.Required),
-		),
 		validation.Field(&model.Priority,
 			validation.Required.Error(consts.Required),
+		),
+		validation.Field(&model.FileID,
+			validation.By(func(value interface{}) error {
+				if value.(*uuid.UUID) != nil {
+					if !dbpkg.Exists(db, &dbmodels.File{}, "id", value) {
+						return errors.New(consts.ModelFileNotFound)
+					}
+				}
+
+				return nil
+			}),
 		),
 	)
 }
@@ -49,9 +57,6 @@ func (model AppPicReqModel) ValidateUpdate(db *gorm.DB) error {
 		),
 		validation.Field(&model.Description,
 			validation.By(validations.ClearText()),
-		),
-		validation.Field(&model.AppPicType,
-			validation.Required.Error(consts.Required),
 		),
 		validation.Field(&model.Priority,
 			validation.Required.Error(consts.Required),
@@ -85,7 +90,7 @@ func (model *AppPicReqModel) ToDBModel() *dbmodels.AppPic {
 func (model *AppPicReqModel) MergeWithDBData(dbmodel *dbmodels.AppPic) {
 	dbmodel.Title = model.Title
 	dbmodel.Description = model.Description
-	dbmodel.FileID = model.FileID
+	dbmodel.FileID = *model.FileID
 	dbmodel.Priority = model.Priority
 	dbmodel.AppPicType = model.AppPicType
 }

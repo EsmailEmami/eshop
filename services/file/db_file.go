@@ -3,6 +3,7 @@ package file
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/esmailemami/eshop/consts"
 	dbpkg "github.com/esmailemami/eshop/db"
@@ -16,7 +17,7 @@ func GetFilePhysicallyPath(file *models.File) string {
 }
 
 func ValidateItem(db *gorm.DB, itemID uuid.UUID, fileType models.FileType) (multiple bool, err error) {
-	multiple, _, table, _, _, _, _ := fileType.GetInfo()
+	multiple, _, table, _, _, _, _, _ := fileType.GetInfo()
 
 	if !dbpkg.ExistsTable(db, table, "id=? AND deleted_at IS NULL", itemID) {
 		err = fmt.Errorf("no item found with Id #%s", itemID.String())
@@ -26,7 +27,7 @@ func ValidateItem(db *gorm.DB, itemID uuid.UUID, fileType models.FileType) (mult
 }
 
 func InsertItemFile(db, tx *gorm.DB, itemID uuid.UUID, fileType models.FileType, files ...*models.File) error {
-	multiple, hasPriority, table, mapTable, foreignColumn, fileColumn, _ := fileType.GetInfo()
+	multiple, hasPriority, table, mapTable, foreignColumn, fileColumn, priorityColumn, _ := fileType.GetInfo()
 
 	if multiple {
 		var (
@@ -35,8 +36,8 @@ func InsertItemFile(db, tx *gorm.DB, itemID uuid.UUID, fileType models.FileType,
 		)
 
 		if hasPriority {
-			if err := db.Table(mapTable).Where(foreignColumn+"=? AND deleted_at IS NULL", itemID).
-				Select("priority").Order("priority DESC").First(&lastPriority).Error; err != nil {
+			if err := db.Table(mapTable).Where(foreignColumn+"=?", itemID).Order(priorityColumn + " DESC").
+				Select(priorityColumn).Find(&lastPriority).Limit(1).Error; err != nil {
 				if err != gorm.ErrRecordNotFound {
 					return err
 				}
@@ -48,7 +49,6 @@ func InsertItemFile(db, tx *gorm.DB, itemID uuid.UUID, fileType models.FileType,
 			mapItem := map[string]interface{}{
 				foreignColumn: itemID,
 				fileColumn:    *file.ID,
-				"id":          uuid.New(),
 			}
 
 			if hasPriority {
@@ -62,30 +62,7 @@ func InsertItemFile(db, tx *gorm.DB, itemID uuid.UUID, fileType models.FileType,
 		return tx.Table(mapTable).CreateInBatches(mapItems, len(mapItems)).Error
 	}
 
-	return tx.Model(table).Where("id = ?", itemID).UpdateColumn(fileColumn, *files[0].ID).Error
-}
-
-func GenrateFileWhereClause(
-	db *gorm.DB,
-	itemID uuid.UUID,
-	fileType models.FileType,
-) (*gorm.DB, bool) {
-	switch fileType {
-	case models.FileTypeSystematic:
-		return nil, false
-	case models.FileTypeProduct:
-		return db.Model(&models.ProductFileMap{}).
-				Where("product_id = ?", itemID).
-				Order("priority ASC").
-				Select("file_id"),
-			true
-	case models.FileTypeBrand:
-		return db.Model(&models.Brand{}).Where("id = ?", itemID).Select("file_id"), true
-	case models.FileTypeAppPic:
-		return db.Model(&models.AppPic{}).Where("id = ?", itemID).Select("file_id"), true
-	default:
-		return nil, false
-	}
+	return tx.Table(table).Where("id = ?", itemID).UpdateColumn(fileColumn, *files[0].ID).Error
 }
 
 func DeleteFile(tx *gorm.DB, file *models.File) error {
@@ -108,31 +85,40 @@ func ChangeFilePriority(db, tx *gorm.DB, itemID, fileID uuid.UUID, fileType mode
 		return errors.New(consts.InvalidPriority)
 	}
 
-	switch fileType {
-	case models.FileTypeProduct:
+	multiple, hasPriority, _, mapTable, foreignColumn, fileColumn, priorityColumn, _ := fileType.GetInfo()
 
-		if dbpkg.Exists(db, &models.ProductFileMap{}, "priority=? AND product_id=? AND file_id=?", priority, itemID, fileID) {
-			return nil
-		}
-
-		// update existed items priority
-		if dbpkg.Exists(db, &models.ProductFileMap{}, "priority=? AND product_id=?", priority, itemID) {
-			if err := tx.Model(&models.ProductFileMap{}).
-				Where("product_id = ? AND priority >= ?", itemID, priority).
-				Update("priority", gorm.Expr("priority + 1")).Error; err != nil {
-				return err
-			}
-		}
-
-		// update selected file priority
-		if err := tx.Model(&models.ProductFileMap{}).
-			Where("product_id = ? AND file_id >= ?", itemID, fileID).
-			Update("priority", priority).Error; err != nil {
-			return err
-		}
-
-		return nil
-	default:
+	if !multiple || !hasPriority {
 		return nil
 	}
+
+	// ignore it
+	if dbpkg.ExistsTable(db, mapTable, generateStrWhere(priorityColumn, foreignColumn, fileColumn), priority, itemID, fileID) {
+		return nil
+	}
+
+	// move +1 existed items priority
+	if dbpkg.Exists(db, mapTable, generateStrWhere(priorityColumn, foreignColumn), priority, itemID) {
+		if err := tx.Table(mapTable).
+			Where(foreignColumn+"=? AND "+priorityColumn+">=?", itemID, priority).
+			Update(priorityColumn, gorm.Expr(priorityColumn+"+1")).Error; err != nil {
+			return err
+		}
+	}
+
+	// update selected file priority
+	if err := tx.Table(mapTable).
+		Where(generateStrWhere(foreignColumn, fileColumn), itemID, fileID).
+		Update("priority", priority).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func generateStrWhere(columns ...string) string {
+	placeholders := make([]string, len(columns))
+	for i, col := range columns {
+		placeholders[i] = col + "=?"
+	}
+	return strings.Join(placeholders, " AND ")
 }

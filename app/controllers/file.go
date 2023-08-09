@@ -299,11 +299,7 @@ func GetItemFiles(ctx *app.HttpContext) error {
 		return errors.NewBadRequestError(err.Error(), err)
 	}
 
-	whereClause, ok := service.GenrateFileWhereClause(baseDB, itemID, fileType)
-
-	if !ok {
-		return errors.NewBadRequestError("invalid item for get files", nil)
-	}
+	whereClause := fileType.GenerateWhereClause(baseDB, itemID)
 
 	var files []appmodels.FileOutPutModel
 

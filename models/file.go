@@ -1,6 +1,11 @@
 package models
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
 
 type File struct {
 	Model
@@ -42,7 +47,12 @@ func FileTypeFromInt(value int) (FileType, error) {
 		return 0, errors.New("invalid FileType value")
 	}
 }
-func (ft FileType) GetInfo() (multiple, hasPriority bool, table, mapTable, foreignColumn, fileColumn, uploadDir string) {
+func (ft FileType) GetInfo() (multiple, hasPriority bool, table, mapTable, foreignColumn, fileColumn, priorityColumn, uploadDir string) {
+	// default values
+	fileColumn = "file_id"
+	priorityColumn = "priority"
+	multiple = false
+
 	switch ft {
 	case FileTypeSystematic:
 		multiple = true
@@ -63,20 +73,41 @@ func (ft FileType) GetInfo() (multiple, hasPriority bool, table, mapTable, forei
 	case FileTypeAppPic:
 		table = "app_pic"
 		uploadDir = "uploads/app-pic"
+		hasPriority = true
 
 	default:
 		panic("invalid file type")
+	}
+
+	if !multiple && hasPriority {
+		mapTable = table
 	}
 
 	return
 }
 
 func (ft FileType) GetDirectory() string {
-	_, _, _, _, _, _, directory := ft.GetInfo()
+	_, _, _, _, _, _, _, directory := ft.GetInfo()
 	return directory
 }
 
 func (ft FileType) GetFileUrl(fileName string) string {
 
 	return ft.GetDirectory() + "/" + fileName
+}
+
+func (ft FileType) GenerateWhereClause(db *gorm.DB, itemID uuid.UUID) *gorm.DB {
+	multiple, hasPriority, table, mapTable, foreignColumn, fileColumn, priorityColumn, _ := ft.GetInfo()
+
+	if multiple {
+		db = db.Table(mapTable).Where(foreignColumn+"=?", itemID)
+	} else {
+		db = db.Table(table).Where("id=?", itemID)
+	}
+
+	if hasPriority {
+		db = db.Order(priorityColumn + " ASC")
+	}
+
+	return db.Select(fileColumn)
 }
