@@ -2628,7 +2628,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/helpers.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessDBResponse"
                         }
                     },
                     "400": {
@@ -4108,6 +4108,15 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "helpers.SuccessDBResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "helpers.SuccessResponse": {
             "type": "object",
             "properties": {

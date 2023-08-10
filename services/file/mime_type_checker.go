@@ -85,10 +85,7 @@ func IsValidUploadedSvgFile(fileToUpload *multipart.FileHeader) bool {
 	defer uploadedFile.Close()
 	var svg any
 	err = xml.NewDecoder(uploadedFile).Decode(&svg)
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }
 
 func GetMimeType(fh *multipart.FileHeader) string {

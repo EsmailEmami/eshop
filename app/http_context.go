@@ -38,6 +38,16 @@ func (ctx *HttpContext) QuickResponse(message string, statusCode int) error {
 	return ctx.JSON(res, statusCode)
 }
 
+func (ctx *HttpContext) QuickDBResponse(message string, data any, statusCode int) error {
+	ctx.ResponseWriter.Header().Set("Content-Type", "application/json")
+
+	res := helpers.SuccessDBResponse{
+		Message: message,
+		Data:    data,
+	}
+	return ctx.JSON(res, statusCode)
+}
+
 func (ctx *HttpContext) JSON(object interface{}, statusCode int) error {
 	ctx.ResponseWriter.WriteHeader(statusCode)
 	ctx.ResponseWriter.Header().Set("Content-Type", "application/json")
