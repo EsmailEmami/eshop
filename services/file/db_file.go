@@ -37,7 +37,7 @@ func InsertItemFile(db, tx *gorm.DB, itemID uuid.UUID, fileType models.FileType,
 
 		if hasPriority {
 			if err := db.Table(mapTable).Where(foreignColumn+"=?", itemID).Order(priorityColumn + " DESC").
-				Select(priorityColumn).Find(&lastPriority).Limit(1).Error; err != nil {
+				Select(priorityColumn).Limit(1).Find(&lastPriority).Error; err != nil {
 				if err != gorm.ErrRecordNotFound {
 					return err
 				}
@@ -53,7 +53,7 @@ func InsertItemFile(db, tx *gorm.DB, itemID uuid.UUID, fileType models.FileType,
 
 			if hasPriority {
 				lastPriority++
-				mapItem["priority"] = lastPriority
+				mapItem[priorityColumn] = lastPriority
 			}
 
 			mapItems = append(mapItems, mapItem)
@@ -97,10 +97,10 @@ func ChangeFilePriority(db, tx *gorm.DB, itemID, fileID uuid.UUID, fileType mode
 	}
 
 	// move +1 existed items priority
-	if dbpkg.Exists(db, mapTable, generateStrWhere(priorityColumn, foreignColumn), priority, itemID) {
+	if dbpkg.ExistsTable(db, mapTable, generateStrWhere(priorityColumn, foreignColumn), priority, itemID) {
 		if err := tx.Table(mapTable).
 			Where(foreignColumn+"=? AND "+priorityColumn+">=?", itemID, priority).
-			Update(priorityColumn, gorm.Expr(priorityColumn+"+1")).Error; err != nil {
+			Update(priorityColumn, gorm.Expr(priorityColumn+" + 1")).Error; err != nil {
 			return err
 		}
 	}
@@ -108,7 +108,7 @@ func ChangeFilePriority(db, tx *gorm.DB, itemID, fileID uuid.UUID, fileType mode
 	// update selected file priority
 	if err := tx.Table(mapTable).
 		Where(generateStrWhere(foreignColumn, fileColumn), itemID, fileID).
-		Update("priority", priority).Error; err != nil {
+		Update(priorityColumn, priority).Error; err != nil {
 		return err
 	}
 
