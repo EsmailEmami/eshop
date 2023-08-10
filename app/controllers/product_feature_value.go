@@ -26,7 +26,7 @@ import (
 // @Success 200 {object} parameter.ListResponse[appmodels.ProductFeatureValueOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureValue [get]
+// @Router /admin/productFeatureValue [get]
 func GetProductFeatureValues(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Model(&models.ProductFeatureValue{})
 	parameter := parameter.New[appmodels.ProductFeatureValueOutPutModel](ctx, baseDB)
@@ -61,7 +61,7 @@ func GetProductFeatureValues(ctx *app.HttpContext) error {
 // @Success 200 {object} appmodels.ProductFeatureValueOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureValue/{id} [get]
+// @Router /admin/productFeatureValue/{id} [get]
 func GetProductFeatureValue(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -89,7 +89,7 @@ func GetProductFeatureValue(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureValue/{productId}  [post]
+// @Router /admin/productFeatureValue/{productId}  [post]
 func CreateProductFeatureValue(ctx *app.HttpContext) error {
 	productId, err := uuid.Parse(ctx.GetPathParam("productId"))
 
@@ -143,7 +143,7 @@ func CreateProductFeatureValue(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureValue/delete/{id}  [post]
+// @Router /admin/productFeatureValue/delete/{id}  [post]
 func DeleteProductFeatureValue(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 	if err != nil {

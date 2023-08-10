@@ -1282,6 +1282,25 @@ definitions:
       total:
         type: integer
     type: object
+  parameter.ListResponse-models_CommentOutPutModel:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.CommentOutPutModel'
+        type: array
+      from:
+        type: integer
+      last_page:
+        type: integer
+      limit:
+        type: integer
+      page:
+        type: integer
+      to:
+        type: integer
+      total:
+        type: integer
+    type: object
   parameter.ListResponse-models_ProductFeatureCategoryOutPutModel:
     properties:
       data:
@@ -1380,10 +1399,16 @@ definitions:
 info:
   contact: {}
 paths:
-  /address:
+  /admin/address/{userId}:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1407,194 +1432,7 @@ paths:
       - Bearer: []
       tags:
       - Addresses
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Address model
-        in: body
-        name: Address
-        required: true
-        schema:
-          $ref: '#/definitions/models.AddressReqModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Addresses
-  /address/{id}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Record ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.AddressOutPutModel'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Addresses
-  /address/delete/{id}:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Record ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Addresses
-  /address/edit/{id}:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Record ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Address model
-        in: body
-        name: Address
-        required: true
-        schema:
-          $ref: '#/definitions/models.AddressReqModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Addresses
-  /admin/product/{id}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Record ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ProductAdminOutPutModel'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Products
-  /appPic:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.AppPicOutPutModel'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - AppPics
+  /admin/appPic:
     post:
       consumes:
       - application/json
@@ -1626,7 +1464,7 @@ paths:
       - Bearer: []
       tags:
       - AppPics
-  /appPic/{id}:
+  /admin/appPic/{id}:
     get:
       consumes:
       - application/json
@@ -1657,7 +1495,7 @@ paths:
       - Bearer: []
       tags:
       - AppPics
-  /appPic/delete/{id}:
+  /admin/appPic/delete/{id}:
     post:
       consumes:
       - application/json
@@ -1688,7 +1526,7 @@ paths:
       - Bearer: []
       tags:
       - AppPics
-  /appPic/edit/{id}:
+  /admin/appPic/edit/{id}:
     post:
       consumes:
       - application/json
@@ -1725,36 +1563,7 @@ paths:
       - Bearer: []
       tags:
       - AppPics
-  /auth/is_authenticated:
-    get:
-      consumes:
-      - application/json
-      description: Returns the logged in user.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.User'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      summary: Returns the logged in user
-      tags:
-      - Auth
-  /auth/login:
+  /admin/auth/login:
     post:
       consumes:
       - application/json
@@ -1786,143 +1595,7 @@ paths:
       summary: Log user in
       tags:
       - Auth
-  /auth/logout:
-    get:
-      consumes:
-      - application/json
-      description: Logout the user.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      summary: Logout the user.
-      tags:
-      - Auth
-  /auth/recoveryPasword:
-    post:
-      consumes:
-      - application/json
-      description: recovery user password.
-      parameters:
-      - description: Recovery password model
-        in: body
-        name: RecoveryPasswordInput
-        required: true
-        schema:
-          $ref: '#/definitions/models.RecoveryPasswordReqModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      summary: recovery user password.
-      tags:
-      - Auth
-  /auth/recoveryPasword/{key}:
-    post:
-      consumes:
-      - application/json
-      description: recovery user password.
-      parameters:
-      - description: key
-        in: path
-        name: key
-        required: true
-        type: string
-      - description: Recovery password model
-        in: body
-        name: RecoveryPasswordInput
-        required: true
-        schema:
-          $ref: '#/definitions/models.RecoveryPasswordModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      summary: recovery user password.
-      tags:
-      - Auth
-  /auth/register:
-    post:
-      consumes:
-      - application/json
-      description: register a new user.
-      parameters:
-      - description: Register input model
-        in: body
-        name: RegisterInput
-        required: true
-        schema:
-          $ref: '#/definitions/models.RegisterInputModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      summary: a new user.
-      tags:
-      - Auth
-  /brand:
+  /admin/brand:
     get:
       consumes:
       - application/json
@@ -1991,7 +1664,7 @@ paths:
       - Bearer: []
       tags:
       - Brands
-  /brand/{id}:
+  /admin/brand/{id}:
     get:
       consumes:
       - application/json
@@ -2022,7 +1695,7 @@ paths:
       - Bearer: []
       tags:
       - Brands
-  /brand/delete/{id}:
+  /admin/brand/delete/{id}:
     post:
       consumes:
       - application/json
@@ -2053,7 +1726,7 @@ paths:
       - Bearer: []
       tags:
       - Brands
-  /brand/edit/{id}:
+  /admin/brand/edit/{id}:
     post:
       consumes:
       - application/json
@@ -2090,7 +1763,7 @@ paths:
       - Bearer: []
       tags:
       - Brands
-  /category:
+  /admin/category:
     get:
       consumes:
       - application/json
@@ -2159,7 +1832,7 @@ paths:
       - Bearer: []
       tags:
       - Categories
-  /category/{id}:
+  /admin/category/{id}:
     get:
       consumes:
       - application/json
@@ -2190,7 +1863,7 @@ paths:
       - Bearer: []
       tags:
       - Categories
-  /category/delete/{id}:
+  /admin/category/delete/{id}:
     post:
       consumes:
       - application/json
@@ -2221,7 +1894,7 @@ paths:
       - Bearer: []
       tags:
       - Categories
-  /category/edit/{id}:
+  /admin/category/edit/{id}:
     post:
       consumes:
       - application/json
@@ -2258,7 +1931,7 @@ paths:
       - Bearer: []
       tags:
       - Categories
-  /color:
+  /admin/color:
     get:
       consumes:
       - application/json
@@ -2327,7 +2000,7 @@ paths:
       - Bearer: []
       tags:
       - Colors
-  /color/{id}:
+  /admin/color/{id}:
     get:
       consumes:
       - application/json
@@ -2358,7 +2031,7 @@ paths:
       - Bearer: []
       tags:
       - Colors
-  /color/delete/{id}:
+  /admin/color/delete/{id}:
     post:
       consumes:
       - application/json
@@ -2389,7 +2062,7 @@ paths:
       - Bearer: []
       tags:
       - Colors
-  /color/edit/{id}:
+  /admin/color/edit/{id}:
     post:
       consumes:
       - application/json
@@ -2426,556 +2099,7 @@ paths:
       - Bearer: []
       tags:
       - Colors
-  /comment:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Product ID
-        in: query
-        name: productId
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.CommentOutPutModel'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Comments
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Comment model
-        in: body
-        name: Comment
-        required: true
-        schema:
-          $ref: '#/definitions/models.CommentReqModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Comments
-  /comment/{id}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Record ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.CommentOutPutModel'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Comments
-  /comment/delete/{id}:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Record ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Comments
-  /comment/edit/{id}:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Record ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Comment model
-        in: body
-        name: Comment
-        required: true
-        schema:
-          $ref: '#/definitions/models.CommentReqModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Comments
-  /favoriteProductItem:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: FavoriteProductItem model
-        in: body
-        name: FavoriteProductItem
-        required: true
-        schema:
-          $ref: '#/definitions/models.FavoriteProductItemReqModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - FavoriteProductItems
-  /favoriteProductItem/delete/{productItemId}:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Product Item ID
-        in: path
-        name: productItemId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - FavoriteProductItems
-  /file/{fileId}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: file ID
-        in: path
-        name: fileId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Files
-  /file/{itemId}/{fileType}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: item ID
-        in: path
-        name: itemId
-        required: true
-        type: string
-      - description: file Type
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        in: path
-        name: fileType
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.FileOutPutModel'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Files
-  /file/changePriority/{fileId}/{itemId}/{priority}:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: file ID
-        in: path
-        name: fileId
-        required: true
-        type: string
-      - description: item ID
-        in: path
-        name: itemId
-        required: true
-        type: string
-      - description: priority
-        in: path
-        name: priority
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Files
-  /file/delete/{fileId}:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: file ID
-        in: path
-        name: fileId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Files
-  /file/stream/{fileId}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: file ID
-        in: path
-        name: fileId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Files
-  /file/uploadImage/{itemId}/{fileType}:
-    post:
-      consumes:
-      - application/json
-      description: Uploads an image file to the server.
-      parameters:
-      - description: item ID
-        in: path
-        name: itemId
-        required: true
-        type: string
-      - description: file Type
-        enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        in: path
-        name: fileType
-        required: true
-        type: integer
-      - description: Image file to be uploaded
-        in: formData
-        name: file
-        required: true
-        type: file
-      produces:
-      - application/json
-      responses:
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      summary: Upload an image file
-      tags:
-      - Files
-  /order:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.OrderOutPutModel'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Orders
-  /order/checkout/{addressId}:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Record ID
-        in: path
-        name: addressId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Orders
-  /orderItem:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: OrderItem model
-        in: body
-        name: OrderItem
-        required: true
-        schema:
-          $ref: '#/definitions/models.OrderItemReqModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - OrderItems
-  /orderItem/delete/{productItemId}:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Product Item ID
-        in: path
-        name: productItemId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - OrderItems
-  /product:
+  /admin/comment:
     get:
       consumes:
       - application/json
@@ -2992,29 +2116,48 @@ paths:
         in: query
         name: searchTerm
         type: string
-      - description: Category ID
+      - description: Product ID
         in: query
-        name: categoryId
+        name: productId
         type: string
-      - description: Brand ID
+      - description: User ID
         in: query
-        name: brandId
+        name: userId
         type: string
-      - description: Min Price
-        in: query
-        name: minPrice
-        type: number
-      - description: Max Price
-        in: query
-        name: maxPrice
-        type: number
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/parameter.ListResponse-models_ProductWithItemOutPutModel'
+            $ref: '#/definitions/parameter.ListResponse-models_CommentOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Comments
+  /admin/product:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ProductOutPutModel'
+            type: array
         "400":
           description: Bad Request
           schema:
@@ -3060,7 +2203,7 @@ paths:
       - Bearer: []
       tags:
       - Products
-  /product/{id}:
+  /admin/product/{id}:
     get:
       consumes:
       - application/json
@@ -3076,7 +2219,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ProductOutPutModel'
+            $ref: '#/definitions/models.ProductAdminOutPutModel'
         "400":
           description: Bad Request
           schema:
@@ -3091,7 +2234,7 @@ paths:
       - Bearer: []
       tags:
       - Products
-  /product/delete/{id}:
+  /admin/product/delete/{id}:
     post:
       consumes:
       - application/json
@@ -3122,7 +2265,7 @@ paths:
       - Bearer: []
       tags:
       - Products
-  /product/edit/{id}:
+  /admin/product/edit/{id}:
     post:
       consumes:
       - application/json
@@ -3159,80 +2302,7 @@ paths:
       - Bearer: []
       tags:
       - Products
-  /product/list:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.ProductOutPutModel'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Products
-  /product/suggestions:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: page size
-        in: query
-        name: page
-        type: string
-      - description: length of records to show
-        in: query
-        name: limit
-        type: string
-      - description: search for item
-        in: query
-        name: searchTerm
-        type: string
-      - description: Category ID
-        in: query
-        name: categoryId
-        type: string
-      - description: Brand ID
-        in: query
-        name: brandId
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/parameter.ListResponse-models_SuggestionProductOutPutModel'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Products
-  /productFeatureCategory:
+  /admin/productFeatureCategory:
     get:
       consumes:
       - application/json
@@ -3301,7 +2371,7 @@ paths:
       - Bearer: []
       tags:
       - ProductFeatureCategories
-  /productFeatureCategory/{id}:
+  /admin/productFeatureCategory/{id}:
     get:
       consumes:
       - application/json
@@ -3332,7 +2402,7 @@ paths:
       - Bearer: []
       tags:
       - ProductFeatureCategories
-  /productFeatureCategory/delete/{id}:
+  /admin/productFeatureCategory/delete/{id}:
     post:
       consumes:
       - application/json
@@ -3363,7 +2433,7 @@ paths:
       - Bearer: []
       tags:
       - ProductFeatureCategories
-  /productFeatureCategory/edit/{id}:
+  /admin/productFeatureCategory/edit/{id}:
     post:
       consumes:
       - application/json
@@ -3400,7 +2470,7 @@ paths:
       - Bearer: []
       tags:
       - ProductFeatureCategories
-  /productFeatureKey:
+  /admin/productFeatureKey:
     get:
       consumes:
       - application/json
@@ -3469,7 +2539,7 @@ paths:
       - Bearer: []
       tags:
       - ProductFeatureKeys
-  /productFeatureKey/{id}:
+  /admin/productFeatureKey/{id}:
     get:
       consumes:
       - application/json
@@ -3500,7 +2570,7 @@ paths:
       - Bearer: []
       tags:
       - ProductFeatureKeys
-  /productFeatureKey/delete/{id}:
+  /admin/productFeatureKey/delete/{id}:
     post:
       consumes:
       - application/json
@@ -3531,7 +2601,7 @@ paths:
       - Bearer: []
       tags:
       - ProductFeatureKeys
-  /productFeatureKey/edit/{id}:
+  /admin/productFeatureKey/edit/{id}:
     post:
       consumes:
       - application/json
@@ -3568,7 +2638,7 @@ paths:
       - Bearer: []
       tags:
       - ProductFeatureKeys
-  /productFeatureValue:
+  /admin/productFeatureValue:
     get:
       consumes:
       - application/json
@@ -3614,7 +2684,7 @@ paths:
       - Bearer: []
       tags:
       - ProductFeatureValues
-  /productFeatureValue/{id}:
+  /admin/productFeatureValue/{id}:
     get:
       consumes:
       - application/json
@@ -3645,7 +2715,7 @@ paths:
       - Bearer: []
       tags:
       - ProductFeatureValues
-  /productFeatureValue/{productId}:
+  /admin/productFeatureValue/{productId}:
     post:
       consumes:
       - application/json
@@ -3684,7 +2754,7 @@ paths:
       - Bearer: []
       tags:
       - ProductFeatureValues
-  /productFeatureValue/delete/{id}:
+  /admin/productFeatureValue/delete/{id}:
     post:
       consumes:
       - application/json
@@ -3715,7 +2785,7 @@ paths:
       - Bearer: []
       tags:
       - ProductFeatureValues
-  /productItem:
+  /admin/productItem:
     post:
       consumes:
       - application/json
@@ -3747,38 +2817,7 @@ paths:
       - Bearer: []
       tags:
       - ProductItems
-  /productItem/{id}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Record ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ProductItemInfoOutPutModel'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - ProductItems
-  /productItem/delete/{id}:
+  /admin/productItem/delete/{id}:
     post:
       consumes:
       - application/json
@@ -3809,7 +2848,7 @@ paths:
       - Bearer: []
       tags:
       - ProductItems
-  /productItem/edit/{id}:
+  /admin/productItem/edit/{id}:
     post:
       consumes:
       - application/json
@@ -3846,7 +2885,7 @@ paths:
       - Bearer: []
       tags:
       - ProductItems
-  /productItem/product/{productId}:
+  /admin/productItem/product/{productId}:
     get:
       consumes:
       - application/json
@@ -3879,7 +2918,1240 @@ paths:
       - Bearer: []
       tags:
       - ProductItems
-  /user:
+  /admin/profile/favoriteProducts/{userId}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      - description: Category ID
+        in: query
+        name: categoryId
+        type: string
+      - description: Brand ID
+        in: query
+        name: brandId
+        type: string
+      - description: Min Price
+        in: query
+        name: minPrice
+        type: number
+      - description: Max Price
+        in: query
+        name: maxPrice
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_ProductWithItemOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Users
+  /admin/profile/orders/{userId}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.UserOrderOutPutModel'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Users
+  /user/address:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.AddressOutPutModel'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Addresses
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Address model
+        in: body
+        name: Address
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddressReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Addresses
+  /user/address/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AddressOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Addresses
+  /user/address/delete/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Addresses
+  /user/address/edit/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Address model
+        in: body
+        name: Address
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddressReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Addresses
+  /user/appPic:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.AppPicOutPutModel'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - AppPics
+  /user/auth/is_authenticated:
+    get:
+      consumes:
+      - application/json
+      description: Returns the logged in user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Returns the logged in user
+      tags:
+      - Auth
+  /user/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Log user in
+      parameters:
+      - description: Login input model
+        in: body
+        name: loginInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginInputModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoginOutputModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Log user in
+      tags:
+      - Auth
+  /user/auth/logout:
+    get:
+      consumes:
+      - application/json
+      description: Logout the user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Logout the user.
+      tags:
+      - Auth
+  /user/auth/recoveryPasword:
+    post:
+      consumes:
+      - application/json
+      description: recovery user password.
+      parameters:
+      - description: Recovery password model
+        in: body
+        name: RecoveryPasswordInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.RecoveryPasswordReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: recovery user password.
+      tags:
+      - Auth
+  /user/auth/recoveryPasword/{key}:
+    post:
+      consumes:
+      - application/json
+      description: recovery user password.
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: Recovery password model
+        in: body
+        name: RecoveryPasswordInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.RecoveryPasswordModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: recovery user password.
+      tags:
+      - Auth
+  /user/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: register a new user.
+      parameters:
+      - description: Register input model
+        in: body
+        name: RegisterInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterInputModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: a new user.
+      tags:
+      - Auth
+  /user/comment:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_CommentOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Comments
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Comment model
+        in: body
+        name: Comment
+        required: true
+        schema:
+          $ref: '#/definitions/models.CommentReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Comments
+  /user/comment/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CommentOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Comments
+  /user/comment/delete/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Comments
+  /user/comment/edit/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Comment model
+        in: body
+        name: Comment
+        required: true
+        schema:
+          $ref: '#/definitions/models.CommentReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Comments
+  /user/comment/product/{productId}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Product ID
+        in: path
+        name: productId
+        required: true
+        type: string
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_CommentOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Comments
+  /user/favoriteProductItem:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: FavoriteProductItem model
+        in: body
+        name: FavoriteProductItem
+        required: true
+        schema:
+          $ref: '#/definitions/models.FavoriteProductItemReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - FavoriteProductItems
+  /user/favoriteProductItem/delete/{productItemId}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Product Item ID
+        in: path
+        name: productItemId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - FavoriteProductItems
+  /user/file/{fileId}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: file ID
+        in: path
+        name: fileId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Files
+  /user/file/{itemId}/{fileType}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: item ID
+        in: path
+        name: itemId
+        required: true
+        type: string
+      - description: file Type
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        in: path
+        name: fileType
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.FileOutPutModel'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Files
+  /user/file/changePriority/{fileId}/{itemId}/{priority}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: file ID
+        in: path
+        name: fileId
+        required: true
+        type: string
+      - description: item ID
+        in: path
+        name: itemId
+        required: true
+        type: string
+      - description: priority
+        in: path
+        name: priority
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Files
+  /user/file/delete/{fileId}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: file ID
+        in: path
+        name: fileId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Files
+  /user/file/stream/{fileId}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: file ID
+        in: path
+        name: fileId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Files
+  /user/file/uploadImage/{itemId}/{fileType}:
+    post:
+      consumes:
+      - application/json
+      description: Uploads an image file to the server.
+      parameters:
+      - description: item ID
+        in: path
+        name: itemId
+        required: true
+        type: string
+      - description: file Type
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        in: path
+        name: fileType
+        required: true
+        type: integer
+      - description: Image file to be uploaded
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Upload an image file
+      tags:
+      - Files
+  /user/order:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OrderOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Orders
+  /user/order/checkout/{addressId}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: addressId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Orders
+  /user/orderItem:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: OrderItem model
+        in: body
+        name: OrderItem
+        required: true
+        schema:
+          $ref: '#/definitions/models.OrderItemReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - OrderItems
+  /user/orderItem/delete/{productItemId}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Product Item ID
+        in: path
+        name: productItemId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - OrderItems
+  /user/product:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      - description: Category ID
+        in: query
+        name: categoryId
+        type: string
+      - description: Brand ID
+        in: query
+        name: brandId
+        type: string
+      - description: Min Price
+        in: query
+        name: minPrice
+        type: number
+      - description: Max Price
+        in: query
+        name: maxPrice
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_ProductWithItemOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Products
+  /user/product/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ProductOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Products
+  /user/product/suggestions:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      - description: Category ID
+        in: query
+        name: categoryId
+        type: string
+      - description: Brand ID
+        in: query
+        name: brandId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_SuggestionProductOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Products
+  /user/productItem/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ProductItemInfoOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductItems
+  /user/profile:
     get:
       consumes:
       - application/json
@@ -3904,7 +4176,7 @@ paths:
       - Bearer: []
       tags:
       - Users
-  /user/favoriteProducts:
+  /user/profile/favoriteProducts:
     get:
       consumes:
       - application/json
@@ -3958,7 +4230,7 @@ paths:
       - Bearer: []
       tags:
       - Users
-  /user/orders:
+  /user/profile/orders:
     get:
       consumes:
       - application/json

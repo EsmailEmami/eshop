@@ -22,7 +22,7 @@ import (
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /orderItem  [post]
+// @Router /user/orderItem  [post]
 func CreateOrderItem(ctx *app.HttpContext) error {
 	var inputModel appmodels.OrderItemReqModel
 
@@ -104,7 +104,7 @@ func CreateOrderItem(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /orderItem/delete/{productItemId}  [post]
+// @Router /user/orderItem/delete/{productItemId}  [post]
 func DeleteOrderItem(ctx *app.HttpContext) error {
 	productItemID, err := uuid.Parse(ctx.GetPathParam("productItemId"))
 	if err != nil {

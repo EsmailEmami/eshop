@@ -18,7 +18,7 @@ func Permitted(actions ...string) func(ctx *app.HttpContext) error {
 		permitted := false
 
 		// load token's related user
-		user, ok := ctx.Request.Context().Value(consts.UserContext).(*models.User)
+		user, ok := ctx.Request.Context().Value(consts.UserContext).(models.User)
 		if !ok {
 			return errors.NewUnauthorizedError(consts.UnauthorizedError, nil)
 		}

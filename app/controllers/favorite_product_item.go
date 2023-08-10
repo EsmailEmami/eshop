@@ -21,7 +21,7 @@ import (
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /favoriteProductItem  [post]
+// @Router /user/favoriteProductItem  [post]
 func CreateFavoriteProductItem(ctx *app.HttpContext) error {
 	user, err := ctx.GetUser()
 	if err != nil {
@@ -61,7 +61,7 @@ func CreateFavoriteProductItem(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /favoriteProductItem/delete/{productItemId}  [post]
+// @Router /user/favoriteProductItem/delete/{productItemId}  [post]
 func DeleteFavoriteProductItem(ctx *app.HttpContext) error {
 	user, err := ctx.GetUser()
 	if err != nil {

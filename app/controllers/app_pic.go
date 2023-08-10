@@ -21,7 +21,7 @@ import (
 // @Success 200 {object} []appmodels.AppPicOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /appPic [get]
+// @Router /user/appPic [get]
 func GetAppPics(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Model(&models.AppPic{})
 
@@ -43,7 +43,7 @@ func GetAppPics(ctx *app.HttpContext) error {
 // @Success 200 {object} appmodels.AppPicOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /appPic/{id} [get]
+// @Router /admin/appPic/{id} [get]
 func GetAppPic(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -70,7 +70,7 @@ func GetAppPic(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /appPic  [post]
+// @Router /admin/appPic  [post]
 func CreateAppPic(ctx *app.HttpContext) error {
 	var inputModel appmodels.AppPicReqModel
 
@@ -102,7 +102,7 @@ func CreateAppPic(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /appPic/edit/{id}  [post]
+// @Router /admin/appPic/edit/{id}  [post]
 func EditAppPic(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -170,7 +170,7 @@ func EditAppPic(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /appPic/delete/{id}  [post]
+// @Router /admin/appPic/delete/{id}  [post]
 func DeleteAppPic(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 	if err != nil {

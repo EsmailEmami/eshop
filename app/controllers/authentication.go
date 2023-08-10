@@ -30,8 +30,43 @@ import (
 // @Success 200 {object} models.LoginOutputModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /auth/login [post]
-func Login(ctx *app.HttpContext) error {
+// @Router /admin/auth/login [post]
+func LoginAdmin(ctx *app.HttpContext) error {
+	var input models.LoginInputModel
+
+	if err := ctx.BlindBind(&input); err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	if err := input.Validate(); err != nil {
+		return errors.NewValidationError(consts.ValidationError, err)
+	}
+
+	input.IP = ctx.ClientIP()
+	input.UserAgent = ctx.UserAgent()
+
+	output, err := authentication.LoginByUsername(ctx, input)
+	if err != nil {
+		return errors.NewBadRequestError(err.Error(), err)
+	}
+
+	ctx.SetCookie("Authorization", output.Token, int(output.ExpiresIn), "/", "", true, true)
+
+	return ctx.JSON(*output, http.StatusOK)
+}
+
+// LoginCustomer godoc
+// @Summary Log user in
+// @Description Log user in
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param loginInput   body  models.LoginInputModel  true  "Login input model"
+// @Success 200 {object} models.LoginOutputModel
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /user/auth/login [post]
+func LoginUser(ctx *app.HttpContext) error {
 	var input models.LoginInputModel
 
 	if err := ctx.BlindBind(&input); err != nil {
@@ -65,7 +100,7 @@ func Login(ctx *app.HttpContext) error {
 // @Success 200 {object} []dbmodels.User
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /auth/is_authenticated [get]
+// @Router /user/auth/is_authenticated [get]
 func IsAuthenticated(ctx *app.HttpContext) error {
 	userCtx, ok := ctx.Get(consts.UserContext)
 	if !ok {
@@ -95,7 +130,7 @@ func IsAuthenticated(ctx *app.HttpContext) error {
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /auth/logout [get]
+// @Router /user/auth/logout [get]
 func Logout(ctx *app.HttpContext) error {
 	jwtToken, _, err := token.LoadTokenFromHttpRequest(ctx.Request)
 	if err != nil {
@@ -130,7 +165,7 @@ func logOutDone(ctx *app.HttpContext) error {
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /auth/register [post]
+// @Router /user/auth/register [post]
 func Register(ctx *app.HttpContext) error {
 	var input models.RegisterInputModel
 	if err := ctx.BlindBind(&input); err != nil {
@@ -162,7 +197,7 @@ func Register(ctx *app.HttpContext) error {
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /auth/recoveryPasword [post]
+// @Router /user/auth/recoveryPasword [post]
 func SendRecoveryPasswordRequest(ctx *app.HttpContext) error {
 	var input models.RecoveryPasswordReqModel
 	if err := ctx.BlindBind(&input); err != nil {
@@ -238,7 +273,7 @@ func SendRecoveryPasswordRequest(ctx *app.HttpContext) error {
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /auth/recoveryPasword/{key} [post]
+// @Router /user/auth/recoveryPasword/{key} [post]
 func RecoveryPassword(ctx *app.HttpContext) error {
 	key, err := uuid.Parse(ctx.GetPathParam("key"))
 	if err != nil {

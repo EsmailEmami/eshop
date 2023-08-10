@@ -24,7 +24,7 @@ import (
 // @Success 200 {object} parameter.ListResponse[appmodels.ColorOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /color [get]
+// @Router /admin/color [get]
 func GetColors(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Model(&models.Color{})
 
@@ -50,7 +50,7 @@ func GetColors(ctx *app.HttpContext) error {
 // @Success 200 {object} appmodels.ColorOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /color/{id} [get]
+// @Router /admin/color/{id} [get]
 func GetColor(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -77,7 +77,7 @@ func GetColor(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /color  [post]
+// @Router /admin/color  [post]
 func CreateColor(ctx *app.HttpContext) error {
 	var inputModel appmodels.ColorReqModel
 
@@ -109,7 +109,7 @@ func CreateColor(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /color/edit/{id}  [post]
+// @Router /admin/color/edit/{id}  [post]
 func EditColor(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -158,7 +158,7 @@ func EditColor(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /color/delete/{id}  [post]
+// @Router /admin/color/delete/{id}  [post]
 func DeleteColor(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 	if err != nil {

@@ -21,7 +21,7 @@ import (
 // @Success 200 {object} appmodels.ProductItemInfoOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productItem/{id} [get]
+// @Router /user/productItem/{id} [get]
 func GetProductItem(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -128,7 +128,7 @@ func GetProductItem(ctx *app.HttpContext) error {
 // @Success 200 {object} []appmodels.ProductOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productItem/product/{productId} [get]
+// @Router /admin/productItem/product/{productId} [get]
 func GetProductItems(ctx *app.HttpContext) error {
 	productID, err := uuid.Parse(ctx.GetPathParam("productId"))
 
@@ -160,7 +160,7 @@ func GetProductItems(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productItem  [post]
+// @Router /admin/productItem  [post]
 func CreateProductItem(ctx *app.HttpContext) error {
 	var inputModel appmodels.ProductItemReqModel
 
@@ -211,7 +211,7 @@ func CreateProductItem(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productItem/edit/{id}  [post]
+// @Router /admin/productItem/edit/{id}  [post]
 func EditProductItem(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -274,7 +274,7 @@ func EditProductItem(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productItem/delete/{id}  [post]
+// @Router /admin/productItem/delete/{id}  [post]
 func DeleteProductItem(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 	if err != nil {

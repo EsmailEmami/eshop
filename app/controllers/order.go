@@ -20,7 +20,7 @@ import (
 // @Success 200 {object} appmodels.OrderOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /order [get]
+// @Router /user/order [get]
 func GetOrder(ctx *app.HttpContext) error {
 	user, err := ctx.GetUser()
 	if err != nil {
@@ -70,7 +70,7 @@ func GetOrder(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /order/checkout/{addressId} [post]
+// @Router /user/order/checkout/{addressId} [post]
 func CheckoutOrder(ctx *app.HttpContext) error {
 	user, err := ctx.GetUser()
 	if err != nil {

@@ -29,8 +29,8 @@ import (
 // @Success 200 {object} parameter.ListResponse[appmodels.ProductWithItemOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /product [get]
-func GetProducts(ctx *app.HttpContext) error {
+// @Router /user/product [get]
+func GetUserProducts(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 
 	parameter := parameter.New[appmodels.ProductWithItemOutPutModel](ctx, baseDB)
@@ -91,8 +91,8 @@ func GetProducts(ctx *app.HttpContext) error {
 // @Success 200 {object} []appmodels.ProductOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /product/list [get]
-func GetProductsList(ctx *app.HttpContext) error {
+// @Router /admin/product [get]
+func GetAdminProducts(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 
 	var data []appmodels.ProductOutPutModel
@@ -125,7 +125,7 @@ func GetProductsList(ctx *app.HttpContext) error {
 // @Success 200 {object} appmodels.ProductOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /product/{id} [get]
+// @Router /user/product/{id} [get]
 func GetProduct(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -161,7 +161,7 @@ func GetProduct(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessDBResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /product  [post]
+// @Router /admin/product  [post]
 func CreateProduct(ctx *app.HttpContext) error {
 	var inputModel appmodels.ProductReqModel
 
@@ -194,7 +194,7 @@ func CreateProduct(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /product/edit/{id}  [post]
+// @Router /admin/product/edit/{id}  [post]
 func EditProduct(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -243,7 +243,7 @@ func EditProduct(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /product/delete/{id}  [post]
+// @Router /admin/product/delete/{id}  [post]
 func DeleteProduct(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 	if err != nil {
@@ -278,7 +278,7 @@ func DeleteProduct(ctx *app.HttpContext) error {
 // @Success 200 {object} parameter.ListResponse[appmodels.SuggestionProductOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /product/suggestions [get]
+// @Router /user/product/suggestions [get]
 func GetSuggestionProducts(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 	parameter := parameter.New[appmodels.SuggestionProductOutPutModel](ctx, baseDB)

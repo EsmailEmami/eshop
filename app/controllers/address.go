@@ -20,7 +20,7 @@ import (
 // @Success 200 {object} []appmodels.AddressOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /address [get]
+// @Router /user/address [get]
 func GetAddresses(ctx *app.HttpContext) error {
 	user, err := ctx.GetUser()
 	if err != nil {
@@ -28,6 +28,33 @@ func GetAddresses(ctx *app.HttpContext) error {
 	}
 
 	baseDB := db.MustGormDBConn(ctx).Model(&models.Address{}).Where("created_by_id=?", *user.ID)
+
+	var data []appmodels.AddressOutPutModel
+
+	if err := baseDB.Find(&data).Error; err != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	return ctx.JSON(data, http.StatusOK)
+}
+
+// GetAddresses godoc
+// @Tags Addresses
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param userId  path  string  true  "User ID"
+// @Success 200 {object} []appmodels.AddressOutPutModel
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /admin/address/{userId} [get]
+func GetAdminUserAddresses(ctx *app.HttpContext) error {
+	userID, err := uuid.Parse(ctx.GetPathParam("userId"))
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	baseDB := db.MustGormDBConn(ctx).Model(&models.Address{}).Where("created_by_id=?", userID)
 
 	var data []appmodels.AddressOutPutModel
 
@@ -47,7 +74,7 @@ func GetAddresses(ctx *app.HttpContext) error {
 // @Success 200 {object} appmodels.AddressOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /address/{id} [get]
+// @Router /user/address/{id} [get]
 func GetAddress(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -74,7 +101,7 @@ func GetAddress(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /address  [post]
+// @Router /user/address  [post]
 func CreateAddress(ctx *app.HttpContext) error {
 	var inputModel appmodels.AddressReqModel
 
@@ -106,7 +133,7 @@ func CreateAddress(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /address/edit/{id}  [post]
+// @Router /user/address/edit/{id}  [post]
 func EditAddress(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -151,7 +178,7 @@ func EditAddress(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /address/delete/{id}  [post]
+// @Router /user/address/delete/{id}  [post]
 func DeleteAddress(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 	if err != nil {

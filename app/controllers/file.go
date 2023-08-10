@@ -30,7 +30,7 @@ import (
 // @Param file formData file true "Image file to be uploaded"
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /file/uploadImage/{itemId}/{fileType} [post]
+// @Router /user/file/uploadImage/{itemId}/{fileType} [post]
 func UploadImage(ctx *app.HttpContext) error {
 	err := ctx.Request.ParseMultipartForm(10 << 20) // 10 MB maximum file size
 	if err != nil {
@@ -135,7 +135,7 @@ loop:
 // @Param fileId  path  string  true  "file ID"
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /file/delete/{fileId} [post]
+// @Router /user/file/delete/{fileId} [post]
 func DeleteFile(ctx *app.HttpContext) error {
 	fileID, err := uuid.Parse(ctx.GetPathParam("fileId"))
 	if err != nil {
@@ -164,7 +164,7 @@ func DeleteFile(ctx *app.HttpContext) error {
 // @Param fileId  path  string  true  "file ID"
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /file/{fileId} [get]
+// @Router /user/file/{fileId} [get]
 func GetFile(ctx *app.HttpContext) error {
 	fileID, err := uuid.Parse(ctx.GetPathParam("fileId"))
 	if err != nil {
@@ -211,7 +211,7 @@ func GetFile(ctx *app.HttpContext) error {
 // @Param fileId  path  string  true  "file ID"
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /file/stream/{fileId} [get]
+// @Router /user/file/stream/{fileId} [get]
 func GetStreamingFile(ctx *app.HttpContext) error {
 	fileID, err := uuid.Parse(ctx.GetPathParam("fileId"))
 	if err != nil {
@@ -274,7 +274,7 @@ func GetStreamingFile(ctx *app.HttpContext) error {
 // @Success 200 {object} []appmodels.FileOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /file/{itemId}/{fileType} [get]
+// @Router /user/file/{itemId}/{fileType} [get]
 func GetItemFiles(ctx *app.HttpContext) error {
 	fileTypeInput, err := strconv.Atoi(ctx.GetPathParam("fileType"))
 	if err != nil {
@@ -321,7 +321,7 @@ func GetItemFiles(ctx *app.HttpContext) error {
 // @Param priority  path  int  true  "priority"
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /file/changePriority/{fileId}/{itemId}/{priority} [post]
+// @Router /user/file/changePriority/{fileId}/{itemId}/{priority} [post]
 func FileChangePriority(ctx *app.HttpContext) error {
 	fileID, err := uuid.Parse(ctx.GetPathParam("fileId"))
 	if err != nil {

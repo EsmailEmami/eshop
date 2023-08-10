@@ -24,7 +24,7 @@ import (
 // @Success 200 {object} parameter.ListResponse[appmodels.ProductFeatureCategoryOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureCategory [get]
+// @Router /admin/productFeatureCategory [get]
 func GetProductFeatureCategories(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Model(&models.ProductFeatureCategory{})
 
@@ -50,7 +50,7 @@ func GetProductFeatureCategories(ctx *app.HttpContext) error {
 // @Success 200 {object} appmodels.ProductFeatureCategoryOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureCategory/{id} [get]
+// @Router /admin/productFeatureCategory/{id} [get]
 func GetProductFeatureCategory(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -77,7 +77,7 @@ func GetProductFeatureCategory(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureCategory  [post]
+// @Router /admin/productFeatureCategory  [post]
 func CreateProductFeatureCategory(ctx *app.HttpContext) error {
 	var inputModel appmodels.ProductFeatureCategoryReqModel
 
@@ -109,7 +109,7 @@ func CreateProductFeatureCategory(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureCategory/edit/{id}  [post]
+// @Router /admin/productFeatureCategory/edit/{id}  [post]
 func EditProductFeatureCategory(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -174,7 +174,7 @@ func EditProductFeatureCategory(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureCategory/delete/{id}  [post]
+// @Router /admin/productFeatureCategory/delete/{id}  [post]
 func DeleteProductFeatureCategory(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 	if err != nil {

@@ -26,7 +26,7 @@ import (
 // @Success 200 {object} parameter.ListResponse[appmodels.BrandOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /brand [get]
+// @Router /admin/brand [get]
 func GetBrands(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 
@@ -60,7 +60,7 @@ func GetBrands(ctx *app.HttpContext) error {
 // @Success 200 {object} appmodels.BrandOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /brand/{id} [get]
+// @Router /admin/brand/{id} [get]
 func GetBrand(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -92,7 +92,7 @@ func GetBrand(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /brand  [post]
+// @Router /admin/brand  [post]
 func CreateBrand(ctx *app.HttpContext) error {
 	var inputModel appmodels.BrandReqModel
 
@@ -124,7 +124,7 @@ func CreateBrand(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /brand/edit/{id}  [post]
+// @Router /admin/brand/edit/{id}  [post]
 func EditBrand(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -185,7 +185,7 @@ func EditBrand(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /brand/delete/{id}  [post]
+// @Router /admin/brand/delete/{id}  [post]
 func DeleteBrand(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 	if err != nil {

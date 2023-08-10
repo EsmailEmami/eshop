@@ -24,7 +24,7 @@ import (
 // @Success 200 {object} parameter.ListResponse[appmodels.ProductFeatureKeyOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureKey [get]
+// @Router /admin/productFeatureKey [get]
 func GetProductFeatureKeys(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Model(&models.ProductFeatureKey{})
 	parameter := parameter.New[appmodels.ProductFeatureKeyOutPutModel](ctx, baseDB)
@@ -54,7 +54,7 @@ func GetProductFeatureKeys(ctx *app.HttpContext) error {
 // @Success 200 {object} appmodels.ProductFeatureKeyOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureKey/{id} [get]
+// @Router /admin/productFeatureKey/{id} [get]
 func GetProductFeatureKey(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -81,7 +81,7 @@ func GetProductFeatureKey(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureKey  [post]
+// @Router /admin/productFeatureKey  [post]
 func CreateProductFeatureKey(ctx *app.HttpContext) error {
 	var inputModel appmodels.ProductFeatureKeyReqModel
 
@@ -113,7 +113,7 @@ func CreateProductFeatureKey(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureKey/edit/{id}  [post]
+// @Router /admin/productFeatureKey/edit/{id}  [post]
 func EditProductFeatureKey(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -167,7 +167,7 @@ func EditProductFeatureKey(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /productFeatureKey/delete/{id}  [post]
+// @Router /admin/productFeatureKey/delete/{id}  [post]
 func DeleteProductFeatureKey(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 	if err != nil {

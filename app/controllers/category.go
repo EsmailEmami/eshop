@@ -24,7 +24,7 @@ import (
 // @Success 200 {object} parameter.ListResponse[appmodels.CategoryOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /category [get]
+// @Router /admin/category [get]
 func GetCategories(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Model(&models.Category{})
 
@@ -50,7 +50,7 @@ func GetCategories(ctx *app.HttpContext) error {
 // @Success 200 {object} appmodels.CategoryOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /category/{id} [get]
+// @Router /admin/category/{id} [get]
 func GetCategory(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -77,7 +77,7 @@ func GetCategory(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /category  [post]
+// @Router /admin/category  [post]
 func CreateCategory(ctx *app.HttpContext) error {
 	var inputModel appmodels.CategoryReqModel
 
@@ -109,7 +109,7 @@ func CreateCategory(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /category/edit/{id}  [post]
+// @Router /admin/category/edit/{id}  [post]
 func EditCategory(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 
@@ -158,7 +158,7 @@ func EditCategory(ctx *app.HttpContext) error {
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /category/delete/{id}  [post]
+// @Router /admin/category/delete/{id}  [post]
 func DeleteCategory(ctx *app.HttpContext) error {
 	id, err := uuid.Parse(ctx.GetPathParam("id"))
 	if err != nil {
