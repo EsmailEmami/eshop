@@ -1,0 +1,38 @@
+---
+up: |
+  CREATE OR REPLACE VIEW public.product_with_item_view
+    AS SELECT p.id,
+        p.name,
+        p.code,
+        pi2.price,
+        p.brand_id,
+        b.name AS brand_name,
+        p.category_id,
+        c.name AS category_name,
+        pi2.id AS item_id,
+        f.file_type,
+        f.unique_file_name AS file_name
+      FROM product p
+        CROSS JOIN LATERAL ( SELECT pi2_1.id,
+                pi2_1.price
+              FROM product_item pi2_1
+              WHERE pi2_1.quantity > 0 AND pi2_1.product_id = p.id
+              ORDER BY (
+                    CASE
+                        WHEN p.default_product_item_id IS NULL THEN pi2_1.bought_quantity
+                        WHEN pi2_1.id = p.default_product_item_id THEN 0
+                        ELSE 1
+                    END)
+            LIMIT 1) pi2
+        JOIN brand b ON b.id = p.brand_id
+        JOIN category c ON c.id = p.category_id
+        CROSS JOIN LATERAL ( SELECT pf_1.file_id
+              FROM product_file_map pf_1
+              WHERE pf_1.product_id = p.id
+              ORDER BY pf_1.priority
+            LIMIT 1) pf
+        JOIN file f ON f.id = pf.file_id
+      WHERE p.deleted_at IS NULL;
+
+down: |
+  DROP VIEW IF EXISTS public.product_with_item_view;

@@ -35,40 +35,26 @@ func GetUserProducts(ctx *app.HttpContext) error {
 
 	parameter := parameter.New[appmodels.ProductWithItemOutPutModel](ctx, baseDB)
 
-	baseDB = baseDB.Table("product as p").
-		Joins("CROSS JOIN LATERAL (?) as pi2", baseDB.Table("product_item pi2").
-			Select("id, price").
-			Where("pi2.quantity > 0 AND pi2.product_id = p.id").
-			Order("CASE WHEN p.default_product_item_id IS NULL THEN pi2.bought_quantity WHEN pi2.id = p.default_product_item_id THEN 0 ELSE 1 END").
-			Limit(1),
-		).
-		Joins("INNER JOIN brand b ON b.id = p.brand_id").
-		Joins("INNER JOIN category c ON c.id = p.category_id").
-		Joins("CROSS JOIN LATERAL (?) as pf", baseDB.Table("product_file_map pf").
-			Select("file_id").
-			Where("pf.product_id = p.id").Order("pf.priority ASC").Limit(1),
-		).
-		Joins("INNER JOIN file f ON f.id = pf.file_id").
-		Where("p.deleted_at IS NULL")
+	baseDB = baseDB.Table("product_with_item_view")
 
 	if categoryID, ok := ctx.GetParam("categoryId"); ok {
-		baseDB = baseDB.Where("c.id = ?", categoryID)
+		baseDB = baseDB.Where("category_id = ?", categoryID)
 	}
 
 	if brandID, ok := ctx.GetParam("brandId"); ok {
-		baseDB = baseDB.Where("b.id = ?", brandID)
+		baseDB = baseDB.Where("brand_id = ?", brandID)
 	}
 
 	if minPrice, ok := ctx.GetParam("minPrice"); ok {
-		baseDB = baseDB.Where("pi2.price >= ? ", minPrice)
+		baseDB = baseDB.Where("price >= ? ", minPrice)
 	}
 
 	if maxPrice, ok := ctx.GetParam("maxPrice"); ok {
-		baseDB = baseDB.Where("pi2.price <= ?", maxPrice)
+		baseDB = baseDB.Where("price <= ?", maxPrice)
 	}
 
-	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name").
-		SearchColumns("p.name").
+	response, err := parameter.SelectColumns("id, name, code, price, brand_id, brand_name, category_id, category_name, item_id, file_type, file_name").
+		SearchColumns("name").
 		EachItemProcess(func(db *gorm.DB, item *appmodels.ProductWithItemOutPutModel) error {
 			item.FileUrl = item.FileType.GetDirectory() + "/" + item.FileName
 

@@ -2699,6 +2699,49 @@
                 }
             }
         },
+        "/admin/report/revenueByCategory": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reports"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.RevenueByCategory"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/admin/role": {
             "get": {
                 "security": [
@@ -6919,6 +6962,20 @@
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "models.RevenueByCategory": {
+            "type": "object",
+            "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
+                "percentage": {
+                    "type": "number"
+                },
+                "price": {
+                    "type": "number"
                 }
             }
         },

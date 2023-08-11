@@ -155,6 +155,19 @@ const (
 	ACTION_ADDRESS_ADMIN_LIST = "action_address_admin_list"
 
 	// ###### Address ######
+
+	// ###### Comment ######
+
+	ACTION_COMMENT_ADMIN_LIST          = "action_comment_admin_list"
+	ACTION_COMMENT_ADMIN_CHANGE_STATUS = "action_comment_change_status"
+
+	// ###### Comment ######
+
+	// ###### Report ######
+
+	ACTION_REPORT_ADMIN_REVENUE_BY_CATEGORY = "action_report_revenue_by_category"
+
+	// ###### Report ######
 )
 
 type Action struct {
@@ -533,6 +546,30 @@ func GetPermissionsTree() []Action {
 				{
 					Name: "Address",
 					Code: ACTION_ADDRESS_ADMIN_LIST,
+				},
+			},
+		},
+		{
+			Name: "Comments",
+			Code: "",
+			Children: []Action{
+				{
+					Name: "Comments",
+					Code: ACTION_COMMENT_ADMIN_LIST,
+				},
+				{
+					Name: "Change comment status",
+					Code: ACTION_COMMENT_ADMIN_CHANGE_STATUS,
+				},
+			},
+		},
+		{
+			Name: "Reports",
+			Code: "",
+			Children: []Action{
+				{
+					Name: "Watch revenue per category",
+					Code: ACTION_REPORT_ADMIN_REVENUE_BY_CATEGORY,
 				},
 			},
 		},

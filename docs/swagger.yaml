@@ -1166,6 +1166,15 @@ definitions:
       username:
         type: string
     type: object
+  models.RevenueByCategory:
+    properties:
+      categoryName:
+        type: string
+      percentage:
+        type: number
+      price:
+        type: number
+    type: object
   models.Role:
     properties:
       code:
@@ -3318,6 +3327,33 @@ paths:
       - Bearer: []
       tags:
       - Users
+  /admin/report/revenueByCategory:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.RevenueByCategory'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Reports
   /admin/role:
     get:
       consumes:
