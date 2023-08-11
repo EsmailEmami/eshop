@@ -185,11 +185,10 @@ func DeleteRole(ctx *app.HttpContext) error {
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Param id  path  string  true  "Record ID"
 // @Success 200 {object} []models.Action
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /admin/role/Permissions [get]
+// @Router /admin/role/permissions [get]
 func GetPermissions(ctx *app.HttpContext) error {
 	actions := models.GetPermissionsTree()
 	return ctx.JSON(actions, http.StatusOK)

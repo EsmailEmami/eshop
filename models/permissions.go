@@ -166,14 +166,14 @@ type Action struct {
 func GetPermissionsTree() []Action {
 	actions := []Action{
 		{
-			Name: "مجوزهای ورود",
+			Name: "Login Permissions",
 			Children: []Action{
 				{
-					Name: "امکان ورود به پنل مدیریت با این نقش",
+					Name: "Ability to log in to admin panel with this role",
 					Code: ACTION_CAN_LOGIN_ADMIN,
 				},
 				{
-					Name: "امکان ورود به پنل کاربر با این نقش",
+					Name: "Ability to log in to user panel with this role",
 					Code: ACTION_CAN_LOGIN_USER,
 				},
 			},
@@ -191,15 +191,15 @@ func GetPermissionsTree() []Action {
 					Code: ACTION_CATEGORY_ADMIN_CREATE,
 				},
 				{
-					Name: "Update Category",
+					Name: "Update category",
 					Code: ACTION_CATEGORY_ADMIN_UPDATE,
 				},
 				{
-					Name: "Category's info",
+					Name: "Category information",
 					Code: ACTION_CATEGORY_ADMIN_INFO,
 				},
 				{
-					Name: "Delete Category",
+					Name: "Delete category",
 					Code: ACTION_CATEGORY_ADMIN_DELETE,
 				},
 			},
@@ -221,7 +221,7 @@ func GetPermissionsTree() []Action {
 					Code: ACTION_BRAND_ADMIN_UPDATE,
 				},
 				{
-					Name: "Brand's info",
+					Name: "Brand information",
 					Code: ACTION_BRAND_ADMIN_INFO,
 				},
 				{
@@ -247,7 +247,7 @@ func GetPermissionsTree() []Action {
 					Code: ACTION_ROLE_ADMIN_UPDATE,
 				},
 				{
-					Name: "Role's info",
+					Name: "Role information",
 					Code: ACTION_ROLE_ADMIN_INFO,
 				},
 				{
@@ -277,7 +277,7 @@ func GetPermissionsTree() []Action {
 					Code: ACTION_COLOR_ADMIN_UPDATE,
 				},
 				{
-					Name: "Color's info",
+					Name: "Color information",
 					Code: ACTION_COLOR_ADMIN_INFO,
 				},
 				{
@@ -303,7 +303,7 @@ func GetPermissionsTree() []Action {
 					Code: ACTION_APP_PIC_ADMIN_UPDATE,
 				},
 				{
-					Name: "App pic's info",
+					Name: "App pic information",
 					Code: ACTION_APP_PIC_ADMIN_INFO,
 				},
 				{
@@ -329,7 +329,7 @@ func GetPermissionsTree() []Action {
 					Code: ACTION_PRODUCT_FEATURE_CATEGORY_ADMIN_UPDATE,
 				},
 				{
-					Name: "Product feature category's info",
+					Name: "Product feature category information",
 					Code: ACTION_PRODUCT_FEATURE_CATEGORY_ADMIN_INFO,
 				},
 				{
@@ -355,7 +355,7 @@ func GetPermissionsTree() []Action {
 					Code: ACTION_PRODUCT_FEATURE_KEY_ADMIN_UPDATE,
 				},
 				{
-					Name: "Product feature key's info",
+					Name: "Product feature key information",
 					Code: ACTION_PRODUCT_FEATURE_KEY_ADMIN_INFO,
 				},
 				{
@@ -377,7 +377,7 @@ func GetPermissionsTree() []Action {
 					Code: ACTION_PRODUCT_FEATURE_VALUE_ADMIN_CREATE,
 				},
 				{
-					Name: "Product feature value's info",
+					Name: "Product feature value information",
 					Code: ACTION_PRODUCT_FEATURE_VALUE_ADMIN_INFO,
 				},
 				{
@@ -399,7 +399,7 @@ func GetPermissionsTree() []Action {
 					Code: ACTION_FILE_CREATE,
 				},
 				{
-					Name: "File's info",
+					Name: "File information",
 					Code: ACTION_FILE_INFO,
 				},
 				{
@@ -423,7 +423,7 @@ func GetPermissionsTree() []Action {
 							Code: ACTION_FILE_SYSTEMATIC_CREATE,
 						},
 						{
-							Name: "Systematic file's info",
+							Name: "Systematic file information",
 							Code: ACTION_FILE_SYSTEMATIC_INFO,
 						},
 						{
@@ -449,7 +449,7 @@ func GetPermissionsTree() []Action {
 							Code: ACTION_FILE_PRODUCT_CREATE,
 						},
 						{
-							Name: "Product file map's info",
+							Name: "Product file map information",
 							Code: ACTION_FILE_PRODUCT_INFO,
 						},
 						{
@@ -475,7 +475,7 @@ func GetPermissionsTree() []Action {
 							Code: ACTION_FILE_BRAND_CREATE,
 						},
 						{
-							Name: "Brand file's info",
+							Name: "Brand file information",
 							Code: ACTION_FILE_BRAND_INFO,
 						},
 						{
@@ -501,7 +501,7 @@ func GetPermissionsTree() []Action {
 							Code: ACTION_FILE_APP_PIC_CREATE,
 						},
 						{
-							Name: "App pic file's info",
+							Name: "App pic file information",
 							Code: ACTION_FILE_APP_PIC_INFO,
 						},
 						{
@@ -516,7 +516,6 @@ func GetPermissionsTree() []Action {
 				},
 			},
 		},
-
 		{
 			Name: "Verification Codes",
 			Code: "",
@@ -527,7 +526,16 @@ func GetPermissionsTree() []Action {
 				},
 			},
 		},
-		// Add more sections and actions here as needed.
+		{
+			Name: "Address",
+			Code: "",
+			Children: []Action{
+				{
+					Name: "Address",
+					Code: ACTION_ADDRESS_ADMIN_LIST,
+				},
+			},
+		},
 	}
 
 	return actions

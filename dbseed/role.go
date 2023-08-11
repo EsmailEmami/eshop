@@ -29,6 +29,7 @@ func seedRole(dbConn *gorm.DB) error {
 				models.ACTION_ROLE_ADMIN_CREATE,
 				models.ACTION_ROLE_ADMIN_UPDATE,
 				models.ACTION_ROLE_ADMIN_DELETE,
+				models.ACTION_ROLE_ADMIN_PERMISSIONS,
 			},
 		},
 		{
@@ -46,6 +47,7 @@ func seedRole(dbConn *gorm.DB) error {
 				models.ACTION_CAN_LOGIN_USER,
 				models.ACTION_ROLE_ADMIN_LIST,
 				models.ACTION_ROLE_ADMIN_INFO,
+				models.ACTION_ROLE_ADMIN_PERMISSIONS,
 			},
 		},
 		{
