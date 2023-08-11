@@ -14,8 +14,18 @@ type Comment struct {
 	WeakPonits     datatypes.StringArray `gorm:"column:weak_ponits"                    json:"weakPonits"`
 	ProductID      uuid.UUID             `gorm:"column:product_id"                     json:"productId"`
 	Product        *Product              `gorm:"foreignKey:product_id; references:id;" json:"product"`
+	Status         CommentStatus         `gorm:"status"                                json:"status"`
+	AdminNote      *string               `gorm:"admin_note"                            json:"adminNote"`
 }
 
 func (Comment) TableName() string {
 	return "comment"
 }
+
+type CommentStatus int
+
+const (
+	CommentStatusPending CommentStatus = iota
+	CommntStatusAccept
+	CommentStatusReject
+)

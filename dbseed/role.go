@@ -64,7 +64,7 @@ func seedRole(dbConn *gorm.DB) error {
 		{
 			Model: models.Model{
 				ID: func() *uuid.UUID {
-					id := uuid.MustParse(consts.ROLE_USER)
+					id := uuid.MustParse(consts.ROLE_USER_ID)
 					return &id
 				}(),
 			},

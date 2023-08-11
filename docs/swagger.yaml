@@ -99,6 +99,37 @@ definitions:
       postalCode:
         type: string
     type: object
+  models.AdminCommentOutPutModel:
+    properties:
+      adminNote:
+        type: string
+      commentStatus:
+        $ref: '#/definitions/models.CommentStatus'
+      createdAt:
+        type: string
+      id:
+        type: string
+      productId:
+        type: string
+      productName:
+        type: string
+      rate:
+        type: integer
+      strengthPoints:
+        items:
+          type: string
+        type: array
+      text:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+      weakPonits:
+        items:
+          type: string
+        type: array
+    type: object
   models.AppPic:
     properties:
       appPicType:
@@ -291,6 +322,13 @@ definitions:
       name:
         type: string
     type: object
+  models.ChangeCommentStatus:
+    properties:
+      note:
+        type: string
+      status:
+        $ref: '#/definitions/models.CommentStatus'
+    type: object
   models.Color:
     properties:
       code:
@@ -344,6 +382,8 @@ definitions:
     type: object
   models.Comment:
     properties:
+      adminNote:
+        type: string
       createdAt:
         type: string
       createdBy:
@@ -358,6 +398,8 @@ definitions:
         type: string
       rate:
         type: integer
+      status:
+        $ref: '#/definitions/models.CommentStatus'
       strengthPoints:
         items:
           type: string
@@ -369,29 +411,6 @@ definitions:
       updatedBy:
         $ref: '#/definitions/models.User'
       updatedById:
-        type: string
-      weakPonits:
-        items:
-          type: string
-        type: array
-    type: object
-  models.CommentOutPutModel:
-    properties:
-      createdAt:
-        type: string
-      id:
-        type: string
-      rate:
-        type: integer
-      strengthPoints:
-        items:
-          type: string
-        type: array
-      text:
-        type: string
-      updatedAt:
-        type: string
-      username:
         type: string
       weakPonits:
         items:
@@ -415,6 +434,16 @@ definitions:
           type: string
         type: array
     type: object
+  models.CommentStatus:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - CommentStatusPending
+    - CommntStatusAccept
+    - CommentStatusReject
   models.FavoriteProductItem:
     properties:
       createdAt:
@@ -739,6 +768,29 @@ definitions:
       shortDescription:
         type: string
       topFeatures:
+        items:
+          type: string
+        type: array
+    type: object
+  models.ProductCommentOutPutModel:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      rate:
+        type: integer
+      strengthPoints:
+        items:
+          type: string
+        type: array
+      text:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+      weakPonits:
         items:
           type: string
         type: array
@@ -1241,6 +1293,35 @@ definitions:
       username:
         type: string
     type: object
+  models.UserCommentOutPutModel:
+    properties:
+      adminNote:
+        type: string
+      commentStatus:
+        $ref: '#/definitions/models.CommentStatus'
+      createdAt:
+        type: string
+      id:
+        type: string
+      productId:
+        type: string
+      productName:
+        type: string
+      rate:
+        type: integer
+      strengthPoints:
+        items:
+          type: string
+        type: array
+      text:
+        type: string
+      updatedAt:
+        type: string
+      weakPonits:
+        items:
+          type: string
+        type: array
+    type: object
   models.UserDashboardInfoOutPutModel:
     properties:
       firstName:
@@ -1278,6 +1359,25 @@ definitions:
       data:
         items:
           $ref: '#/definitions/helpers.KeyValueResponse-uuid_UUID-string'
+        type: array
+      from:
+        type: integer
+      last_page:
+        type: integer
+      limit:
+        type: integer
+      page:
+        type: integer
+      to:
+        type: integer
+      total:
+        type: integer
+    type: object
+  parameter.ListResponse-models_AdminCommentOutPutModel:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.AdminCommentOutPutModel'
         type: array
       from:
         type: integer
@@ -1349,11 +1449,11 @@ definitions:
       total:
         type: integer
     type: object
-  parameter.ListResponse-models_CommentOutPutModel:
+  parameter.ListResponse-models_ProductCommentOutPutModel:
     properties:
       data:
         items:
-          $ref: '#/definitions/models.CommentOutPutModel'
+          $ref: '#/definitions/models.ProductCommentOutPutModel'
         type: array
       from:
         type: integer
@@ -1468,6 +1568,25 @@ definitions:
       data:
         items:
           $ref: '#/definitions/models.SuggestionProductOutPutModel'
+        type: array
+      from:
+        type: integer
+      last_page:
+        type: integer
+      limit:
+        type: integer
+      page:
+        type: integer
+      to:
+        type: integer
+      total:
+        type: integer
+    type: object
+  parameter.ListResponse-models_UserCommentOutPutModel:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.UserCommentOutPutModel'
         type: array
       from:
         type: integer
@@ -2178,13 +2297,58 @@ paths:
         in: query
         name: userId
         type: string
+      - description: Comment Status
+        enum:
+        - 0
+        - 1
+        - 2
+        in: query
+        name: status
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/parameter.ListResponse-models_CommentOutPutModel'
+            $ref: '#/definitions/parameter.ListResponse-models_AdminCommentOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Comments
+  /admin/comment/changeStatus/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Comment model
+        in: body
+        name: Model
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangeCommentStatus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -3664,13 +3828,21 @@ paths:
         in: query
         name: searchTerm
         type: string
+      - description: Comment Status
+        enum:
+        - 0
+        - 1
+        - 2
+        in: query
+        name: status
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/parameter.ListResponse-models_CommentOutPutModel'
+            $ref: '#/definitions/parameter.ListResponse-models_UserCommentOutPutModel'
         "400":
           description: Bad Request
           schema:
@@ -3732,7 +3904,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.CommentOutPutModel'
+            $ref: '#/definitions/models.UserCommentOutPutModel'
         "400":
           description: Bad Request
           schema:
@@ -3843,7 +4015,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/parameter.ListResponse-models_CommentOutPutModel'
+            $ref: '#/definitions/parameter.ListResponse-models_ProductCommentOutPutModel'
         "400":
           description: Bad Request
           schema:

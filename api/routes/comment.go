@@ -16,6 +16,7 @@ func loadUserCommentRoutes(r chi.Router) {
 
 func loadAdminCommentRoutes(r chi.Router) {
 	r.Get("/comment", app.Handler(controllers.GetAdminUserComments))
+	r.Post("/comment/changeStatus/{id}", app.Handler(controllers.ChangeCommentStatus))
 }
 
 func loadAnonymousCommentRoutes(r chi.Router) {

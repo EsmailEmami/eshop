@@ -23,13 +23,15 @@ import (
 // @Param searchTerm  query  string  false  "search for item"
 // @Param productId  query  string  false  "Product ID"
 // @Param userId  query  string  false  "User ID"
-// @Success 200 {object} parameter.ListResponse[appmodels.CommentOutPutModel]
+// @Param status  query  models.CommentStatus  false  "Comment Status"
+// @Success 200 {object} parameter.ListResponse[appmodels.AdminCommentOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /admin/comment [get]
 func GetAdminUserComments(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Table(`"comment" c`).
 		Joins(`INNER JOIN "user" u ON u.id = c.created_by_id`).
+		Joins("INNER JOIN product p ON p.id = c.product_id").
 		Where("c.deleted_at IS NULL")
 
 	if productID, ok := ctx.GetParam("productId"); ok {
@@ -40,9 +42,14 @@ func GetAdminUserComments(ctx *app.HttpContext) error {
 		baseDB = baseDB.Where("c.created_by_id=?", userID)
 	}
 
-	parameter := parameter.New[appmodels.CommentOutPutModel](ctx, baseDB)
+	if status, ok := ctx.GetParam("status"); ok {
+		baseDB = baseDB.Where("c.status=?", status)
+	}
 
-	response, err := parameter.SearchColumns("c.id, c.created_at, c.updated_at, c.text,c.rate,c.strength_points,c.weak_ponits, u.username").
+	parameter := parameter.New[appmodels.AdminCommentOutPutModel](ctx, baseDB)
+
+	response, err := parameter.SelectColumns("c.id, c.created_at,c.status as comment_status, c.updated_at, c.text,c.rate,c.strength_points,c.weak_ponits, u.username, c.product_id, p.name as product_name, c.admin_note").
+		SearchColumns("c.text", "p.name", "u.first_name", "u.last_name", "u.username", "u.email", "u.mobile").
 		SortDescending("c.created_at").Execute(baseDB)
 
 	if err != nil {
@@ -60,7 +67,8 @@ func GetAdminUserComments(ctx *app.HttpContext) error {
 // @Param page  query  string  false  "page size"
 // @Param limit  query  string  false  "length of records to show"
 // @Param searchTerm  query  string  false  "search for item"
-// @Success 200 {object} parameter.ListResponse[appmodels.CommentOutPutModel]
+// @Param status  query  models.CommentStatus  false  "Comment Status"
+// @Success 200 {object} parameter.ListResponse[appmodels.UserCommentOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /user/comment [get]
@@ -73,11 +81,18 @@ func GetUserComments(ctx *app.HttpContext) error {
 
 	baseDB := db.MustGormDBConn(ctx).Table(`"comment" c`).
 		Joins(`INNER JOIN "user" u ON u.id = c.created_by_id`).
+		Joins("INNER JOIN product p ON p.id = c.product_id").
 		Where("c.created_by_id=? AND c.deleted_at IS NULL", *user.ID)
 
-	parameter := parameter.New[appmodels.CommentOutPutModel](ctx, baseDB)
+	if status, ok := ctx.GetParam("status"); ok {
+		baseDB = baseDB.Where("c.status=?", status)
+	}
 
-	response, err := parameter.SearchColumns("c.id, c.created_at, c.updated_at, c.text,c.rate,c.strength_points,c.weak_ponits, u.username").
+	parameter := parameter.New[appmodels.UserCommentOutPutModel](ctx, baseDB)
+
+	response, err := parameter.
+		SelectColumns("c.id, c.created_at,c.status as comment_status, c.updated_at, c.text,c.rate,c.strength_points,c.weak_ponits, c.product_id, p.name as product_name, c.admin_note").
+		SearchColumns("c.text", "p.name", "u.first_name", "u.last_name", "u.username", "u.email", "u.mobile").
 		SortDescending("c.created_at").Execute(baseDB)
 
 	if err != nil {
@@ -96,14 +111,14 @@ func GetUserComments(ctx *app.HttpContext) error {
 // @Param page  query  string  false  "page size"
 // @Param limit  query  string  false  "length of records to show"
 // @Param searchTerm  query  string  false  "search for item"
-// @Success 200 {object} parameter.ListResponse[appmodels.CommentOutPutModel]
+// @Success 200 {object} parameter.ListResponse[appmodels.ProductCommentOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /user/comment/product/{productId} [get]
 func GetProductComments(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Table(`"comment" c`).
 		Joins(`INNER JOIN "user" u ON u.id = c.created_by_id`).
-		Where("c.deleted_at IS NULL")
+		Where("c.deleted_at IS NULL AND ")
 
 	productID, err := uuid.Parse(ctx.GetPathParam("productId"))
 
@@ -113,9 +128,9 @@ func GetProductComments(ctx *app.HttpContext) error {
 
 	baseDB = baseDB.Where("c.product_id=?", productID)
 
-	parameter := parameter.New[appmodels.CommentOutPutModel](ctx, baseDB)
+	parameter := parameter.New[appmodels.ProductCommentOutPutModel](ctx, baseDB)
 
-	response, err := parameter.SearchColumns("c.id, c.created_at, c.updated_at, c.text,c.rate,c.strength_points,c.weak_ponits, u.username").
+	response, err := parameter.SelectColumns("c.id, c.created_at, c.updated_at, c.text,c.rate,c.strength_points,c.weak_ponits, u.username").
 		SortDescending("c.created_at").Execute(baseDB)
 
 	if err != nil {
@@ -131,7 +146,7 @@ func GetProductComments(ctx *app.HttpContext) error {
 // @Produce json
 // @Security Bearer
 // @Param id  path  string  true  "Record ID"
-// @Success 200 {object} appmodels.CommentOutPutModel
+// @Success 200 {object} appmodels.UserCommentOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /user/comment/{id} [get]
@@ -143,11 +158,12 @@ func GetComment(ctx *app.HttpContext) error {
 	}
 	baseDB := db.MustGormDBConn(ctx)
 
-	var data appmodels.CommentOutPutModel
+	var data appmodels.UserCommentOutPutModel
 
 	if err := baseDB.Table(`"comment" c`).
 		Joins(`INNER JOIN "user" u ON u.id = c.created_by_id`).
-		Select("c.id, c.created_at, c.updated_at, c.text,c.rate,c.strength_points,c.weak_ponits, u.username").
+		Joins("INNER JOIN product p ON p.id = c.product_id").
+		Select("c.id, c.created_at,c.status as comment_status, c.updated_at, c.text,c.rate,c.strength_points,c.weak_ponits, c.product_id, p.name as product_name").
 		First(&data, "c.id", id).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
@@ -257,6 +273,47 @@ func DeleteComment(ctx *app.HttpContext) error {
 
 	if baseDB.Delete(&dbModel).Error != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, nil)
+	}
+
+	return ctx.QuickResponse(consts.Deleted, http.StatusOK)
+}
+
+// Change Comment Status godoc
+// @Tags Comments
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param id  path  string  true  "Record ID"
+// @Param Model   body  appmodels.ChangeCommentStatus  true  "Comment model"
+// @Success 200 {object} helpers.SuccessResponse
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /admin/comment/changeStatus/{id}  [post]
+func ChangeCommentStatus(ctx *app.HttpContext) error {
+	id, err := uuid.Parse(ctx.GetPathParam("id"))
+	if err != nil {
+		return err
+	}
+
+	var inputModel appmodels.ChangeCommentStatus
+
+	err = ctx.BlindBind(&inputModel)
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	baseDB := db.MustGormDBConn(ctx).Model(&models.Comment{})
+
+	var dbModel models.Comment
+
+	if baseDB.First(&dbModel, id).Error != nil {
+		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
+	}
+
+	inputModel.MergeWithDBData(&dbModel)
+
+	if baseDB.Save(&dbModel).Error != nil {
+		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
 	return ctx.QuickResponse(consts.Deleted, http.StatusOK)

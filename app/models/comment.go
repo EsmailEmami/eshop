@@ -77,6 +77,7 @@ func (model CommentReqModel) ToDBModel() *dbmodels.Comment {
 		ProductID:      model.ProductID,
 		StrengthPoints: model.StrengthPoints,
 		WeakPonits:     model.WeakPonits,
+		Status:         dbmodels.CommentStatusPending,
 	}
 }
 
@@ -87,7 +88,7 @@ func (model *CommentReqModel) MergeWithDBData(dbmodel *dbmodels.Comment) {
 	dbmodel.WeakPonits = model.WeakPonits
 }
 
-type CommentOutPutModel struct {
+type ProductCommentOutPutModel struct {
 	ID             *uuid.UUID            `gorm:"column:id"              json:"id"`
 	CreatedAt      time.Time             `gorm:"column:created_at"      json:"createdAt"`
 	UpdatedAt      time.Time             `gorm:"column:updated_at"      json:"updatedAt"`
@@ -96,4 +97,43 @@ type CommentOutPutModel struct {
 	StrengthPoints datatypes.StringArray `gorm:"column:strength_points" json:"strengthPoints"`
 	WeakPonits     datatypes.StringArray `gorm:"column:weak_ponits"     json:"weakPonits"`
 	Username       string                `gorm:"column:username"        json:"username"`
+}
+
+type AdminCommentOutPutModel struct {
+	ID             *uuid.UUID             `gorm:"column:id"              json:"id"`
+	CreatedAt      time.Time              `gorm:"column:created_at"      json:"createdAt"`
+	UpdatedAt      time.Time              `gorm:"column:updated_at"      json:"updatedAt"`
+	Text           string                 `gorm:"column:text"            json:"text"`
+	Rate           int                    `gorm:"column:rate"            json:"rate"`
+	StrengthPoints datatypes.StringArray  `gorm:"column:strength_points" json:"strengthPoints"`
+	WeakPonits     datatypes.StringArray  `gorm:"column:weak_ponits"     json:"weakPonits"`
+	Username       string                 `gorm:"column:username"        json:"username"`
+	ProductID      uuid.UUID              `gorm:"product_id"             json:"productId"`
+	ProductName    string                 `gorm:"product_name"           json:"productName"`
+	CommentStatus  dbmodels.CommentStatus `gorm:"comment_status"         json:"commentStatus"`
+	AdminNote      *string                `gorm:"admin_note"                            json:"adminNote"`
+}
+
+type UserCommentOutPutModel struct {
+	ID             *uuid.UUID             `gorm:"column:id"              json:"id"`
+	CreatedAt      time.Time              `gorm:"column:created_at"      json:"createdAt"`
+	UpdatedAt      time.Time              `gorm:"column:updated_at"      json:"updatedAt"`
+	Text           string                 `gorm:"column:text"            json:"text"`
+	Rate           int                    `gorm:"column:rate"            json:"rate"`
+	StrengthPoints datatypes.StringArray  `gorm:"column:strength_points" json:"strengthPoints"`
+	WeakPonits     datatypes.StringArray  `gorm:"column:weak_ponits"     json:"weakPonits"`
+	ProductID      uuid.UUID              `gorm:"product_id"             json:"productId"`
+	ProductName    string                 `gorm:"product_name"           json:"productName"`
+	CommentStatus  dbmodels.CommentStatus `gorm:"comment_status"         json:"commentStatus"`
+	AdminNote      *string                `gorm:"admin_note"                            json:"adminNote"`
+}
+
+type ChangeCommentStatus struct {
+	Status dbmodels.CommentStatus `json:"status"`
+	Note   *string                `json:"note,omitempty"`
+}
+
+func (model *ChangeCommentStatus) MergeWithDBData(dbmodel *dbmodels.Comment) {
+	dbmodel.Status = model.Status
+	dbmodel.AdminNote = model.Note
 }

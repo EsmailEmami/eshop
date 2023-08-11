@@ -1116,13 +1116,82 @@ const docTemplate = `{
                         "description": "User ID",
                         "name": "userId",
                         "in": "query"
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "type": "integer",
+                        "description": "Comment Status",
+                        "name": "status",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/parameter.ListResponse-models_CommentOutPutModel"
+                            "$ref": "#/definitions/parameter.ListResponse-models_AdminCommentOutPutModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/comment/changeStatus/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comments"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Record ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Comment model",
+                        "name": "Model",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ChangeCommentStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.SuccessResponse"
                         }
                     },
                     "400": {
@@ -3455,13 +3524,24 @@ const docTemplate = `{
                         "description": "search for item",
                         "name": "searchTerm",
                         "in": "query"
+                    },
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "type": "integer",
+                        "description": "Comment Status",
+                        "name": "status",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/parameter.ListResponse-models_CommentOutPutModel"
+                            "$ref": "#/definitions/parameter.ListResponse-models_UserCommentOutPutModel"
                         }
                     },
                     "400": {
@@ -3684,7 +3764,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/parameter.ListResponse-models_CommentOutPutModel"
+                            "$ref": "#/definitions/parameter.ListResponse-models_ProductCommentOutPutModel"
                         }
                     },
                     "400": {
@@ -3733,7 +3813,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.CommentOutPutModel"
+                            "$ref": "#/definitions/models.UserCommentOutPutModel"
                         }
                     },
                     "400": {
@@ -5232,6 +5312,53 @@ const docTemplate = `{
                 }
             }
         },
+        "models.AdminCommentOutPutModel": {
+            "type": "object",
+            "properties": {
+                "adminNote": {
+                    "type": "string"
+                },
+                "commentStatus": {
+                    "$ref": "#/definitions/models.CommentStatus"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "productId": {
+                    "type": "string"
+                },
+                "productName": {
+                    "type": "string"
+                },
+                "rate": {
+                    "type": "integer"
+                },
+                "strengthPoints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "text": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "weakPonits": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "models.AppPic": {
             "type": "object",
             "properties": {
@@ -5525,6 +5652,17 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ChangeCommentStatus": {
+            "type": "object",
+            "properties": {
+                "note": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/models.CommentStatus"
+                }
+            }
+        },
         "models.Color": {
             "type": "object",
             "properties": {
@@ -5606,6 +5744,9 @@ const docTemplate = `{
         "models.Comment": {
             "type": "object",
             "properties": {
+                "adminNote": {
+                    "type": "string"
+                },
                 "createdAt": {
                     "type": "string"
                 },
@@ -5627,6 +5768,9 @@ const docTemplate = `{
                 "rate": {
                     "type": "integer"
                 },
+                "status": {
+                    "$ref": "#/definitions/models.CommentStatus"
+                },
                 "strengthPoints": {
                     "type": "array",
                     "items": {
@@ -5643,41 +5787,6 @@ const docTemplate = `{
                     "$ref": "#/definitions/models.User"
                 },
                 "updatedById": {
-                    "type": "string"
-                },
-                "weakPonits": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "models.CommentOutPutModel": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "rate": {
-                    "type": "integer"
-                },
-                "strengthPoints": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "text": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "username": {
                     "type": "string"
                 },
                 "weakPonits": {
@@ -5713,6 +5822,19 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "models.CommentStatus": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-varnames": [
+                "CommentStatusPending",
+                "CommntStatusAccept",
+                "CommentStatusReject"
+            ]
         },
         "models.FavoriteProductItem": {
             "type": "object",
@@ -6203,6 +6325,41 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "topFeatures": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "models.ProductCommentOutPutModel": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "rate": {
+                    "type": "integer"
+                },
+                "strengthPoints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "text": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "weakPonits": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -6970,6 +7127,50 @@ const docTemplate = `{
                 }
             }
         },
+        "models.UserCommentOutPutModel": {
+            "type": "object",
+            "properties": {
+                "adminNote": {
+                    "type": "string"
+                },
+                "commentStatus": {
+                    "$ref": "#/definitions/models.CommentStatus"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "productId": {
+                    "type": "string"
+                },
+                "productName": {
+                    "type": "string"
+                },
+                "rate": {
+                    "type": "integer"
+                },
+                "strengthPoints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "text": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "weakPonits": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "models.UserDashboardInfoOutPutModel": {
             "type": "object",
             "properties": {
@@ -7026,6 +7227,35 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/helpers.KeyValueResponse-uuid_UUID-string"
+                    }
+                },
+                "from": {
+                    "type": "integer"
+                },
+                "last_page": {
+                    "type": "integer"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "parameter.ListResponse-models_AdminCommentOutPutModel": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.AdminCommentOutPutModel"
                     }
                 },
                 "from": {
@@ -7135,13 +7365,13 @@ const docTemplate = `{
                 }
             }
         },
-        "parameter.ListResponse-models_CommentOutPutModel": {
+        "parameter.ListResponse-models_ProductCommentOutPutModel": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.CommentOutPutModel"
+                        "$ref": "#/definitions/models.ProductCommentOutPutModel"
                     }
                 },
                 "from": {
@@ -7316,6 +7546,35 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.SuggestionProductOutPutModel"
+                    }
+                },
+                "from": {
+                    "type": "integer"
+                },
+                "last_page": {
+                    "type": "integer"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "parameter.ListResponse-models_UserCommentOutPutModel": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.UserCommentOutPutModel"
                     }
                 },
                 "from": {

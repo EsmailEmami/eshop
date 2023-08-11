@@ -185,9 +185,15 @@ func Register(ctx *app.HttpContext) error {
 		return errors.NewValidationError(consts.ValidationError, err)
 	}
 
+	db := dbpkg.MustGormDBConn(ctx)
+
 	user := input.ToDBModel()
 
-	db := dbpkg.MustGormDBConn(ctx)
+	// set default role
+	user.RoleID = func() *uuid.UUID {
+		id := uuid.MustParse(consts.ROLE_USER_ID)
+		return &id
+	}()
 
 	if err := db.Create(user).Error; err != nil {
 		return errors.NewValidationError(consts.InternalServerError, err)
