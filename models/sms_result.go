@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/esmailemami/eshop/services/notifier/sms"
+	"github.com/esmailemami/eshop/app/services/notifier/sms"
 	"github.com/google/uuid"
 )
 

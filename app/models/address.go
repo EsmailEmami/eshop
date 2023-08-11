@@ -4,8 +4,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/validations"
-	"github.com/esmailemami/eshop/consts"
 	dbmodels "github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"

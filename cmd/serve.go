@@ -3,8 +3,8 @@ package cmd
 import (
 	"log"
 
-	"github.com/esmailemami/eshop/server"
-	"github.com/esmailemami/eshop/services/token"
+	"github.com/esmailemami/eshop/api/server"
+	"github.com/esmailemami/eshop/app/services/token"
 	"github.com/spf13/cobra"
 )
 

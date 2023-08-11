@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/esmailemami/eshop/consts"
+	"github.com/esmailemami/eshop/app/consts"
 )
 
 func TimeValidator(value interface{}) error {

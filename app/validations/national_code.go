@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/esmailemami/eshop/consts"
+	"github.com/esmailemami/eshop/app/consts"
 )
 
 func IsValidNationalCode() func(value interface{}) error {

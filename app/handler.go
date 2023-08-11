@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"runtime/debug"
 
-	"github.com/esmailemami/eshop/consts"
-	"github.com/esmailemami/eshop/services/logger"
+	"github.com/esmailemami/eshop/app/consts"
+	"github.com/esmailemami/eshop/app/services/logger"
 )
 
 func Handler(

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/esmailemami/eshop/consts"
+	"github.com/esmailemami/eshop/app/consts"
 )
 
 func TestMultipartFileHeaderSizeValidator(t *testing.T) {

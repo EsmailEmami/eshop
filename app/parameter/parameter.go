@@ -7,8 +7,8 @@ import (
 	"sync"
 
 	"github.com/esmailemami/eshop/app"
-	"github.com/esmailemami/eshop/consts"
-	"github.com/esmailemami/eshop/errors"
+	"github.com/esmailemami/eshop/app/consts"
+	"github.com/esmailemami/eshop/app/errors"
 	"gorm.io/gorm"
 )
 

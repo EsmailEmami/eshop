@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/esmailemami/eshop/consts"
-	"github.com/esmailemami/eshop/errors"
-	"github.com/esmailemami/eshop/services/logger"
+	"github.com/esmailemami/eshop/app/consts"
+	"github.com/esmailemami/eshop/app/errors"
+	"github.com/esmailemami/eshop/app/services/logger"
 )
 
 func ErrorResponseHandler(ctx *HttpContext, err error) {

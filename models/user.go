@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/esmailemami/eshop/consts"
+	"github.com/esmailemami/eshop/app/consts"
 	"github.com/google/uuid"
 )
 

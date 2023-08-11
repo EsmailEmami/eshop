@@ -4,8 +4,8 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/esmailemami/eshop/consts"
-	"github.com/esmailemami/eshop/services/sanitize"
+	"github.com/esmailemami/eshop/app/consts"
+	"github.com/esmailemami/eshop/app/services/sanitize"
 )
 
 // validates that the given input is a clear text or not

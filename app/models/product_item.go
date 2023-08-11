@@ -3,7 +3,7 @@ package models
 import (
 	"errors"
 
-	"github.com/esmailemami/eshop/consts"
+	"github.com/esmailemami/eshop/app/consts"
 	dbpkg "github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/models"
 	dbmodels "github.com/esmailemami/eshop/models"

@@ -7,10 +7,10 @@ swagger-update:
 build:
 	@GOOS=linux GOARCH=amd64 go build -trimpath github.com/esmailemami/eshop
 
-run:
-	@go run . serve
+# run:
+# 	@go run . serve
 
-build-run: build
+run: build
 	@./eshop serve
 
 seed:

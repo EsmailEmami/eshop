@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
+	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/validations"
-	"github.com/esmailemami/eshop/consts"
 	dbpkg "github.com/esmailemami/eshop/db"
 	dbmodels "github.com/esmailemami/eshop/models"
 	datatypes "github.com/esmailemami/eshop/models/data_types"

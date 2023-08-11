@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/helpers"
-	"github.com/esmailemami/eshop/consts"
 	"github.com/esmailemami/eshop/models"
 	"github.com/go-chi/chi/v5"
 )

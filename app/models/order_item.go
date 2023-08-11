@@ -3,7 +3,7 @@ package models
 import (
 	"errors"
 
-	"github.com/esmailemami/eshop/consts"
+	"github.com/esmailemami/eshop/app/consts"
 	dbpkg "github.com/esmailemami/eshop/db"
 	dbmodels "github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"regexp"
 
-	"github.com/esmailemami/eshop/consts"
+	"github.com/esmailemami/eshop/app/consts"
 )
 
 func IsValidMobileNumber() func(value interface{}) error {

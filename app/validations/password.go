@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/esmailemami/eshop/consts"
+	"github.com/esmailemami/eshop/app/consts"
 )
 
 // StrongPassword check password to be strong enough but does not return error if password is empty

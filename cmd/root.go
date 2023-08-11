@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/esmailemami/eshop/consts"
+	"github.com/esmailemami/eshop/app/consts"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

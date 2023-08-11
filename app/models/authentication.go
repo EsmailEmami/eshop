@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
+	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/validations"
-	"github.com/esmailemami/eshop/consts"
 	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"

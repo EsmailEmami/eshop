@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"mime/multipart"
 
-	"github.com/esmailemami/eshop/consts"
+	"github.com/esmailemami/eshop/app/consts"
 )
 
 // MultipartFileHeaderSizeValidator validates the maximum allowed size for the uploaded file.

@@ -3,7 +3,7 @@ package dbseed
 import (
 	"time"
 
-	"github.com/esmailemami/eshop/consts"
+	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
