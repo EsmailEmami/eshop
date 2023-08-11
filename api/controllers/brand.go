@@ -6,6 +6,7 @@ import (
 	"github.com/esmailemami/eshop/app"
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/errors"
+	"github.com/esmailemami/eshop/app/helpers"
 	appmodels "github.com/esmailemami/eshop/app/models"
 	"github.com/esmailemami/eshop/app/parameter"
 	fileService "github.com/esmailemami/eshop/app/services/file"
@@ -33,7 +34,8 @@ func GetBrands(ctx *app.HttpContext) error {
 	parameter := parameter.New[appmodels.BrandOutPutModel](ctx, baseDB)
 
 	baseDB = baseDB.Table("brand b").
-		Joins("INNER JOIN file f on f.id = b.file_id")
+		Joins("INNER JOIN file f on f.id = b.file_id").
+		Where("b.deleted_at IS NULL")
 
 	response, err := parameter.SelectColumns("b.id, b.created_at, b.updated_at,b.name,b.code, b.file_id, f.unique_file_name as file_name,f.file_type").
 		SearchColumns("b.name").
@@ -42,6 +44,37 @@ func GetBrands(ctx *app.HttpContext) error {
 			return nil
 		}).
 		SortDescending("b.created_at", "b.name").
+		Execute(baseDB)
+
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	return ctx.JSON(*response, http.StatusOK)
+}
+
+// GetBrandsSelectList godoc
+// @Tags Brands
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param page  query  string  false  "page size"
+// @Param limit  query  string  false  "length of records to show"
+// @Param searchTerm  query  string  false  "search for item"
+// @Success 200 {object} parameter.ListResponse[helpers.KeyValueResponse[uuid.UUID, string]]
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /user/brand/selectList [get]
+func GetBrandsSelectList(ctx *app.HttpContext) error {
+	baseDB := db.MustGormDBConn(ctx)
+
+	parameter := parameter.New[helpers.KeyValueResponse[uuid.UUID, string]](ctx, baseDB)
+
+	baseDB = baseDB.Model(&models.Brand{})
+
+	response, err := parameter.SelectColumns(`id as "key", "name" as "value"`).
+		SearchColumns(`name`).
+		SortDescending("created_at", `name`).
 		Execute(baseDB)
 
 	if err != nil {

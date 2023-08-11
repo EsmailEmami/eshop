@@ -6,6 +6,7 @@ import (
 	"github.com/esmailemami/eshop/app"
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/errors"
+	"github.com/esmailemami/eshop/app/helpers"
 	appmodels "github.com/esmailemami/eshop/app/models"
 	"github.com/esmailemami/eshop/app/parameter"
 	"github.com/esmailemami/eshop/db"
@@ -39,6 +40,37 @@ func GetCategories(ctx *app.HttpContext) error {
 	}
 
 	return ctx.JSON(*data, http.StatusOK)
+}
+
+// GetCategoriesSelectList godoc
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param page  query  string  false  "page size"
+// @Param limit  query  string  false  "length of records to show"
+// @Param searchTerm  query  string  false  "search for item"
+// @Success 200 {object} parameter.ListResponse[helpers.KeyValueResponse[uuid.UUID, string]]
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /user/category/selectList [get]
+func GetCategoriesSelectList(ctx *app.HttpContext) error {
+	baseDB := db.MustGormDBConn(ctx)
+
+	parameter := parameter.New[helpers.KeyValueResponse[uuid.UUID, string]](ctx, baseDB)
+
+	baseDB = baseDB.Model(&models.Category{})
+
+	response, err := parameter.SelectColumns(`id as "key", "name" as "value"`).
+		SearchColumns(`name`).
+		SortDescending("created_at", `name`).
+		Execute(baseDB)
+
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	return ctx.JSON(*response, http.StatusOK)
 }
 
 // GetCategory godoc

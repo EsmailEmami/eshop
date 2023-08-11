@@ -26,3 +26,7 @@ func loadAdminCategoryRoutes(r chi.Router) {
 		middlewares.Permitted(models.ACTION_CATEGORY_ADMIN_DELETE)),
 	)
 }
+
+func loadAnonymousCategoryRoutes(r chi.Router) {
+	r.Get("/category/selectList", app.Handler(controllers.GetCategoriesSelectList))
+}

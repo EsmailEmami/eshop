@@ -1,4 +1,11 @@
 definitions:
+  helpers.KeyValueResponse-uuid_UUID-string:
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+    type: object
   helpers.SuccessDBResponse:
     properties:
       data: {}
@@ -1264,6 +1271,25 @@ definitions:
       price:
         type: number
       status:
+        type: integer
+    type: object
+  parameter.ListResponse-helpers_KeyValueResponse-uuid_UUID-string:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/helpers.KeyValueResponse-uuid_UUID-string'
+        type: array
+      from:
+        type: integer
+      last_page:
+        type: integer
+      limit:
+        type: integer
+      page:
+        type: integer
+      to:
+        type: integer
+      total:
         type: integer
     type: object
   parameter.ListResponse-models_BrandOutPutModel:
@@ -3507,6 +3533,120 @@ paths:
       - Bearer: []
       tags:
       - AppPics
+  /user/brand/selectList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-helpers_KeyValueResponse-uuid_UUID-string'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Brands
+  /user/category/selectList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-helpers_KeyValueResponse-uuid_UUID-string'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Categories
+  /user/color/selectList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-helpers_KeyValueResponse-uuid_UUID-string'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Colors
   /user/comment:
     get:
       consumes:

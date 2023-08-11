@@ -18,6 +18,9 @@ func loadUserAnonymousRoutes(r chi.Router) {
 	loadAnonymousProductRoutes(r)
 	loadAnonymousAppPicRoutes(r)
 	loadAnonymousCommentRoutes(r)
+	loadAnonymousBrandRoutes(r)
+	loadAnonymousCategoryRoutes(r)
+	loadAnonymousColorRoutes(r)
 }
 
 func loadAdminAnonymousRoutes(r chi.Router) {
@@ -25,7 +28,4 @@ func loadAdminAnonymousRoutes(r chi.Router) {
 	r.Post("/login", app.Handler(controllers.LoginAdmin))
 	r.Get("/logout", app.Handler(controllers.Logout))
 	// ##### Auth #####
-	loadAnonymousProductRoutes(r)
-	loadAnonymousAppPicRoutes(r)
-	loadAnonymousCommentRoutes(r)
 }

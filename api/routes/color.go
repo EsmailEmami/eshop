@@ -26,3 +26,7 @@ func loadAdminColorRoutes(r chi.Router) {
 		middlewares.Permitted(models.ACTION_COLOR_ADMIN_DELETE)),
 	)
 }
+
+func loadAnonymousColorRoutes(r chi.Router) {
+	r.Get("/color/selectList", app.Handler(controllers.GetColorsSelectList))
+}

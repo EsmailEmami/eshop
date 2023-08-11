@@ -18,6 +18,7 @@ func loadAdminRoutes(root chi.Router) {
 		// ##### Auth #####
 
 		loadAdminProductFeatureCategoryRoutes(r)
+		loadAdminProductFeatureKeyRoutes(r)
 		loadAdminProductFeatureCategoryRoutes(r)
 		loadAdminProductFeatureValueRoutes(r)
 		loadAdminAppPicRoutes(r)

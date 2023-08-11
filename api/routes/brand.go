@@ -26,3 +26,7 @@ func loadAdminBrandRoutes(r chi.Router) {
 		middlewares.Permitted(models.ACTION_BRAND_ADMIN_DELETE)),
 	)
 }
+
+func loadAnonymousBrandRoutes(r chi.Router) {
+	r.Get("/brand/selectList", app.Handler(controllers.GetBrandsSelectList))
+}
