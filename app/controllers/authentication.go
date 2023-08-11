@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -30,7 +31,7 @@ import (
 // @Success 200 {object} models.LoginOutputModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /admin/auth/login [post]
+// @Router /admin/login [post]
 func LoginAdmin(ctx *app.HttpContext) error {
 	var input models.LoginInputModel
 
@@ -41,6 +42,9 @@ func LoginAdmin(ctx *app.HttpContext) error {
 	if err := input.Validate(); err != nil {
 		return errors.NewValidationError(consts.ValidationError, err)
 	}
+
+	reqContext := context.WithValue(ctx.Request.Context(), consts.UserActAsContext, consts.UserActAsAdmin)
+	ctx.Request = ctx.Request.WithContext(reqContext)
 
 	input.IP = ctx.ClientIP()
 	input.UserAgent = ctx.UserAgent()
@@ -65,7 +69,7 @@ func LoginAdmin(ctx *app.HttpContext) error {
 // @Success 200 {object} models.LoginOutputModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /user/auth/login [post]
+// @Router /user/login [post]
 func LoginUser(ctx *app.HttpContext) error {
 	var input models.LoginInputModel
 
@@ -79,6 +83,9 @@ func LoginUser(ctx *app.HttpContext) error {
 
 	input.IP = ctx.ClientIP()
 	input.UserAgent = ctx.UserAgent()
+
+	reqContext := context.WithValue(ctx.Request.Context(), consts.UserActAsContext, consts.UserActAsUser)
+	ctx.Request = ctx.Request.WithContext(reqContext)
 
 	output, err := authentication.LoginByUsername(ctx, input)
 	if err != nil {
@@ -100,7 +107,8 @@ func LoginUser(ctx *app.HttpContext) error {
 // @Success 200 {object} []dbmodels.User
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /user/auth/is_authenticated [get]
+// @Router /user/is_authenticated [get]
+// @Router /admin/is_authenticated [get]
 func IsAuthenticated(ctx *app.HttpContext) error {
 	userCtx, ok := ctx.Get(consts.UserContext)
 	if !ok {
@@ -130,7 +138,8 @@ func IsAuthenticated(ctx *app.HttpContext) error {
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /user/auth/logout [get]
+// @Router /admin/logout [get]
+// @Router /user/logout [get]
 func Logout(ctx *app.HttpContext) error {
 	jwtToken, _, err := token.LoadTokenFromHttpRequest(ctx.Request)
 	if err != nil {
@@ -165,7 +174,7 @@ func logOutDone(ctx *app.HttpContext) error {
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /user/auth/register [post]
+// @Router /user/register [post]
 func Register(ctx *app.HttpContext) error {
 	var input models.RegisterInputModel
 	if err := ctx.BlindBind(&input); err != nil {
@@ -197,7 +206,7 @@ func Register(ctx *app.HttpContext) error {
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /user/auth/recoveryPasword [post]
+// @Router /user/recoveryPasword [post]
 func SendRecoveryPasswordRequest(ctx *app.HttpContext) error {
 	var input models.RecoveryPasswordReqModel
 	if err := ctx.BlindBind(&input); err != nil {
@@ -273,7 +282,7 @@ func SendRecoveryPasswordRequest(ctx *app.HttpContext) error {
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /user/auth/recoveryPasword/{key} [post]
+// @Router /user/recoveryPasword/{key} [post]
 func RecoveryPassword(ctx *app.HttpContext) error {
 	key, err := uuid.Parse(ctx.GetPathParam("key"))
 	if err != nil {

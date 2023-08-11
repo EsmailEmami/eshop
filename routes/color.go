@@ -10,7 +10,7 @@ import (
 
 func loadAdminColorRoutes(r chi.Router) {
 	r.Get("/color",
-		app.Handler(controllers.GetProductFeatureCategories,
+		app.Handler(controllers.GetColors,
 			middlewares.Permitted(models.ACTION_COLOR_ADMIN_LIST)),
 	)
 	r.Get("/color/{id}", app.Handler(controllers.GetColor,

@@ -10,10 +10,11 @@ import (
 func loadUserRoutes(root chi.Router) {
 	root.Group(func(r chi.Router) {
 		r.Use(middlewares.AuthenticationHandler)
+		r.Use(middlewares.CanInvokeRouteUnlessUser)
 
 		// ##### Auth #####
-		r.Get("/auth/is_authenticated", app.Handler(controllers.IsAuthenticated))
-		r.Get("/auth/logout", app.Handler(controllers.Logout))
+		r.Get("/is_authenticated", app.Handler(controllers.IsAuthenticated))
+		r.Get("/logout", app.Handler(controllers.Logout))
 		// ##### Auth #####
 
 		loadUserOrderItemRoutes(r)

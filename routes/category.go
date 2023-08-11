@@ -10,7 +10,7 @@ import (
 
 func loadAdminCategoryRoutes(r chi.Router) {
 	r.Get("/category",
-		app.Handler(controllers.GetProductFeatureCategories,
+		app.Handler(controllers.GetCategories,
 			middlewares.Permitted(models.ACTION_CATEGORY_ADMIN_LIST)),
 	)
 	r.Get("/category/{id}", app.Handler(controllers.GetCategory,

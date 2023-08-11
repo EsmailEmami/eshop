@@ -21,6 +21,15 @@ func seedRole(dbConn *gorm.DB) error {
 			Name:     "root",
 			Code:     "1",
 			IsSystem: true,
+			Permissions: models.RolePermissions{
+				models.ACTION_CAN_LOGIN_ADMIN,
+				models.ACTION_CAN_LOGIN_USER,
+				models.ACTION_ROLE_ADMIN_LIST,
+				models.ACTION_ROLE_ADMIN_INFO,
+				models.ACTION_ROLE_ADMIN_CREATE,
+				models.ACTION_ROLE_ADMIN_UPDATE,
+				models.ACTION_ROLE_ADMIN_DELETE,
+			},
 		},
 		{
 			Model: models.Model{
@@ -32,6 +41,12 @@ func seedRole(dbConn *gorm.DB) error {
 			Name:     "admin",
 			Code:     "2",
 			IsSystem: true,
+			Permissions: models.RolePermissions{
+				models.ACTION_CAN_LOGIN_ADMIN,
+				models.ACTION_CAN_LOGIN_USER,
+				models.ACTION_ROLE_ADMIN_LIST,
+				models.ACTION_ROLE_ADMIN_INFO,
+			},
 		},
 		{
 			Model: models.Model{
@@ -43,6 +58,20 @@ func seedRole(dbConn *gorm.DB) error {
 			Name:     "no access",
 			Code:     "3",
 			IsSystem: true,
+		},
+		{
+			Model: models.Model{
+				ID: func() *uuid.UUID {
+					id := uuid.MustParse(consts.ROLE_USER)
+					return &id
+				}(),
+			},
+			Name:     "user",
+			Code:     "4",
+			IsSystem: true,
+			Permissions: models.RolePermissions{
+				models.ACTION_CAN_LOGIN_USER,
+			},
 		},
 	}
 

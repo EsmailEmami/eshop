@@ -10,7 +10,7 @@ import (
 
 func loadAdminBrandRoutes(r chi.Router) {
 	r.Get("/brand",
-		app.Handler(controllers.GetProductFeatureCategories,
+		app.Handler(controllers.GetBrands,
 			middlewares.Permitted(models.ACTION_BRAND_ADMIN_LIST)),
 	)
 	r.Get("/brand/{id}", app.Handler(controllers.GetBrand,

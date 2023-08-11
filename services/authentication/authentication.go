@@ -31,7 +31,7 @@ func LoginByUsername(ctx context.Context, input appmodels.LoginInputModel) (*app
 	}
 
 	tx := db.Begin()
-	loginData, err := LoginUserInstance(tx, *user)
+	loginData, err := LoginUserInstance(tx, *user, ctx.Value(consts.UserActAsContext).(string))
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func LoginByUsernameOrMobile(ctx context.Context, input appmodels.LoginInputMode
 		return nil, errors.New(consts.LoginFailed)
 	}
 	tx := db.Begin()
-	loginData, err := LoginUserInstance(tx, *user)
+	loginData, err := LoginUserInstance(tx, *user, ctx.Value(consts.UserActAsContext).(string))
 	if err != nil {
 		return nil, err
 	}
@@ -105,11 +105,33 @@ func LoginByUsernameOrMobile(ctx context.Context, input appmodels.LoginInputMode
 	return loginData, nil
 }
 
-func LoginUserInstance(dbConn *gorm.DB, user models.User) (*appmodels.LoginOutputModel, error) {
+func LoginUserInstance(dbConn *gorm.DB, user models.User, actAs string) (*appmodels.LoginOutputModel, error) {
+
+	switch actAs {
+	// کاربر میخواهد از روت ادمین لاگین کند
+	case consts.UserActAsAdmin:
+		{
+			if !user.Role.Permitted(models.ACTION_CAN_LOGIN_ADMIN) {
+				return nil, errors.New(consts.LoginFailed)
+			}
+		}
+	// کاربر میخواهد از روت کاربر لاگین کند
+	case consts.UserActAsUser:
+		{
+			if !user.Role.Permitted(models.ACTION_CAN_LOGIN_USER) {
+				return nil, errors.New(consts.LoginFailed)
+			}
+		}
+	}
+
 	jwtToken := token.NewToken(map[string]interface{}{
 		"userID":   user.ID,
 		"username": user.Username,
 	})
+
+	if !user.Enabled {
+		return nil, errors.New(consts.UserIsDisabled)
+	}
 
 	tokenStr, err := token.String(jwtToken)
 

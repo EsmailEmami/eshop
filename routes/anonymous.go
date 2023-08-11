@@ -6,14 +6,25 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func loadAnonymousRoutes(r chi.Router) {
+func loadUserAnonymousRoutes(r chi.Router) {
 	// ##### Auth #####
-	r.Post("/auth/login", app.Handler(controllers.LoginUser))
-	r.Post("/auth/register", app.Handler(controllers.Register))
-	r.Post("/auth/recoveryPasword", app.Handler(controllers.SendRecoveryPasswordRequest))
-	r.Post("/auth/recoveryPasword/{key}", app.Handler(controllers.RecoveryPassword))
+	r.Post("/login", app.Handler(controllers.LoginUser))
+	r.Post("/register", app.Handler(controllers.Register))
+	r.Post("/recoveryPasword", app.Handler(controllers.SendRecoveryPasswordRequest))
+	r.Post("/recoveryPasword/{key}", app.Handler(controllers.RecoveryPassword))
+	r.Get("/logout", app.Handler(controllers.Logout))
 	// ##### Auth #####
 
+	loadAnonymousProductRoutes(r)
+	loadAnonymousAppPicRoutes(r)
+	loadAnonymousCommentRoutes(r)
+}
+
+func loadAdminAnonymousRoutes(r chi.Router) {
+	// ##### Auth #####
+	r.Post("/login", app.Handler(controllers.LoginAdmin))
+	r.Get("/logout", app.Handler(controllers.Logout))
+	// ##### Auth #####
 	loadAnonymousProductRoutes(r)
 	loadAnonymousAppPicRoutes(r)
 	loadAnonymousCommentRoutes(r)

@@ -38,11 +38,12 @@ func LoadApiRoutes(root *chi.Mux) {
 	root.Route("/api/v1", func(rootRouter chi.Router) {
 
 		rootRouter.Route("/user", func(r chi.Router) {
-			loadAnonymousRoutes(r)
+			loadUserAnonymousRoutes(r)
 			loadUserRoutes(r)
 		})
 
 		rootRouter.Route("/admin", func(r chi.Router) {
+			loadAdminAnonymousRoutes(r)
 			loadAdminRoutes(r)
 		})
 	})

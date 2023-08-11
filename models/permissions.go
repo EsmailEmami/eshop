@@ -1,8 +1,8 @@
 package models
 
 const (
-	ACTION_CAN_LOGIN_ADMIN    = "can_login_admin"
-	ACTION_CAN_LOGIN_CUSTOMER = "can_login_customer"
+	ACTION_CAN_LOGIN_ADMIN = "can_login_admin"
+	ACTION_CAN_LOGIN_USER  = "can_login_user"
 
 	// ###### Product ######
 
@@ -36,11 +36,12 @@ const (
 
 	// ###### Role ######
 
-	ACTION_ROLE_ADMIN_INFO   = "action_role_admin_info"
-	ACTION_ROLE_ADMIN_CREATE = "action_role_admin_create"
-	ACTION_ROLE_ADMIN_LIST   = "action_role_admin_list"
-	ACTION_ROLE_ADMIN_UPDATE = "action_role_admin_update"
-	ACTION_ROLE_ADMIN_DELETE = "action_role_admin_delete"
+	ACTION_ROLE_ADMIN_INFO        = "action_role_admin_info"
+	ACTION_ROLE_ADMIN_CREATE      = "action_role_admin_create"
+	ACTION_ROLE_ADMIN_LIST        = "action_role_admin_list"
+	ACTION_ROLE_ADMIN_UPDATE      = "action_role_admin_update"
+	ACTION_ROLE_ADMIN_DELETE      = "action_role_admin_delete"
+	ACTION_ROLE_ADMIN_PERMISSIONS = "action_role_admin_permissions"
 
 	// ###### Role ######
 
@@ -172,8 +173,8 @@ func GetPermissionsTree() []Action {
 					Code: ACTION_CAN_LOGIN_ADMIN,
 				},
 				{
-					Name: "امکان ورود به پنل مشتریان با این نقش",
-					Code: ACTION_CAN_LOGIN_CUSTOMER,
+					Name: "امکان ورود به پنل کاربر با این نقش",
+					Code: ACTION_CAN_LOGIN_USER,
 				},
 			},
 		},
@@ -252,6 +253,10 @@ func GetPermissionsTree() []Action {
 				{
 					Name: "Delete role",
 					Code: ACTION_ROLE_ADMIN_DELETE,
+				},
+				{
+					Name: "Permissions",
+					Code: ACTION_ROLE_ADMIN_PERMISSIONS,
 				},
 			},
 		},
