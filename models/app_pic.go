@@ -11,6 +11,7 @@ type AppPic struct {
 	File        *File      `gorm:"foreignKey:file_id;references:id" json:"file"`
 	Title       string     `gorm:"column:title"                     json:"title"`
 	Description string     `gorm:"column:description"               json:"description"`
+	Url         string     `gorm:"url"                              json:"url"`
 }
 
 func (AppPic) TableName() string {

@@ -1,0 +1,10 @@
+---
+up: |
+  TRUNCATE public."app_pic";
+
+  ALTER TABLE public."app_pic"
+    ADD url VARCHAR(512) NOT NULL;
+
+down: |
+  ALTER TABLE public."app_pic"
+    DROP COLUMN IS EXISTS url;

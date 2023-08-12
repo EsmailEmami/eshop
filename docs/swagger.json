@@ -5431,6 +5431,9 @@
                 },
                 "updatedById": {
                     "type": "string"
+                },
+                "url": {
+                    "type": "string"
                 }
             }
         },
@@ -5460,6 +5463,9 @@
                 },
                 "updatedAt": {
                     "type": "string"
+                },
+                "url": {
+                    "type": "string"
                 }
             }
         },
@@ -5479,6 +5485,9 @@
                     "type": "integer"
                 },
                 "title": {
+                    "type": "string"
+                },
+                "url": {
                     "type": "string"
                 }
             }
