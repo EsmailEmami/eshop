@@ -12,6 +12,7 @@ import (
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/errors"
 	appmodels "github.com/esmailemami/eshop/app/models"
+	"github.com/esmailemami/eshop/app/services/authorization"
 	service "github.com/esmailemami/eshop/app/services/file"
 	dbpkg "github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/models"
@@ -50,6 +51,11 @@ func UploadImage(ctx *app.HttpContext) error {
 	fileType, err := models.FileTypeFromInt(fileTypeInput)
 	if err != nil {
 		return errors.NewBadRequestError(err.Error(), err)
+	}
+
+	// check upload permission
+	if err := authorization.CanAccess(ctx, fileType.GetUploadPermission()); err != nil {
+		return err
 	}
 
 	baseDB := dbpkg.MustGormDBConn(ctx)
@@ -149,6 +155,11 @@ func DeleteFile(ctx *app.HttpContext) error {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
+	// check delete permission
+	if err := authorization.CanAccess(ctx, file.FileType.GetDeletePermission()); err != nil {
+		return err
+	}
+
 	if err := service.DeleteFile(baseDB, &file); err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
@@ -176,6 +187,11 @@ func GetFile(ctx *app.HttpContext) error {
 
 	if baseDB.First(&dbFile, fileID).Error != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
+	}
+
+	// check download permission
+	if err := authorization.CanAccess(ctx, dbFile.FileType.GetDownloadPermission()); err != nil {
+		return err
 	}
 
 	path := service.GetFilePhysicallyPath(&dbFile)
@@ -223,6 +239,11 @@ func GetStreamingFile(ctx *app.HttpContext) error {
 
 	if baseDB.First(&dbFile, fileID).Error != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
+	}
+
+	// check download permission
+	if err := authorization.CanAccess(ctx, dbFile.FileType.GetDownloadPermission()); err != nil {
+		return err
 	}
 
 	path := service.GetFilePhysicallyPath(&dbFile)
@@ -291,6 +312,11 @@ func GetItemFiles(ctx *app.HttpContext) error {
 		return errors.NewBadRequestError(err.Error(), err)
 	}
 
+	// check list permission
+	if err := authorization.CanAccess(ctx, fileType.GetListPermission()); err != nil {
+		return err
+	}
+
 	baseDB := dbpkg.MustGormDBConn(ctx)
 
 	_, err = service.ValidateItem(baseDB, itemID, fileType)
@@ -343,6 +369,11 @@ func FileChangePriority(ctx *app.HttpContext) error {
 
 	if baseDB.First(&dbFile, fileID).Error != nil {
 		return errors.NewRecordNotFoundError(consts.ModelFileNotFound, nil)
+	}
+
+	// check change priority permission
+	if err := authorization.CanAccess(ctx, dbFile.FileType.GetChangePriorityPermission()); err != nil {
+		return err
 	}
 
 	multiple, err := service.ValidateItem(baseDB, itemID, dbFile.FileType)

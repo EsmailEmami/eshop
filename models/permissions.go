@@ -96,26 +96,25 @@ const (
 
 	// ###### File ######
 
-	ACTION_FILE_INFO            = "action_file_info"
-	ACTION_FILE_CREATE          = "action_file_create"
+	ACTION_FILE_DOWNLOAD        = "action_file_download"
+	ACTION_FILE_UPLOAD          = "action_file_upload"
 	ACTION_FILE_LIST            = "action_file_list"
 	ACTION_FILE_DELETE          = "action_file_delete"
 	ACTION_FILE_CHANGE_PRIORITY = "action_file_change_priority"
 
 	// ###### File - Systematic ######
 
-	ACTION_FILE_SYSTEMATIC_INFO            = "action_file_systematic_info"
-	ACTION_FILE_SYSTEMATIC_CREATE          = "action_file_systematic_create"
-	ACTION_FILE_SYSTEMATIC_LIST            = "action_file_systematic_list"
-	ACTION_FILE_SYSTEMATIC_DELETE          = "action_file_systematic_delete"
-	ACTION_FILE_SYSTEMATIC_CHANGE_PRIORITY = "action_file_systematic_change_priority"
+	ACTION_FILE_SYSTEMATIC_DOWNLOAD = "action_file_systematic_download"
+	ACTION_FILE_SYSTEMATIC_UPLOAD   = "action_file_systematic_upload"
+	ACTION_FILE_SYSTEMATIC_LIST     = "action_file_systematic_list"
+	ACTION_FILE_SYSTEMATIC_DELETE   = "action_file_systematic_delete"
 
 	// ###### File - systematic ######
 
 	// ###### File - Product File Map ######
 
-	ACTION_FILE_PRODUCT_INFO            = "action_file_product_info"
-	ACTION_FILE_PRODUCT_CREATE          = "action_file_product_create"
+	ACTION_FILE_PRODUCT_DOWNLOAD        = "action_file_product_download"
+	ACTION_FILE_PRODUCT_UPLOAD          = "action_file_product_upload"
 	ACTION_FILE_PRODUCT_LIST            = "action_file_product_list"
 	ACTION_FILE_PRODUCT_DELETE          = "action_file_product_delete"
 	ACTION_FILE_PRODUCT_CHANGE_PRIORITY = "action_file_product_change_priority"
@@ -124,21 +123,19 @@ const (
 
 	// ###### File - Brand ######
 
-	ACTION_FILE_BRAND_INFO            = "action_file_brand_info"
-	ACTION_FILE_BRAND_CREATE          = "action_file_brand_create"
-	ACTION_FILE_BRAND_LIST            = "action_file_brand_list"
-	ACTION_FILE_BRAND_DELETE          = "action_file_brand_delete"
-	ACTION_FILE_BRAND_CHANGE_PRIORITY = "action_file_brand_change_priority"
+	ACTION_FILE_BRAND_DOWNLOAD = "action_file_brand_download"
+	ACTION_FILE_BRAND_UPLOAD   = "action_file_brand_upload"
+	ACTION_FILE_BRAND_LIST     = "action_file_brand_list"
+	ACTION_FILE_BRAND_DELETE   = "action_file_brand_delete"
 
 	// ###### File - Brand ######
 
 	// ###### File - AppPic ######
 
-	ACTION_FILE_APP_PIC_INFO            = "action_file_app_pic_info"
-	ACTION_FILE_APP_PIC_CREATE          = "action_file_app_pic_create"
-	ACTION_FILE_APP_PIC_LIST            = "action_file_app_pic_list"
-	ACTION_FILE_APP_PIC_DELETE          = "action_file_app_pic_delete"
-	ACTION_FILE_APP_PIC_CHANGE_PRIORITY = "action_file_app_pic_change_priority"
+	ACTION_FILE_APP_PIC_DOWNLOAD = "action_file_app_pic_download"
+	ACTION_FILE_APP_PIC_UPLOAD   = "action_file_app_pic_upload"
+	ACTION_FILE_APP_PIC_LIST     = "action_file_app_pic_list"
+	ACTION_FILE_APP_PIC_DELETE   = "action_file_app_pic_delete"
 
 	// ###### File - AppPic ######
 
@@ -408,12 +405,12 @@ func GetPermissionsTree() []Action {
 					Code: ACTION_FILE_LIST,
 				},
 				{
-					Name: "Create file",
-					Code: ACTION_FILE_CREATE,
+					Name: "Upload file",
+					Code: ACTION_FILE_UPLOAD,
 				},
 				{
-					Name: "File information",
-					Code: ACTION_FILE_INFO,
+					Name: "Download File",
+					Code: ACTION_FILE_DOWNLOAD,
 				},
 				{
 					Name: "Delete file",
@@ -432,20 +429,16 @@ func GetPermissionsTree() []Action {
 							Code: ACTION_FILE_SYSTEMATIC_LIST,
 						},
 						{
-							Name: "Create systematic file",
-							Code: ACTION_FILE_SYSTEMATIC_CREATE,
+							Name: "Upload systematic file",
+							Code: ACTION_FILE_SYSTEMATIC_UPLOAD,
 						},
 						{
 							Name: "Systematic file information",
-							Code: ACTION_FILE_SYSTEMATIC_INFO,
+							Code: ACTION_FILE_SYSTEMATIC_DOWNLOAD,
 						},
 						{
 							Name: "Delete systematic file",
 							Code: ACTION_FILE_SYSTEMATIC_DELETE,
-						},
-						{
-							Name: "Change systematic file priority",
-							Code: ACTION_FILE_SYSTEMATIC_CHANGE_PRIORITY,
 						},
 					},
 				},
@@ -458,12 +451,12 @@ func GetPermissionsTree() []Action {
 							Code: ACTION_FILE_PRODUCT_LIST,
 						},
 						{
-							Name: "Create product file map",
-							Code: ACTION_FILE_PRODUCT_CREATE,
+							Name: "Upload product file map",
+							Code: ACTION_FILE_PRODUCT_UPLOAD,
 						},
 						{
 							Name: "Product file map information",
-							Code: ACTION_FILE_PRODUCT_INFO,
+							Code: ACTION_FILE_PRODUCT_DOWNLOAD,
 						},
 						{
 							Name: "Delete product file map",
@@ -484,20 +477,16 @@ func GetPermissionsTree() []Action {
 							Code: ACTION_FILE_BRAND_LIST,
 						},
 						{
-							Name: "Create brand file",
-							Code: ACTION_FILE_BRAND_CREATE,
+							Name: "Upload brand file",
+							Code: ACTION_FILE_BRAND_UPLOAD,
 						},
 						{
 							Name: "Brand file information",
-							Code: ACTION_FILE_BRAND_INFO,
+							Code: ACTION_FILE_BRAND_DOWNLOAD,
 						},
 						{
 							Name: "Delete brand file",
 							Code: ACTION_FILE_BRAND_DELETE,
-						},
-						{
-							Name: "Change brand file priority",
-							Code: ACTION_FILE_BRAND_CHANGE_PRIORITY,
 						},
 					},
 				},
@@ -510,20 +499,16 @@ func GetPermissionsTree() []Action {
 							Code: ACTION_FILE_APP_PIC_LIST,
 						},
 						{
-							Name: "Create app pic file",
-							Code: ACTION_FILE_APP_PIC_CREATE,
+							Name: "Upload app pic file",
+							Code: ACTION_FILE_APP_PIC_UPLOAD,
 						},
 						{
 							Name: "App pic file information",
-							Code: ACTION_FILE_APP_PIC_INFO,
+							Code: ACTION_FILE_APP_PIC_DOWNLOAD,
 						},
 						{
 							Name: "Delete app pic file",
 							Code: ACTION_FILE_APP_PIC_DELETE,
-						},
-						{
-							Name: "Change app pic file priority",
-							Code: ACTION_FILE_APP_PIC_CHANGE_PRIORITY,
 						},
 					},
 				},
