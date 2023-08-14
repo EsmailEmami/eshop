@@ -498,6 +498,8 @@ definitions:
         $ref: '#/definitions/models.FileType'
       id:
         type: string
+      itemId:
+        type: string
       mimeType:
         type: string
       originalName:

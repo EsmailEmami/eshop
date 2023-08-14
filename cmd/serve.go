@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/esmailemami/eshop/api/server"
+	"github.com/esmailemami/eshop/app/services/settings"
 	"github.com/esmailemami/eshop/app/services/token"
 	"github.com/spf13/cobra"
 )
@@ -16,6 +17,7 @@ var serveCmd = &cobra.Command{
 			log.Fatalln(err)
 		}
 
+		settings.Initialize()
 		server.RunServer()
 
 		return nil

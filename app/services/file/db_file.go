@@ -77,7 +77,11 @@ func DeleteFile(tx *gorm.DB, file *models.File) error {
 		return err
 	}
 
-	return DeleteFileByPath(path)
+	// if the file is not removeable we should not delete it physically
+	if file.FileType.IsRemoveable() {
+		return DeleteFileByPath(path)
+	}
+	return nil
 }
 
 func ChangeFilePriority(db, tx *gorm.DB, itemID, fileID uuid.UUID, fileType models.FileType, priority int) error {

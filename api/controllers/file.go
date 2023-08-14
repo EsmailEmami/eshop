@@ -102,6 +102,7 @@ loop:
 				OriginalName:   fileHeader.Filename,
 				UniqueFileName: fileName,
 				FileType:       fileType,
+				ItemID:         &itemID,
 			})
 
 			if !multiple {

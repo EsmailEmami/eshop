@@ -5961,6 +5961,9 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "itemId": {
+                    "type": "string"
+                },
                 "mimeType": {
                     "type": "string"
                 },

@@ -1,0 +1,10 @@
+---
+up: |
+  ALTER TABLE public."file" 
+    ADD item_id UUID NULL,
+    ADD expire_date timestamptz NULL;
+
+down: |
+  ALTER TABLE public."file" 
+    DROP COLUMN IF EXISTS item_id,
+    DROP COLUMN IF EXISTS expire_date;
