@@ -3,26 +3,28 @@ package tablecreator
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
 
 	"github.com/google/uuid"
-	gormSchema "gorm.io/gorm/schema"
 )
 
-type columnData struct {
+type columnInfo struct {
 	Type         string
 	DefaultValue string
 }
 
 func CreateOrUpdate(db *sql.DB, model interface{}) error {
-	rv := reflect.ValueOf(model)
-	rt := reflect.TypeOf(rv.Elem().Interface())
+	var (
+		rv = reflect.ValueOf(model)
+		rt = reflect.TypeOf(rv.Elem().Interface())
+	)
 
 	if rv.Kind() != reflect.Ptr {
-		return fmt.Errorf("model must be a pointer")
+		return errors.New("model must be a pointer")
 	}
 
 	tableName, schema, err := getTableData(rv)
@@ -31,23 +33,23 @@ func CreateOrUpdate(db *sql.DB, model interface{}) error {
 		return err
 	}
 
-	defaultValuesMethod := reflect.ValueOf(model).MethodByName("LoadDefaultValues")
-	if defaultValuesMethod.IsValid() {
-		defaultValuesMethod.Call(nil)
-	} else {
-		return fmt.Errorf("the given struct must have TableName() function.")
+	if err := callDefaultValuesMethod(rv); err != nil {
+		return err
 	}
 
-	exists, err := exists(db, schema, tableName)
+	tableExists, err := tableExists(db, schema, tableName)
 	if err != nil {
 		return err
 	}
 
-	columns := getColumnsData(rt, rv.Elem())
-	existedColumns := make(map[string]string)
+	var (
+		columns        = getColumnsInfo(rt, rv.Elem())
+		existedColumns = make(map[string]string)
+		sqlCommand     string
+	)
 
-	if exists {
-		existedColumns, err = getExistedColumn(db, tableName)
+	if tableExists {
+		existedColumns, err = getExistedColumn(db, schema, tableName)
 		if err != nil {
 			return err
 		}
@@ -56,25 +58,23 @@ func CreateOrUpdate(db *sql.DB, model interface{}) error {
 
 		// add or alter columns
 		for columnName, column := range columns {
-			if _, ok := existedColumns[columnName]; ok {
-				columnDefinitions = append(columnDefinitions, fmt.Sprintf("DROP COLUMN IF EXISTS %s", columnName))
+			if _, ok := existedColumns[columnName]; !ok {
+				//columnDefinitions = append(columnDefinitions, fmt.Sprintf("DROP COLUMN IF EXISTS %s", columnName))
+				columnDefinitions = append(columnDefinitions, fmt.Sprintf("ADD %s %s", columnName, column.Type))
 			}
-			columnDefinitions = append(columnDefinitions, fmt.Sprintf("ADD %s %s", columnName, column.Type))
 		}
 
-		// delete columns
+		// delete columns that are not existed
 		for columnName := range existedColumns {
 			if _, ok := columns[columnName]; !ok {
 				columnDefinitions = append(columnDefinitions, fmt.Sprintf("DROP COLUMN IF EXISTS %s", columnName))
 			}
 		}
 
-		sqlCommand := fmt.Sprintf("ALTER TABLE %s.%s %s;", schema, tableName, strings.Join(columnDefinitions, ","))
-
-		_, err = db.Exec(sqlCommand)
-		if err != nil {
-			return err
+		if len(columnDefinitions) > 0 {
+			sqlCommand = fmt.Sprintf("ALTER TABLE %s.%s %s;", schema, tableName, strings.Join(columnDefinitions, ","))
 		}
+
 	} else {
 		columnDefinitions := []string{}
 
@@ -83,42 +83,65 @@ func CreateOrUpdate(db *sql.DB, model interface{}) error {
 			columnDefinitions = append(columnDefinitions, fmt.Sprintf("%s %s", columnName, column.Type))
 		}
 
-		sqlCommand := fmt.Sprintf(`CREATE TABLE "%s"."%s" (%s);`, schema, tableName, strings.Join(columnDefinitions, ","))
-		_, err = db.Exec(sqlCommand)
+		sqlCommand = fmt.Sprintf(`CREATE TABLE "%s"."%s" (%s);`, schema, tableName, strings.Join(columnDefinitions, ","))
+	}
 
+	// create or update table
+	if strings.TrimSpace(sqlCommand) != "" {
+		_, err = db.Exec(sqlCommand)
 		if err != nil {
 			return err
 		}
 	}
 
-	if !exists {
-		columnsName := []string{}
-		values := []string{}
+	dataCommand := ""
+
+	if !tableExists {
+		var (
+			columnsName = []string{}
+			values      = []string{}
+		)
 
 		for columnName, column := range columns {
 			columnsName = append(columnsName, columnName)
 			values = append(values, column.DefaultValue)
 		}
 
-		insertComand := fmt.Sprintf(`INSERT INTO "%s"."%s" (%s) VALUES(%s)`, schema, tableName, strings.Join(columnsName, ","), strings.Join(values, ","))
-		db.Exec(insertComand)
+		dataCommand = fmt.Sprintf(`INSERT INTO "%s"."%s" (%s) VALUES(%s)`, schema, tableName, strings.Join(columnsName, ","), strings.Join(values, ","))
 	} else {
 		columnsUpdate := []string{}
 
 		for columnName, column := range columns {
 			if _, ok := existedColumns[columnName]; !ok {
-				columnsUpdate = append(columnsUpdate, fmt.Sprintf(`"%s" = N"%s"`, columnName, column.DefaultValue))
+				columnsUpdate = append(columnsUpdate, fmt.Sprintf(`"%s" = %s`, columnName, column.DefaultValue))
 			}
 		}
 
-		updateCommand := fmt.Sprintf(`UPDATE "%s"."%s" SET %s;`, schema, tableName, strings.Join(columnsUpdate, ","))
-		db.Exec(updateCommand)
+		if len(columnsUpdate) > 0 {
+			dataCommand = fmt.Sprintf(`UPDATE "%s"."%s" SET %s;`, schema, tableName, strings.Join(columnsUpdate, ","))
+		}
+	}
+
+	if strings.TrimSpace(dataCommand) != "" {
+		_, err := db.Exec(dataCommand)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func exists(db *sql.DB, schema, tableName string) (bool, error) {
+func callDefaultValuesMethod(rv reflect.Value) error {
+	defaultValuesMethod := rv.MethodByName("LoadDefaultValues")
+	if !defaultValuesMethod.IsValid() {
+		return errors.New("the given struct must have LoadDefaultValues() function")
+	}
+	defaultValuesMethod.Call(nil)
+	return nil
+}
+
+func tableExists(db *sql.DB, schema, tableName string) (bool, error) {
 	row := db.QueryRow("SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = $1 AND tablename = $2);", schema, tableName)
 
 	if row.Err() != nil {
@@ -152,8 +175,8 @@ func getTableData(rv reflect.Value) (tableName, schema string, err error) {
 	return
 }
 
-func getExistedColumn(db *sql.DB, tableName string) (map[string]string, error) {
-	rows, err := db.Query("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = $1", tableName)
+func getExistedColumn(db *sql.DB, schema, tableName string) (map[string]string, error) {
+	rows, err := db.Query("SELECT column_name, data_type FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2", schema, tableName)
 	if err != nil {
 		return nil, err
 	}
@@ -176,57 +199,47 @@ func getExistedColumn(db *sql.DB, tableName string) (map[string]string, error) {
 	return data, nil
 }
 
-func getColumnsData(rt reflect.Type, rv reflect.Value) map[string]*columnData {
-	data := make(map[string]*columnData)
+func getColumnsInfo(rt reflect.Type, rv reflect.Value) map[string]*columnInfo {
+	data := make(map[string]*columnInfo)
 	for i := 0; i < rt.NumField(); i++ {
 		field := rt.Field(i)
 		columnType := getColumnType(field.Type)
-		dbInfo := gormSchema.ParseTagSetting(field.Tag.Get("gorm"), ";")
-		columnName, columnOk := dbInfo["COLUMN"]
+		columnName := getColumnName(field)
 
-		if !columnOk {
-			columnName = field.Name
+		columnInfo := &columnInfo{
+			Type:         columnType,
+			DefaultValue: interfaceToString(rv.Field(i).Interface()),
 		}
 
-		columnData := &columnData{
-			Type: columnType,
-		}
-
-		fieldValue := rv.Field(i)
-
-		val, err := interfaceToString(fieldValue.Interface())
-
-		if err == nil {
-			columnData.DefaultValue = val
-		}
-
-		data[columnName] = columnData
+		data[columnName] = columnInfo
 	}
 
 	return data
 }
 
-func getColumns(rt reflect.Type) []string {
+func getColumnsName(rt reflect.Type) []string {
 	data := []string{}
 	for i := 0; i < rt.NumField(); i++ {
 		field := rt.Field(i)
-		dbInfo := gormSchema.ParseTagSetting(field.Tag.Get("gorm"), ";")
-		columnName, columnOk := dbInfo["COLUMN"]
 
-		if !columnOk {
-			columnName = field.Name
-		}
-
-		data = append(data, columnName)
+		data = append(data, getColumnName(field))
 	}
 
 	return data
+}
+
+func getColumnName(field reflect.StructField) string {
+	columnName, columnOk := field.Tag.Lookup("column")
+	if !columnOk {
+		columnName = field.Name
+	}
+
+	return columnName
 }
 
 func getColumnType(fieldType reflect.Type) string {
 	switch fieldType.Kind() {
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		return "INT"
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		return "INT"
 	case reflect.Float32, reflect.Float64:
@@ -246,48 +259,52 @@ func getColumnType(fieldType reflect.Type) string {
 	return "VARCHAR(512)"
 }
 
-func interfaceToString(value interface{}) (string, error) {
+func interfaceToString(value interface{}) string {
+	val := ""
 	switch v := value.(type) {
 	case string:
-		return v, nil
+		val = "'" + v + "'"
 	case int:
-		return strconv.Itoa(v), nil
+		val = strconv.Itoa(v)
 	case int8:
-		return strconv.FormatInt(int64(v), 10), nil
 	case int16:
-		return strconv.FormatInt(int64(v), 10), nil
 	case int32:
-		return strconv.FormatInt(int64(v), 10), nil
+		val = strconv.FormatInt(int64(v), 10)
 	case int64:
-		return strconv.FormatInt(v, 10), nil
+		val = strconv.FormatInt(v, 10)
 	case uint:
-		return strconv.FormatUint(uint64(v), 10), nil
 	case uint8:
-		return strconv.FormatUint(uint64(v), 10), nil
 	case uint16:
-		return strconv.FormatUint(uint64(v), 10), nil
 	case uint32:
-		return strconv.FormatUint(uint64(v), 10), nil
+		val = strconv.FormatUint(uint64(v), 10)
 	case uint64:
-		return strconv.FormatUint(v, 10), nil
+		val = strconv.FormatUint(v, 10)
 	case float32:
-		return strconv.FormatFloat(float64(v), 'f', -1, 32), nil
+		val = strconv.FormatFloat(float64(v), 'f', -1, 32)
 	case float64:
-		return strconv.FormatFloat(v, 'f', -1, 64), nil
+		val = strconv.FormatFloat(v, 'f', -1, 64)
 	}
 
-	rv := reflect.ValueOf(value)
-	if rv.Kind() == reflect.Ptr {
-		return interfaceToString(rv.Elem().Interface())
-	}
+	if val == "" {
+		rv := reflect.ValueOf(value)
+		if rv.Kind() == reflect.Ptr {
+			if rv.Elem().IsValid() {
+				val = interfaceToString(rv.Elem().Interface())
+			}
 
-	if rv.Kind() == reflect.Struct || (rv.Kind() == reflect.Ptr && rv.Elem().Kind() == reflect.Struct) {
-		jsonBytes, err := json.Marshal(value)
-		if err != nil {
-			return "", err
+			if val == "''" || val == "" {
+				val = "NULL"
+			}
 		}
-		return string(jsonBytes), nil
+
+		if rv.Kind() == reflect.Struct || (rv.Kind() == reflect.Ptr && rv.Elem().Kind() == reflect.Struct) {
+			jsonBytes, err := json.Marshal(value)
+			if err != nil {
+				val = ""
+			}
+			val = string(jsonBytes)
+		}
 	}
 
-	return "NULL", nil
+	return val
 }

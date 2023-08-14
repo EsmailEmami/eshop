@@ -7,30 +7,31 @@ import (
 	"strings"
 )
 
-func Bind[T any](db *sql.DB, model T) (*T, error) {
-	rv := reflect.ValueOf(model)
-	rt := reflect.TypeOf(model)
+func Bind[T any](db *sql.DB, model *T) error {
+	var (
+		rv = reflect.ValueOf(model).Elem()
+		rt = reflect.TypeOf(rv.Interface())
+	)
 
 	tableName, schema, err := getTableData(rv)
-
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	exists, err := exists(db, schema, tableName)
+	tableExists, err := tableExists(db, schema, tableName)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	if !exists {
-		return nil, fmt.Errorf("cannot find table %s", tableName)
+	if !tableExists {
+		return fmt.Errorf("cannot find table %s", tableName)
 	}
 
-	columnsName := getColumns(rt)
-	s := reflect.ValueOf(&model).Elem()
-	numCols := s.NumField()
+	columnsName := getColumnsName(rt)
+
+	numCols := rv.NumField()
 	columns := make([]interface{}, numCols)
 	for i := 0; i < numCols; i++ {
-		field := s.Field(i)
+		field := rv.Field(i)
 		columns[i] = field.Addr().Interface()
 	}
 
@@ -39,10 +40,10 @@ func Bind[T any](db *sql.DB, model T) (*T, error) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return &model, nil
+			return nil
 		}
-		return nil, err
+		return err
 	}
 
-	return &model, nil
+	return nil
 }

@@ -3,7 +3,7 @@ package settings
 var systemSetting = new(SystemSetting)
 
 type SystemSetting struct {
-	FileExpireTimeStampts *int `gorm:"column:file_expire_time_stampts"`
+	FileExpireTimeStampts *int `column:"file_expire_time_stampts"`
 }
 
 func (SystemSetting) TableName() string {
