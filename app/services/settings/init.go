@@ -2,9 +2,8 @@ package settings
 
 import (
 	"context"
-	"fmt"
 
-	tablecreator "github.com/esmailemami/eshop/app/services/settings/table_creator"
+	"github.com/esmailemami/eshop/app/services/settings/processor"
 	dbpkg "github.com/esmailemami/eshop/db"
 )
 
@@ -15,13 +14,11 @@ func Initialize() {
 func bindSystemSettings() {
 	baseDB := dbpkg.MustGormDBConn(context.Background())
 	db, _ := baseDB.DB()
-	if err := tablecreator.CreateOrUpdate(db, &SystemSetting{}); err != nil {
+	if err := processor.CreateOrUpdate(db, &SystemSetting{}); err != nil {
 		panic(err)
 	}
-	err := tablecreator.Bind[SystemSetting](db, systemSetting)
+	err := processor.Bind(db, systemSetting)
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Printf("%+v", systemSetting)
 }

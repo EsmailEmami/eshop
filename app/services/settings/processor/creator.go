@@ -1,4 +1,4 @@
-package tablecreator
+package processor
 
 import (
 	"database/sql"
@@ -11,6 +11,8 @@ import (
 
 	"github.com/google/uuid"
 )
+
+const defaultMaximumLength = 512
 
 type columnInfo struct {
 	Type         string
@@ -58,21 +60,25 @@ func CreateOrUpdate(db *sql.DB, model interface{}) error {
 
 		// add or alter columns
 		for columnName, column := range columns {
-			if _, ok := existedColumns[columnName]; !ok {
-				//columnDefinitions = append(columnDefinitions, fmt.Sprintf("DROP COLUMN IF EXISTS %s", columnName))
-				columnDefinitions = append(columnDefinitions, fmt.Sprintf("ADD %s %s", columnName, column.Type))
+			if existedColumnType, ok := existedColumns[columnName]; ok {
+				if existedColumnType != column.Type {
+					columnDefinitions = append(columnDefinitions, fmt.Sprintf(`DROP COLUMN IF EXISTS "%s"`, columnName))
+					columnDefinitions = append(columnDefinitions, fmt.Sprintf(`ADD "%s" %s`, columnName, column.Type))
+				}
+			} else {
+				columnDefinitions = append(columnDefinitions, fmt.Sprintf(`ADD "%s" %s`, columnName, column.Type))
 			}
 		}
 
 		// delete columns that are not existed
 		for columnName := range existedColumns {
 			if _, ok := columns[columnName]; !ok {
-				columnDefinitions = append(columnDefinitions, fmt.Sprintf("DROP COLUMN IF EXISTS %s", columnName))
+				columnDefinitions = append(columnDefinitions, fmt.Sprintf(`DROP COLUMN IF EXISTS "%s"`, columnName))
 			}
 		}
 
 		if len(columnDefinitions) > 0 {
-			sqlCommand = fmt.Sprintf("ALTER TABLE %s.%s %s;", schema, tableName, strings.Join(columnDefinitions, ","))
+			sqlCommand = fmt.Sprintf(`ALTER TABLE "%s"."%s" %s;`, schema, tableName, strings.Join(columnDefinitions, ","))
 		}
 
 	} else {
@@ -80,7 +86,7 @@ func CreateOrUpdate(db *sql.DB, model interface{}) error {
 
 		// add columns
 		for columnName, column := range columns {
-			columnDefinitions = append(columnDefinitions, fmt.Sprintf("%s %s", columnName, column.Type))
+			columnDefinitions = append(columnDefinitions, fmt.Sprintf(`"%s" %s`, columnName, column.Type))
 		}
 
 		sqlCommand = fmt.Sprintf(`CREATE TABLE "%s"."%s" (%s);`, schema, tableName, strings.Join(columnDefinitions, ","))
@@ -103,7 +109,7 @@ func CreateOrUpdate(db *sql.DB, model interface{}) error {
 		)
 
 		for columnName, column := range columns {
-			columnsName = append(columnsName, columnName)
+			columnsName = append(columnsName, fmt.Sprintf(`"%s"`, columnName))
 			values = append(values, column.DefaultValue)
 		}
 
@@ -134,10 +140,10 @@ func CreateOrUpdate(db *sql.DB, model interface{}) error {
 
 func callDefaultValuesMethod(rv reflect.Value) error {
 	defaultValuesMethod := rv.MethodByName("LoadDefaultValues")
-	if !defaultValuesMethod.IsValid() {
-		return errors.New("the given struct must have LoadDefaultValues() function")
+	if defaultValuesMethod.IsValid() {
+		defaultValuesMethod.Call(nil)
 	}
-	defaultValuesMethod.Call(nil)
+
 	return nil
 }
 
@@ -162,21 +168,21 @@ func getTableData(rv reflect.Value) (tableName, schema string, err error) {
 	if tableNameMethod.IsValid() {
 		tableName = tableNameMethod.Call(nil)[0].String()
 	} else {
-		return "", "", fmt.Errorf("the given struct must have TableName() function.")
+		return "", "", fmt.Errorf("the given struct must have TableName() function")
 	}
 
 	schemaMethod := rv.MethodByName("SchemaName")
 	if schemaMethod.IsValid() {
 		schema = schemaMethod.Call(nil)[0].String()
 	} else {
-		return "", "", fmt.Errorf("the given struct must have SchemaName() function.")
+		return "", "", fmt.Errorf("the given struct must have SchemaName() function")
 	}
 
 	return
 }
 
 func getExistedColumn(db *sql.DB, schema, tableName string) (map[string]string, error) {
-	rows, err := db.Query("SELECT column_name, data_type FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2", schema, tableName)
+	rows, err := db.Query("SELECT column_name, data_type,character_maximum_length FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2", schema, tableName)
 	if err != nil {
 		return nil, err
 	}
@@ -185,15 +191,14 @@ func getExistedColumn(db *sql.DB, schema, tableName string) (map[string]string, 
 	data := make(map[string]string)
 
 	for rows.Next() {
-		var columnName, dataType string
-		if err := rows.Scan(&columnName, &dataType); err != nil {
+		var (
+			columnName, dataType string
+			maximumLength        sql.NullInt32
+		)
+		if err := rows.Scan(&columnName, &dataType, &maximumLength); err != nil {
 			return nil, err
 		}
-		data[columnName] = dataType
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
+		data[columnName] = castColumnType(dataType, int(maximumLength.Int32))
 	}
 
 	return data, nil
@@ -203,7 +208,7 @@ func getColumnsInfo(rt reflect.Type, rv reflect.Value) map[string]*columnInfo {
 	data := make(map[string]*columnInfo)
 	for i := 0; i < rt.NumField(); i++ {
 		field := rt.Field(i)
-		columnType := getColumnType(field.Type)
+		columnType := getColumnType(field.Type, getMaximumLength(field))
 		columnName := getColumnName(field)
 
 		columnInfo := &columnInfo{
@@ -237,7 +242,7 @@ func getColumnName(field reflect.StructField) string {
 	return columnName
 }
 
-func getColumnType(fieldType reflect.Type) string {
+func getColumnType(fieldType reflect.Type, maximumLength int) string {
 	switch fieldType.Kind() {
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
@@ -245,21 +250,36 @@ func getColumnType(fieldType reflect.Type) string {
 	case reflect.Float32, reflect.Float64:
 		return "NUMERIC"
 	case reflect.String:
-		return "VARCHAR(512)"
+		return fmt.Sprintf("VARCHAR(%d)", maximumLength)
 	case reflect.Ptr:
-		return getColumnType(fieldType.Elem())
+		return getColumnType(fieldType.Elem(), maximumLength)
 	case reflect.Struct:
 		if fieldType == reflect.TypeOf(uuid.UUID{}) {
 			return "UUID"
 		}
-	default:
-		return "VARCHAR(512)"
 	}
 
-	return "VARCHAR(512)"
+	panic("Invalid column type")
+}
+
+func getMaximumLength(field reflect.StructField) int {
+	columnLength, columnOk := field.Tag.Lookup("maximumLength")
+	if !columnOk {
+		columnLength = strconv.Itoa(defaultMaximumLength)
+	}
+
+	intVal, err := strconv.Atoi(columnLength)
+	if err != nil {
+		return defaultMaximumLength
+	}
+	return intVal
 }
 
 func interfaceToString(value interface{}) string {
+	if value == nil {
+		return "NULL"
+	}
+
 	val := ""
 	switch v := value.(type) {
 	case string:
@@ -307,4 +327,105 @@ func interfaceToString(value interface{}) string {
 	}
 
 	return val
+}
+
+func castColumnType(columnType string, maximumLength int) string {
+	switch strings.ToLower(columnType) {
+	case "character varying":
+		if maximumLength == 0 {
+			return "VARCHAR"
+		} else {
+			return fmt.Sprintf("VARCHAR(%d)", maximumLength)
+		}
+
+	case "integer":
+		return "INT"
+
+	case "text":
+		return "TEXT"
+
+	case "timestamp":
+		return "TIMESTAMP"
+
+	case "boolean":
+		return "BOOLEAN"
+
+	case "numeric":
+		return "NUMERIC"
+
+	case "json":
+		return "JSON"
+
+	case "jsonb":
+		return "JSONB"
+
+	case "uuid":
+		return "UUID"
+
+	case "bytea":
+		return "BYTEA"
+
+	case "smallint":
+		return "SMALLINT"
+
+	case "bigint":
+		return "BIGINT"
+
+	case "real":
+		return "REAL"
+
+	case "double precision":
+		return "DOUBLE PRECISION"
+
+	case "date":
+		return "DATE"
+
+	case "time":
+		return "TIME"
+
+	case "interval":
+		return "INTERVAL"
+
+	case "serial":
+		return "SERIAL"
+
+	case "bigserial":
+		return "BIGSERIAL"
+
+	case "money":
+		return "MONEY"
+
+	case "point":
+		return "POINT"
+
+	case "line":
+		return "LINE"
+
+	case "lseg":
+		return "LSEG"
+
+	case "box":
+		return "BOX"
+
+	case "path":
+		return "PATH"
+
+	case "polygon":
+		return "POLYGON"
+
+	case "circle":
+		return "CIRCLE"
+
+	case "inet":
+		return "INET"
+
+	case "cidr":
+		return "CIDR"
+
+	case "macaddr":
+		return "MACADDR"
+
+	default:
+		panic("Invalid column type")
+	}
 }

@@ -492,6 +492,8 @@ definitions:
         $ref: '#/definitions/models.User'
       createdById:
         type: string
+      expireDate:
+        type: string
       extension:
         type: string
       fileType:
@@ -1240,6 +1242,12 @@ definitions:
           type: string
         type: array
     type: object
+  models.SettingsReqModel:
+    properties:
+      column:
+        type: string
+      value: {}
+    type: object
   models.SuggestionProductOutPutModel:
     properties:
       colorId:
@@ -1617,6 +1625,18 @@ definitions:
         type: integer
       total:
         type: integer
+    type: object
+  processor.SettingItem:
+    properties:
+      description:
+        type: string
+      field:
+        type: string
+      isNullable:
+        type: boolean
+      title:
+        type: string
+      value: {}
     type: object
 info:
   contact: {}
@@ -3557,6 +3577,82 @@ paths:
       - Bearer: []
       tags:
       - Roles
+  /admin/settings/{item}:
+    get:
+      consumes:
+      - application/json
+      description: Settings
+      parameters:
+      - description: item to get list
+        enum:
+        - systemSetting
+        in: path
+        name: item
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/processor.SettingItem'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Settings
+      tags:
+      - Settings
+      - customer
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: item to get list
+        enum:
+        - systemSetting
+        in: path
+        name: item
+        required: true
+        type: string
+      - description: Setting model
+        in: body
+        name: Setting
+        required: true
+        schema:
+          $ref: '#/definitions/models.SettingsReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Settings
   /user/address:
     get:
       consumes:

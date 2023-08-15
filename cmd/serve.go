@@ -17,7 +17,7 @@ var serveCmd = &cobra.Command{
 			log.Fatalln(err)
 		}
 
-		settings.Initialize()
+		go settings.Initialize()
 		server.RunServer()
 
 		return nil

@@ -3062,6 +3062,123 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/settings/{item}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Settings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Settings",
+                    "customer"
+                ],
+                "summary": "Settings",
+                "parameters": [
+                    {
+                        "enum": [
+                            "systemSetting"
+                        ],
+                        "type": "string",
+                        "description": "item to get list",
+                        "name": "item",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/processor.SettingItem"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Settings"
+                ],
+                "parameters": [
+                    {
+                        "enum": [
+                            "systemSetting"
+                        ],
+                        "type": "string",
+                        "description": "item to get list",
+                        "name": "item",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Setting model",
+                        "name": "Setting",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SettingsReqModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/user/address": {
             "get": {
                 "security": [
@@ -5952,6 +6069,9 @@ const docTemplate = `{
                 "createdById": {
                     "type": "string"
                 },
+                "expireDate": {
+                    "type": "string"
+                },
                 "extension": {
                     "type": "string"
                 },
@@ -7090,6 +7210,15 @@ const docTemplate = `{
                 }
             }
         },
+        "models.SettingsReqModel": {
+            "type": "object",
+            "properties": {
+                "column": {
+                    "type": "string"
+                },
+                "value": {}
+            }
+        },
         "models.SuggestionProductOutPutModel": {
             "type": "object",
             "properties": {
@@ -7664,6 +7793,24 @@ const docTemplate = `{
                 "total": {
                     "type": "integer"
                 }
+            }
+        },
+        "processor.SettingItem": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "field": {
+                    "type": "string"
+                },
+                "isNullable": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "value": {}
             }
         }
     },

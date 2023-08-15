@@ -32,5 +32,6 @@ func loadAdminRoutes(root chi.Router) {
 		loadAdminProductItemRoutes(r)
 		loadAdminRoleRoutes(r)
 		loadAdminReportRoutes(r)
+		loadAdminSettingsRoutes(r)
 	})
 }

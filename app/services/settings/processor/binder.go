@@ -1,4 +1,4 @@
-package tablecreator
+package processor
 
 import (
 	"database/sql"
@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func Bind[T any](db *sql.DB, model *T) error {
+func Bind(db *sql.DB, model interface{}) error {
 	var (
 		rv = reflect.ValueOf(model).Elem()
 		rt = reflect.TypeOf(rv.Interface())
