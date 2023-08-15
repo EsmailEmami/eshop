@@ -4,8 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/esmailemami/eshop/app/consts"
+	"github.com/esmailemami/eshop/app/services/settings"
 	dbpkg "github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/models"
 	"github.com/google/uuid"
@@ -72,15 +74,25 @@ func DeleteFile(tx *gorm.DB, file *models.File) error {
 	}
 
 	path := GetFilePhysicallyPath(file)
+	expireMonth := settings.GetSystemSettings().FileExpireTimeStampts
 
-	if err := tx.Delete(file).Error; err != nil {
+	if expireMonth == nil || *expireMonth == 0 {
+		if err := tx.Unscoped().Delete(file).Error; err != nil {
+			return err
+		}
+		return DeleteFileByPath(path)
+	}
+
+	expireAt := time.Now().Add(time.Duration(*expireMonth) * 30 * 24 * time.Hour)
+	file.ExpireDate = &expireAt
+
+	if err := tx.Where("id=?", *file.ID).Save(file).Error; err != nil {
+		return err
+	}
+	if err := tx.Where("id=?", *file.ID).Delete(file).Error; err != nil {
 		return err
 	}
 
-	// if the file is not removeable we should not delete it physically
-	if file.FileType.IsRemoveable() {
-		return DeleteFileByPath(path)
-	}
 	return nil
 }
 

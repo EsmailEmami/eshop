@@ -28,12 +28,12 @@ func (s *SystemSetting) LoadDefaultValues() {
 	}()
 }
 
-func GetSystemSettings() (*SystemSetting, error) {
+func GetSystemSettings() *SystemSetting {
 	if systemSetting == nil {
 		bindSystemSettings()
 	}
 
-	return systemSetting, nil
+	return systemSetting
 }
 
 func UpdateSystemSettings(field string, value interface{}) error {
