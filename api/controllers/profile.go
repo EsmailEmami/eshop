@@ -14,8 +14,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// GetUser godoc
-// @Tags Users
+// GetProfile godoc
+// @Tags Profile
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -23,7 +23,7 @@ import (
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /user/profile [get]
-func GetUser(ctx *app.HttpContext) error {
+func GetProfile(ctx *app.HttpContext) error {
 	user, err := ctx.GetUser()
 	if err != nil {
 		return errors.NewUnauthorizedError(consts.UnauthorizedError, err)
@@ -45,7 +45,7 @@ func GetUser(ctx *app.HttpContext) error {
 }
 
 // GetUserOrders godoc
-// @Tags Users
+// @Tags Profile
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -109,7 +109,7 @@ func GetUserOrders(ctx *app.HttpContext) error {
 }
 
 // Get Admin User Orders godoc
-// @Tags Users
+// @Tags Profile
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -175,7 +175,7 @@ func GetAdminUserOrders(ctx *app.HttpContext) error {
 }
 
 // Get User Favorite Products godoc
-// @Tags Users
+// @Tags Profile
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -244,7 +244,7 @@ func GetUserFavoriteProducts(ctx *app.HttpContext) error {
 }
 
 // Get Admin User Favorite Products godoc
-// @Tags Users
+// @Tags Profile
 // @Accept json
 // @Produce json
 // @Security Bearer

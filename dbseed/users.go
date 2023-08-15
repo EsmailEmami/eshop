@@ -18,14 +18,26 @@ func seedUser(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			FirstName: "اسماعیل",
-			LastName:  "امامی",
-			Username:  "esmailemami",
-			Password:  "$2a$10$2oV2MylgwZftP47vL/ndteC6tzmcY85qRNo/5FTCeS403eL8zo9Yq",
-			IsSystem:  true,
-			Mobile:    "09903669556",
-			Enabled:   true,
-			Email:     "esmailemami84@gmail.com",
+			FirstName: func() *string {
+				value := "اسماعیل"
+				return &value
+			}(),
+			LastName: func() *string {
+				value := "امامی"
+				return &value
+			}(),
+			Username: "esmailemami",
+			Password: "$2a$10$2oV2MylgwZftP47vL/ndteC6tzmcY85qRNo/5FTCeS403eL8zo9Yq",
+			IsSystem: true,
+			Mobile: func() *string {
+				value := "09903669556"
+				return &value
+			}(),
+			Enabled: true,
+			Email: func() *string {
+				value := "esmailemami84@gmail.com"
+				return &value
+			}(),
 			RoleID: func() *uuid.UUID {
 				id := uuid.MustParse(consts.ROLE_ROOT_ID)
 				return &id
@@ -38,14 +50,26 @@ func seedUser(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			FirstName: "علیرضا",
-			LastName:  "صفری",
-			Username:  "alireza83safari",
-			Password:  "$2a$10$2oV2MylgwZftP47vL/ndteC6tzmcY85qRNo/5FTCeS403eL8zo9Yq",
-			IsSystem:  true,
-			Mobile:    "09903669556",
-			Email:     "alireza83safarii@gmail.com",
-			Enabled:   true,
+			FirstName: func() *string {
+				value := "علیرضا"
+				return &value
+			}(),
+			LastName: func() *string {
+				value := "صفری"
+				return &value
+			}(),
+			Username: "alireza83safari",
+			Password: "$2a$10$2oV2MylgwZftP47vL/ndteC6tzmcY85qRNo/5FTCeS403eL8zo9Yq",
+			IsSystem: true,
+			Mobile: func() *string {
+				value := "09903669556"
+				return &value
+			}(),
+			Email: func() *string {
+				value := "alireza83safarii@gmail.com"
+				return &value
+			}(),
+			Enabled: true,
 			RoleID: func() *uuid.UUID {
 				id := uuid.MustParse(consts.ROLE_ROOT_ID)
 				return &id

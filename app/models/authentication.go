@@ -46,9 +46,9 @@ type LoginOutputModel struct {
 }
 
 type LoginOutputUserModel struct {
-	Username  string `json:"username"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
+	Username  string  `json:"username"`
+	FirstName *string `json:"firstName"`
+	LastName  *string `json:"lastName"`
 }
 
 type RegisterInputModel struct {

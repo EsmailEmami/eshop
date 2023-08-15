@@ -9,4 +9,5 @@ const (
 	ModelBrandNotFound             = "Brand not found."
 	ModelAddressNotFound           = "Address not found."
 	ModelOrderNotFound             = "Order not found."
+	ModelRoleNotFound              = "Role not found."
 )

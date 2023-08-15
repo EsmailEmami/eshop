@@ -9,11 +9,11 @@ type User struct {
 	Model
 	Username   string      `gorm:"column:username"                        json:"username"`
 	Password   string      `gorm:"column:password"                        json:"-"`
-	FirstName  string      `gorm:"column:first_name"                      json:"firstName"`
-	LastName   string      `gorm:"column:last_name"                       json:"lastName"`
-	Mobile     string      `gorm:"column:mobile"                          json:"mobile"`
+	FirstName  *string     `gorm:"column:first_name"                      json:"firstName"`
+	LastName   *string     `gorm:"column:last_name"                       json:"lastName"`
+	Mobile     *string     `gorm:"column:mobile"                          json:"mobile"`
 	RoleID     *uuid.UUID  `gorm:"column:role_id"                         json:"roleId"`
-	Email      string      `gorm:"email"                                  json:"email"`
+	Email      *string     `gorm:"email"                                  json:"email"`
 	Role       *Role       `gorm:"foreignKey:role_id; references:id"      json:"role"`
 	IsSystem   bool        `gorm:"column:is_system"                       json:"isSystem"`
 	Enabled    bool        `gorm:"column:enabled"                         json:"enabled"`

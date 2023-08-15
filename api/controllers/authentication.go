@@ -237,7 +237,7 @@ func SendRecoveryPasswordRequest(ctx *app.HttpContext) error {
 		}
 	}
 
-	if strings.TrimSpace(user.Email) == "" {
+	if user.Email != nil && strings.TrimSpace(*user.Email) == "" {
 		return ctx.QuickResponse(consts.RecoveryPasswordReqDone, http.StatusOK)
 	}
 
@@ -253,7 +253,7 @@ func SendRecoveryPasswordRequest(ctx *app.HttpContext) error {
 		ExpireAt:   time.Now().Add(5 * time.Minute),
 		MaxRetires: 3,
 		Scope:      dbmodels.VerificationCodeScopeEmail,
-		Key:        user.Email,
+		Key:        *user.Email,
 		Value:      uuid.NewString(),
 		Verified:   false,
 	}
@@ -265,7 +265,7 @@ func SendRecoveryPasswordRequest(ctx *app.HttpContext) error {
 	// send email
 	notifier := email.NewNotifier("gmail")
 	go func() {
-		err := notifier.Send([]string{user.Email}, email.KeyForgotPassword, email.ForgotPassword{
+		err := notifier.Send([]string{*user.Email}, email.KeyForgotPassword, email.ForgotPassword{
 			Username:    user.Username,
 			RecoveryUrl: "http://127.0.0.1:3000/recoveryPassword/" + verificaationCode.Value,
 		})

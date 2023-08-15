@@ -1379,6 +1379,50 @@ definitions:
       status:
         type: integer
     type: object
+  models.UserOutPutModel:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      enabled:
+        type: boolean
+      firstName:
+        type: string
+      id:
+        type: string
+      isSystem:
+        type: boolean
+      lastName:
+        type: string
+      mobile:
+        type: string
+      roleId:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
+  models.UserReqModel:
+    properties:
+      email:
+        type: string
+      enabled:
+        type: boolean
+      firstName:
+        type: string
+      isSystem:
+        type: boolean
+      lastName:
+        type: string
+      mobile:
+        type: string
+      roleId:
+        type: string
+      username:
+        type: string
+    type: object
   parameter.ListResponse-helpers_KeyValueResponse-uuid_UUID-string:
     properties:
       data:
@@ -1612,6 +1656,25 @@ definitions:
       data:
         items:
           $ref: '#/definitions/models.UserCommentOutPutModel'
+        type: array
+      from:
+        type: integer
+      last_page:
+        type: integer
+      limit:
+        type: integer
+      page:
+        type: integer
+      to:
+        type: integer
+      total:
+        type: integer
+    type: object
+  parameter.ListResponse-models_UserOutPutModel:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.UserOutPutModel'
         type: array
       from:
         type: integer
@@ -3321,7 +3384,7 @@ paths:
       security:
       - Bearer: []
       tags:
-      - Users
+      - Profile
   /admin/profile/orders/{userId}:
     get:
       consumes:
@@ -3354,7 +3417,7 @@ paths:
       security:
       - Bearer: []
       tags:
-      - Users
+      - Profile
   /admin/report/revenueByCategory:
     get:
       consumes:
@@ -3653,6 +3716,213 @@ paths:
       - Bearer: []
       tags:
       - Settings
+  /admin/user:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_UserOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User model
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Users
+  /admin/user/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Users
+  /admin/user/delete/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Users
+  /admin/user/edit/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User model
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Users
+  /admin/user/recoveryPasword/{id}:
+    post:
+      consumes:
+      - application/json
+      description: recovery user password.
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Recovery password model
+        in: body
+        name: RecoveryPasswordInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.RecoveryPasswordModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: recovery user password.
+      tags:
+      - Users
   /user/address:
     get:
       consumes:
@@ -4833,7 +5103,7 @@ paths:
       security:
       - Bearer: []
       tags:
-      - Users
+      - Profile
   /user/profile/favoriteProducts:
     get:
       consumes:
@@ -4887,7 +5157,7 @@ paths:
       security:
       - Bearer: []
       tags:
-      - Users
+      - Profile
   /user/profile/orders:
     get:
       consumes:
@@ -4914,7 +5184,7 @@ paths:
       security:
       - Bearer: []
       tags:
-      - Users
+      - Profile
   /user/recoveryPasword:
     post:
       consumes:
