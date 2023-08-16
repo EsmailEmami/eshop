@@ -2820,6 +2820,70 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/report/sellsChart": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reports"
+                ],
+                "parameters": [
+                    {
+                        "enum": [
+                            "hour",
+                            "daily",
+                            "weekly",
+                            "monthly"
+                        ],
+                        "type": "string",
+                        "description": "chart type",
+                        "name": "type",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "rows length default is 15",
+                        "name": "length",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helpers.KeyValueResponse-string-int"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/admin/role": {
             "get": {
                 "security": [
@@ -5707,6 +5771,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "helpers.KeyValueResponse-string-int": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "integer"
+                }
+            }
+        },
         "helpers.KeyValueResponse-uuid_UUID-string": {
             "type": "object",
             "properties": {
@@ -6677,6 +6752,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "nationalCode": {
+                    "type": "string"
+                },
+                "payedAt": {
                     "type": "string"
                 },
                 "phoneNumber": {

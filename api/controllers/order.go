@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/esmailemami/eshop/app"
 	"github.com/esmailemami/eshop/app/consts"
@@ -106,7 +107,7 @@ func CheckoutOrder(ctx *app.HttpContext) error {
 		Limit(1),
 	)
 
-	// update order price
+	// update order
 	if err := baseTx.Model(&models.Order{}).
 		Where("id=?", *order.ID).UpdateColumns(map[string]interface{}{
 		"status":        models.OrderStatusPaid,
@@ -118,6 +119,7 @@ func CheckoutOrder(ctx *app.HttpContext) error {
 		"national_code": address.NationalCode,
 		"postal_code":   address.PostalCode,
 		"address":       address.Address,
+		"payed_at":      time.Now(),
 	}).Error; err != nil {
 		baseTx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, err)

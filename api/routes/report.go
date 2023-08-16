@@ -12,4 +12,6 @@ func loadAdminReportRoutes(r chi.Router) {
 	r.Get("/report/revenueByCategory", app.Handler(controllers.ReportRevenueByCategory,
 		middlewares.Permitted(models.ACTION_REPORT_ADMIN_REVENUE_BY_CATEGORY),
 	))
+
+	r.Get("/report/sellsChart", app.Handler(controllers.ReportSellsChart))
 }

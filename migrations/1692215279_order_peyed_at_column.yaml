@@ -1,0 +1,8 @@
+---
+up: |
+  ALTER TABLE public."order" 
+    ADD payed_at timestamptz NULL;
+
+down: |
+  ALTER TABLE public."order"
+    DROP COLUMN IF EXISTS payed_at;

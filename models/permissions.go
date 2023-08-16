@@ -163,19 +163,28 @@ const (
 	// ###### Report ######
 
 	ACTION_REPORT_ADMIN_REVENUE_BY_CATEGORY = "action_report_revenue_by_category"
+	ACTION_REPORT_ADMIN_SELLS_CHART         = "action_report_sells_chart"
 
 	// ###### Report ######
 
 	// ###### User ######
 
-	ACTION_USER_ADMIN_INFO              = "action_user_admin_info"
-	ACTION_USER_ADMIN_LIST              = "action_user_admin_list"
-	ACTION_USER_ADMIN_CREATE            = "action_user_admin_create"
-	ACTION_USER_ADMIN_UPDATE            = "action_user_admin_update"
-	ACTION_USER_ADMIN_DELETE            = "action_user_admin_delete"
-	ACTION_USER_ADMIN_RECOVERY_PASSWORD = "action_user_admin_recovery_password"
+	ACTION_USER_ADMIN_INFO                  = "action_user_admin_info"
+	ACTION_USER_ADMIN_LIST                  = "action_user_admin_list"
+	ACTION_USER_ADMIN_CREATE                = "action_user_admin_create"
+	ACTION_USER_ADMIN_UPDATE                = "action_user_admin_update"
+	ACTION_USER_ADMIN_DELETE                = "action_user_admin_delete"
+	ACTION_USER_ADMIN_RECOVERY_PASSWORD     = "action_user_admin_recovery_password"
+	ACTION_USER_ADMIN_ORDER_LIST            = "action_user_admin_order_list"
+	ACTION_USER_ADMIN_FAVORITE_PRODUCT_LIST = "action_user_admin_favorite_product_list"
 
 	// ###### User ######
+
+	// ###### Order ######
+
+	ACTION_ORDER_ADMIN_LIST = "action_user_admin_orders_list"
+
+	// ###### Order ######
 )
 
 type Action struct {
@@ -567,6 +576,10 @@ func GetPermissionsTree() []Action {
 					Name: "Watch revenue per category",
 					Code: ACTION_REPORT_ADMIN_REVENUE_BY_CATEGORY,
 				},
+				{
+					Name: "Watch sells chart",
+					Code: ACTION_REPORT_ADMIN_SELLS_CHART,
+				},
 			},
 		},
 		{
@@ -596,6 +609,23 @@ func GetPermissionsTree() []Action {
 				{
 					Name: "Recovery user password",
 					Code: ACTION_USER_ADMIN_RECOVERY_PASSWORD,
+				},
+				{
+					Name: "User orders",
+					Code: ACTION_USER_ADMIN_ORDER_LIST,
+				},
+				{
+					Name: "User favorite products",
+					Code: ACTION_USER_ADMIN_FAVORITE_PRODUCT_LIST,
+				},
+			},
+		},
+		{
+			Name: "Orders",
+			Children: []Action{
+				{
+					Name: "Orders",
+					Code: ACTION_ORDER_ADMIN_LIST,
 				},
 			},
 		},
