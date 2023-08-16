@@ -64,7 +64,33 @@ func InsertItemFile(db, tx *gorm.DB, itemID uuid.UUID, fileType models.FileType,
 		return tx.Table(mapTable).CreateInBatches(mapItems, len(mapItems)).Error
 	}
 
-	return tx.Table(table).Where("id = ?", itemID).UpdateColumn(fileColumn, *files[0].ID).Error
+	var (
+		fileID string
+		file   models.File
+	)
+
+	//  delete last image
+	if !multiple && fileType.CanForceDelete() {
+
+		if err := tx.Table(table).Where("id = ?", itemID).Select(fileColumn).Limit(1).Find(&fileID).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&models.File{}).Where("id = ?", fileID).First(&file).Error; err != nil {
+			return err
+		}
+	}
+
+	if err := tx.Table(table).Where("id = ?", itemID).UpdateColumn(fileColumn, *files[0].ID).Error; err != nil {
+		return err
+	}
+
+	if !multiple && fileType.CanForceDelete() {
+		if err := DeleteFile(tx, &file); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func DeleteFile(tx *gorm.DB, file *models.File) error {
