@@ -8,7 +8,7 @@ import (
 
 func loadUserOrderRoutes(r chi.Router) {
 	r.Get("/order", app.Handler(controllers.GetOrder))
-	r.Post("/order/checkout", app.Handler(controllers.CheckoutOrder))
+	r.Post("/order/checkout/{addressId}", app.Handler(controllers.CheckoutOrder))
 }
 
 func loadAdminOrderRoutes(r chi.Router) {

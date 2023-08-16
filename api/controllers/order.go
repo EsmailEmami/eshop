@@ -94,7 +94,7 @@ func CheckoutOrder(ctx *app.HttpContext) error {
 
 	var address models.Address
 
-	if err := baseDB.Model(&models.Address{}).First(&address, "id=? AND user_id=?", addressID, *user.ID).Error; err != nil {
+	if err := baseDB.Model(&models.Address{}).First(&address, "id=? AND created_by_id=?", addressID, *user.ID).Error; err != nil {
 		baseTx.Rollback()
 		return errors.NewRecordNotFoundError(consts.ModelAddressNotFound, err)
 	}
