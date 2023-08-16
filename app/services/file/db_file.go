@@ -73,14 +73,22 @@ func DeleteFile(tx *gorm.DB, file *models.File) error {
 		return nil
 	}
 
-	path := GetFilePhysicallyPath(file)
-	expireMonth := settings.GetSystemSettings().FileExpireTimeStampts
-
-	if expireMonth == nil || *expireMonth == 0 {
+	forceDelete := func() error {
+		path := GetFilePhysicallyPath(file)
 		if err := tx.Unscoped().Delete(file).Error; err != nil {
 			return err
 		}
 		return DeleteFileByPath(path)
+	}
+
+	if file.FileType.CanForceDelete() {
+		return forceDelete()
+	}
+
+	expireMonth := settings.GetSystemSettings().FileExpireTimeStampts
+
+	if expireMonth == nil || *expireMonth == 0 {
+		return forceDelete()
 	}
 
 	expireAt := time.Now().Add(time.Duration(*expireMonth) * 30 * 24 * time.Hour)

@@ -51,12 +51,12 @@ func FileTypeFromInt(value int) (FileType, error) {
 	}
 }
 
-func (ft FileType) GetFullInfo() (multiple, hasPriority, isRemoveable bool, table, mapTable, foreignColumn, fileColumn, priorityColumn, uploadDir, downloadPermission, listPermission, uploadPermission, deletePermission, changePriorirtyPermission string) {
+func (ft FileType) GetFullInfo() (multiple, hasPriority, canForceDelete bool, table, mapTable, foreignColumn, fileColumn, priorityColumn, uploadDir, downloadPermission, listPermission, uploadPermission, deletePermission, changePriorirtyPermission string) {
 	// default values
 	fileColumn = "file_id"
 	priorityColumn = "priority"
 	multiple = false
-	isRemoveable = true
+	canForceDelete = true
 
 	switch ft {
 	case FileTypeSystematic:
@@ -172,11 +172,7 @@ func (ft FileType) GenerateWhereClause(db *gorm.DB, itemID uuid.UUID) *gorm.DB {
 	return db.Select(fileColumn)
 }
 
-func (ft FileType) IsRemoveable() bool {
-	_, _, isRemoveable, _, _, _, _, _, _, _, _, _, _, _ := ft.GetFullInfo()
-	return isRemoveable
-}
-
-func Test() {
-
+func (ft FileType) CanForceDelete() bool {
+	_, _, canForceDelete, _, _, _, _, _, _, _, _, _, _, _ := ft.GetFullInfo()
+	return canForceDelete
 }
