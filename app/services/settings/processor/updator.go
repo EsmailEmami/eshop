@@ -55,7 +55,7 @@ func convertToFieldType(value interface{}, targetType reflect.Type) (interface{}
 	sourceValue := reflect.ValueOf(value)
 
 	if targetType.Kind() == reflect.Ptr {
-		if !sourceValue.IsValid() || !sourceValue.Type().ConvertibleTo(targetType.Elem()) {
+		if !sourceValue.IsValid() {
 			targetValue.Set(reflect.Zero(targetType))
 			return targetValue.Interface(), nil
 		} else if sourceValue.Type().ConvertibleTo(targetType.Elem()) {

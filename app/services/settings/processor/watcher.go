@@ -4,6 +4,7 @@ import "reflect"
 
 type SettingItem struct {
 	Field       string  `json:"field"`
+	FieldType   string  `json:"fieldType"`
 	Value       any     `json:"value"`
 	Title       *string `json:"title,omitempty"`
 	Description *string `json:"description,omitempty"`
@@ -23,15 +24,18 @@ func GetItems(model any) []SettingItem {
 			fieldVal       = rv.Field(i)
 			value      any = nil
 			isNullable     = false
+			fieldType  string
 		)
 
 		if fieldVal.Kind() == reflect.Ptr {
+			fieldType = field.Type.Elem().String()
 			isNullable = true
 			if !fieldVal.IsNil() {
 				value = fieldVal.Elem().Interface()
 			}
 		} else {
 			value = fieldVal.Interface()
+			fieldType = field.Type.String()
 		}
 
 		item := SettingItem{
@@ -40,6 +44,7 @@ func GetItems(model any) []SettingItem {
 			Title:       getColumnTitle(field),
 			Description: getColumnDescription(field),
 			IsNullable:  isNullable,
+			FieldType:   fieldType,
 		}
 
 		items = append(items, item)

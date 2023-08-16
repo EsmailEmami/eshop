@@ -1695,6 +1695,8 @@ definitions:
         type: string
       field:
         type: string
+      fieldType:
+        type: string
       isNullable:
         type: boolean
       title:
@@ -3677,7 +3679,6 @@ paths:
       summary: Settings
       tags:
       - Settings
-      - customer
     post:
       consumes:
       - application/json

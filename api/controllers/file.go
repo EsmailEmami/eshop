@@ -338,7 +338,7 @@ func GetItemFiles(ctx *app.HttpContext) error {
 	return ctx.JSON(files, http.StatusOK)
 }
 
-// GetStreamingFile godoc
+// FileChangePriority godoc
 // @Tags Files
 // @Accept json
 // @Produce json

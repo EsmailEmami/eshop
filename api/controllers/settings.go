@@ -15,7 +15,6 @@ import (
 // @Summary Settings
 // @Description Settings
 // @Tags Settings
-// @Tags customer
 // @Accept  json
 // @Produce  json
 // @Security Bearer

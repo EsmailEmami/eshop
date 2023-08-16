@@ -3077,8 +3077,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Settings",
-                    "customer"
+                    "Settings"
                 ],
                 "summary": "Settings",
                 "parameters": [
@@ -8221,6 +8220,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "field": {
+                    "type": "string"
+                },
+                "fieldType": {
                     "type": "string"
                 },
                 "isNullable": {
