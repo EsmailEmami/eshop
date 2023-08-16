@@ -1349,6 +1349,72 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/order": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page size",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "length of records to show",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search for item",
+                        "name": "searchTerm",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "order status",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/parameter.ListResponse-models_AdminOrderOutPutModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/admin/product": {
             "get": {
                 "security": [
@@ -5841,6 +5907,32 @@ const docTemplate = `{
                 }
             }
         },
+        "models.AdminOrderOutPutModel": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "orderId": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "models.AppPic": {
             "type": "object",
             "properties": {
@@ -7498,6 +7590,9 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "isSystem": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -7843,6 +7938,35 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.AdminCommentOutPutModel"
+                    }
+                },
+                "from": {
+                    "type": "integer"
+                },
+                "last_page": {
+                    "type": "integer"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "parameter.ListResponse-models_AdminOrderOutPutModel": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.AdminOrderOutPutModel"
                     }
                 },
                 "from": {

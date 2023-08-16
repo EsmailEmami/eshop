@@ -130,6 +130,23 @@ definitions:
           type: string
         type: array
     type: object
+  models.AdminOrderOutPutModel:
+    properties:
+      createdAt:
+        type: string
+      orderId:
+        type: string
+      price:
+        type: number
+      status:
+        type: integer
+      updatedAt:
+        type: string
+      userId:
+        type: string
+      username:
+        type: string
+    type: object
   models.AppPic:
     properties:
       appPicType:
@@ -1220,6 +1237,8 @@ definitions:
         type: string
       id:
         type: string
+      isSystem:
+        type: boolean
       name:
         type: string
       permissions:
@@ -1447,6 +1466,25 @@ definitions:
       data:
         items:
           $ref: '#/definitions/models.AdminCommentOutPutModel'
+        type: array
+      from:
+        type: integer
+      last_page:
+        type: integer
+      limit:
+        type: integer
+      page:
+        type: integer
+      to:
+        type: integer
+      total:
+        type: integer
+    type: object
+  parameter.ListResponse-models_AdminOrderOutPutModel:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.AdminOrderOutPutModel'
         type: array
       from:
         type: integer
@@ -2555,6 +2593,48 @@ paths:
       summary: Logout the user.
       tags:
       - Auth
+  /admin/order:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      - description: order status
+        in: query
+        name: status
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_AdminOrderOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Orders
   /admin/product:
     get:
       consumes:

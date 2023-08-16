@@ -118,7 +118,7 @@ func GetUserComments(ctx *app.HttpContext) error {
 func GetProductComments(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx).Table(`"comment" c`).
 		Joins(`INNER JOIN "user" u ON u.id = c.created_by_id`).
-		Where("c.deleted_at IS NULL AND ")
+		Where("c.deleted_at IS NULL ")
 
 	productID, err := uuid.Parse(ctx.GetPathParam("productId"))
 

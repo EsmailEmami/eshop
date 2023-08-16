@@ -7,6 +7,7 @@ import (
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/errors"
 	appmodels "github.com/esmailemami/eshop/app/models"
+	"github.com/esmailemami/eshop/app/parameter"
 	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/models"
 	"github.com/google/uuid"
@@ -127,4 +128,45 @@ func CheckoutOrder(ctx *app.HttpContext) error {
 	}
 
 	return ctx.QuickResponse(consts.OperationDone, http.StatusOK)
+}
+
+// GetOrdersForAdmin godoc
+// @Tags Orders
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param page  query  string  false  "page size"
+// @Param limit  query  string  false  "length of records to show"
+// @Param searchTerm  query  string  false  "search for item"
+// @Param status  query  int  false  "order status"
+// @Success 200 {object} parameter.ListResponse[appmodels.AdminOrderOutPutModel]
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /admin/order [get]
+func GetAdminOrders(ctx *app.HttpContext) error {
+	baseDB := db.MustGormDBConn(ctx)
+	parameter := parameter.New[appmodels.AdminOrderOutPutModel](ctx, baseDB)
+
+	baseDB = baseDB.Table(`"order" o`).
+		Joins(`INNER JOIN "user" u ON u.id = o.created_by_id`)
+
+	if status, ok := ctx.GetParam("status"); ok {
+		baseDB = baseDB.Where("o.status = ?", status)
+	}
+
+	data, err := parameter.SearchColumns("u.username", "u.first_name", "u.last_name").
+		SortDescending("o.updated_at").
+		SelectColumns(`u.id as user_id, o.id as order_id, u.username, o.status, o.created_at, o.updated_at, 
+			CASE
+				WHEN o.status > 0 THEN o.price
+				ELSE (SELECT SUM(price) FROM order_item oi WHERE oi.order_id = o.id)
+			END AS price
+		`).
+		Execute(baseDB)
+
+	if err != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	return ctx.JSON(data, http.StatusOK)
 }

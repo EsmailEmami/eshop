@@ -82,10 +82,11 @@ func (model *RoleReqModel) MergeWithDBData(dbmodel *dbmodels.Role) {
 }
 
 type RoleOutPutModel struct {
-	ID          *uuid.UUID               `gorm:"column:id"         json:"id"`
-	CreatedAt   time.Time                `gorm:"column:created_at" json:"createdAt"`
-	UpdatedAt   time.Time                `gorm:"column:updated_at" json:"updatedAt"`
-	Name        string                   `gorm:"column:name"       json:"name"`
-	Code        string                   `gorm:"column:code"       json:"code"`
+	ID          *uuid.UUID               `gorm:"column:id"          json:"id"`
+	CreatedAt   time.Time                `gorm:"column:created_at"  json:"createdAt"`
+	UpdatedAt   time.Time                `gorm:"column:updated_at"  json:"updatedAt"`
+	Name        string                   `gorm:"column:name"        json:"name"`
+	Code        string                   `gorm:"column:code"        json:"code"`
+	IsSystem    bool                     `gorm:"column:is_system"   json:"isSystem"`
 	Permissions dbmodels.RolePermissions `gorm:"column:permissions" json:"permissions"`
 }
