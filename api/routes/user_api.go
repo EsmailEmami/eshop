@@ -25,5 +25,6 @@ func loadUserRoutes(root chi.Router) {
 		loadUserCommentRoutes(r)
 		loadUserProductItemRoutes(r)
 		loadUserFileRoutes(r)
+		loadUserBrandRoutes(r)
 	})
 }

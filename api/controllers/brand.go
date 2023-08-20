@@ -28,6 +28,7 @@ import (
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /admin/brand [get]
+// @Router /user/brand [get]
 func GetBrands(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 
