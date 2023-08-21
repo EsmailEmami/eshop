@@ -291,6 +291,32 @@ func GetPermissionsTree() []Action {
 			},
 		},
 		{
+			Name: "Products",
+			Code: "",
+			Children: []Action{
+				{
+					Name: "Products",
+					Code: ACTION_PRODUCT_ADMIN_LIST,
+				},
+				{
+					Name: "Create product",
+					Code: ACTION_PRODUCT_ADMIN_CREATE,
+				},
+				{
+					Name: "Update product",
+					Code: ACTION_PRODUCT_ADMIN_UPDATE,
+				},
+				{
+					Name: "product information",
+					Code: ACTION_PRODUCT_ADMIN_INFO,
+				},
+				{
+					Name: "Delete product",
+					Code: ACTION_PRODUCT_ADMIN_DELETE,
+				},
+			},
+		},
+		{
 			Name: "Colors",
 			Code: "",
 			Children: []Action{
