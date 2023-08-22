@@ -4673,6 +4673,37 @@ paths:
       - Bearer: []
       tags:
       - FavoriteProductItems
+  /user/favoriteProductItem/isFavorite/{productItemId}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Product Item ID
+        in: path
+        name: productItemId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessDBResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - FavoriteProductItems
   /user/file/{fileId}:
     get:
       consumes:

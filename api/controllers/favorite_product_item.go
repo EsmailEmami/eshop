@@ -91,3 +91,33 @@ func DeleteFavoriteProductItem(ctx *app.HttpContext) error {
 
 	return ctx.QuickResponse(consts.Deleted, http.StatusOK)
 }
+
+// Is User FavoriteProductItem godoc
+// @Tags FavoriteProductItems
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param productItemId  path  string  true  "Product Item ID"
+// @Success 200 {object} helpers.SuccessDBResponse
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /user/favoriteProductItem/isFavorite/{productItemId}  [get]
+func IsUserFavoriteProductItem(ctx *app.HttpContext) error {
+	user, err := ctx.GetUser()
+	if err != nil {
+		return errors.NewUnauthorizedError(consts.UnauthorizedError, err)
+	}
+
+	productItemID, err := uuid.Parse(ctx.GetPathParam("productItemId"))
+	if err != nil {
+		return err
+	}
+
+	baseDB := db.MustGormDBConn(ctx)
+
+	if db.Exists(baseDB, &models.FavoriteProductItem{}, "created_by_id=? AND product_item_id=?", *user.ID, productItemID) {
+		return ctx.QuickDBResponse(consts.OperationDone, true, http.StatusOK)
+	}
+
+	return ctx.QuickDBResponse(consts.OperationDone, false, http.StatusOK)
+}

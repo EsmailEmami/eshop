@@ -9,4 +9,5 @@ import (
 func loadUserFavoriteProductItemRoutes(r chi.Router) {
 	r.Post("/favoriteProductItem", app.Handler(controllers.CreateFavoriteProductItem))
 	r.Post("/favoriteProductItem/delete/{productItemId}", app.Handler(controllers.DeleteFavoriteProductItem))
+	r.Get("/favoriteProductItem/isFavorite/{productItemId}", app.Handler(controllers.IsUserFavoriteProductItem))
 }
