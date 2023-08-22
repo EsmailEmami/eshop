@@ -28,15 +28,11 @@ func (model UserReqModel) ValidateCreate() error {
 		validation.Field(&model.Username,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.UserName()),
-			validation.By(validations.ExistsInDB(&models.User{}, "username", consts.UsernameAlreadyExists)),
+			validation.By(validations.NotExistsInDB(&models.User{}, "username", consts.UsernameAlreadyExists)),
 		),
-		validation.Field(&model.IsSystem,
-			validation.Required.Error(consts.Required),
+		validation.Field(&model.RoleID,
+			validation.By(validations.ExistsInDB(&models.Role{}, "id", consts.ModelRoleNotFound)),
 		),
-		validation.Field(&model.Enabled,
-			validation.Required.Error(consts.Required),
-		),
-		validation.Field(validation.By(validations.ExistsInDB(&models.Role{}, "id", consts.ModelRoleNotFound))),
 	)
 }
 
@@ -47,13 +43,9 @@ func (model UserReqModel) ValidateUpdate() error {
 			validation.Required.Error(consts.Required),
 			validation.By(validations.UserName()),
 		),
-		validation.Field(&model.IsSystem,
-			validation.Required.Error(consts.Required),
+		validation.Field(&model.RoleID,
+			validation.By(validations.ExistsInDB(&models.Role{}, "id", consts.ModelRoleNotFound)),
 		),
-		validation.Field(&model.Enabled,
-			validation.Required.Error(consts.Required),
-		),
-		validation.Field(validation.By(validations.ExistsInDB(&models.Role{}, "id", consts.ModelRoleNotFound))),
 	)
 }
 
