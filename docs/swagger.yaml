@@ -509,6 +509,56 @@ definitions:
       value:
         type: number
     type: object
+  models.DiscountOutPutModel:
+    properties:
+      code:
+        type: string
+      createdAt:
+        type: string
+      creatorUserId:
+        type: string
+      creatorUsername:
+        type: string
+      expiresIn:
+        type: string
+      id:
+        type: string
+      productItemId:
+        type: string
+      productName:
+        type: string
+      quantity:
+        type: integer
+      relatedUserId:
+        type: string
+      relatedUserUsername:
+        type: string
+      type:
+        $ref: '#/definitions/models.DiscountType'
+      typeName:
+        type: string
+      updatedAt:
+        type: string
+      value:
+        type: number
+    type: object
+  models.DiscountReqModel:
+    properties:
+      code:
+        type: string
+      expiresIn:
+        type: string
+      productItemId:
+        type: string
+      quantity:
+        type: integer
+      relatedUserId:
+        type: string
+      type:
+        $ref: '#/definitions/models.DiscountType'
+      value:
+        type: number
+    type: object
   models.DiscountType:
     enum:
     - 0
@@ -1618,6 +1668,25 @@ definitions:
       total:
         type: integer
     type: object
+  parameter.ListResponse-models_DiscountOutPutModel:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.DiscountOutPutModel'
+        type: array
+      from:
+        type: integer
+      last_page:
+        type: integer
+      limit:
+        type: integer
+      page:
+        type: integer
+      to:
+        type: integer
+      total:
+        type: integer
+    type: object
   parameter.ListResponse-models_ProductCommentOutPutModel:
     properties:
       data:
@@ -2565,6 +2634,174 @@ paths:
       - Bearer: []
       tags:
       - Comments
+  /admin/discount:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_DiscountOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Discounts
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Discount model
+        in: body
+        name: Discount
+        required: true
+        schema:
+          $ref: '#/definitions/models.DiscountReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Discounts
+  /admin/discount/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DiscountOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Discounts
+  /admin/discount/delete/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Discounts
+  /admin/discount/edit/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Discount model
+        in: body
+        name: Discount
+        required: true
+        schema:
+          $ref: '#/definitions/models.DiscountReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Discounts
   /admin/is_authenticated:
     get:
       consumes:

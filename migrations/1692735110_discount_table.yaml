@@ -1,0 +1,28 @@
+---
+up: |
+  CREATE TABLE discount (
+    id    			    uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    product_item_id UUID NULL,
+    type INT NOT NULL,
+    value NUMERIC NOT NULL,
+    quantity INT NULL,
+    expires_in timestamptz NULL,
+    code VARCHAR(20) NULL UNIQUE,
+    related_user_id UUID,
+ 
+    created_at 		  timestamptz default now(),
+    created_by_id 	uuid null,
+    updated_at 		  timestamptz default now(),
+    updated_by_id 	uuid null,
+    deleted_at		  timestamptz null,
+    deleted_by_id 	uuid null,
+
+    CONSTRAINT fk__discount_user_created_by FOREIGN KEY (created_by_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk__discount_user_updated_by FOREIGN KEY (updated_by_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk__discount_user_deleted_by FOREIGN KEY (deleted_by_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk__discount_user_related_user FOREIGN KEY (related_user_id) REFERENCES public.user (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk__comment_product_item_product_item_id FOREIGN KEY (product_item_id) REFERENCES public.product_item (id) ON UPDATE CASCADE ON DELETE RESTRICT
+  );
+
+down: |
+  drop table discount;

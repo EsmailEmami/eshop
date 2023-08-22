@@ -11,13 +11,13 @@ import (
 )
 
 type DiscountReqModel struct {
-	ProductItemID *uuid.UUID            `gorm:"column:product_item_id"                                  json:"productItemId,omitempty"`
-	Type          dbmodels.DiscountType `gorm:"column:type"                                             json:"type"`
-	Value         float64               `form:"column:value"                                            json:"value"`
-	Quantity      *int                  `gorm:"column:quantity"                                         json:"quantity,omitempty"`
-	ExpiresIn     *time.Time            `gorm:"column:expires_in"                                       json:"expiresIn,omitempty"`
-	Code          *string               `gorm:"column:code"                                             json:"code,omitempty"`
-	RelatedUserID *uuid.UUID            `gorm:"column:related_user_id"                                  json:"relatedUserId,omitempty"`
+	ProductItemID *uuid.UUID            `json:"productItemId,omitempty"`
+	Type          dbmodels.DiscountType `json:"type"`
+	Value         float64               `json:"value"`
+	Quantity      *int                  `json:"quantity,omitempty"`
+	ExpiresIn     *time.Time            `json:"expiresIn,omitempty"`
+	Code          *string               `json:"code,omitempty"`
+	RelatedUserID *uuid.UUID            `json:"relatedUserId,omitempty"`
 }
 
 func (model DiscountReqModel) ValidateCreate(db *gorm.DB) error {
@@ -64,10 +64,19 @@ func (model *DiscountReqModel) MergeWithDBData(dbmodel *dbmodels.Discount) {
 }
 
 type DiscountOutPutModel struct {
-	ID          *uuid.UUID `gorm:"column:id"         json:"id"`
-	CreatedAt   time.Time  `gorm:"column:created_at" json:"createdAt"`
-	UpdatedAt   time.Time  `gorm:"column:updated_at" json:"updatedAt"`
-	Name        string     `gorm:"column:name"       json:"name"`
-	Code        string     `gorm:"column:code"       json:"code"`
-	DiscountHex string     `gorm:"column:Discount_hex"  json:"DiscountHex"`
+	ID                  *uuid.UUID            `gorm:"column:id"                                               json:"id"`
+	CreatedAt           time.Time             `gorm:"column:created_at"                                       json:"createdAt"`
+	UpdatedAt           time.Time             `gorm:"column:updated_at"                                       json:"updatedAt"`
+	ProductItemID       *uuid.UUID            `gorm:"column:product_item_id"                                  json:"productItemId,omitempty"`
+	ProductName         *string               `gorm:"column:product_name"                                     json:"productName,omitempty"`
+	Type                dbmodels.DiscountType `gorm:"column:type"                                             json:"type"`
+	TypeName            string                `gorm:"column:type_name"                                        json:"typeName"`
+	Value               float64               `form:"column:value"                                            json:"value"`
+	Quantity            *int                  `gorm:"column:quantity"                                         json:"quantity,omitempty"`
+	ExpiresIn           *time.Time            `gorm:"column:expires_in"                                       json:"expiresIn,omitempty"`
+	Code                *string               `gorm:"column:code"                                             json:"code,omitempty"`
+	CreatorUserID       *uuid.UUID            `gorm:"column:creator_user_id"                                  json:"creatorUserId,omitempty"`
+	CreatorUsername     *string               `gorm:"column:creator_user_username"                            json:"creatorUsername,omitempty"`
+	RelatedUserID       *uuid.UUID            `gorm:"column:related_user_id"                                  json:"relatedUserId,omitempty"`
+	RelatedUserUsername *string               `gorm:"column:related_user_username"                            json:"relatedUserUsername,omitempty"`
 }
