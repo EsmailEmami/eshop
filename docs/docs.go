@@ -5355,6 +5355,18 @@ const docTemplate = `{
                         "description": "Max Price",
                         "name": "maxPrice",
                         "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "newest",
+                            "topSell",
+                            "cheap",
+                            "expersive"
+                        ],
+                        "type": "string",
+                        "description": "order by",
+                        "name": "order",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -6603,6 +6615,72 @@ const docTemplate = `{
                 "CommentStatusReject"
             ]
         },
+        "models.Discount": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "createdById": {
+                    "type": "string"
+                },
+                "expiresIn": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "productItem": {
+                    "$ref": "#/definitions/models.ProductItem"
+                },
+                "productItemId": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "relatedUser": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "relatedUserId": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/models.DiscountType"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "updatedById": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.DiscountType": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-varnames": [
+                "DiscountTypeNumeric",
+                "DiscountTypePercent",
+                "DiscountTypeCode"
+            ]
+        },
         "models.FavoriteProductItem": {
             "type": "object",
             "properties": {
@@ -7394,6 +7472,12 @@ const docTemplate = `{
                 "createdById": {
                     "type": "string"
                 },
+                "discounts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Discount"
+                    }
+                },
                 "favorites": {
                     "type": "array",
                     "items": {
@@ -7887,6 +7971,12 @@ const docTemplate = `{
                 },
                 "createdById": {
                     "type": "string"
+                },
+                "discounts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Discount"
+                    }
                 },
                 "email": {
                     "type": "string"

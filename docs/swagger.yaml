@@ -474,6 +474,51 @@ definitions:
     - CommentStatusPending
     - CommntStatusAccept
     - CommentStatusReject
+  models.Discount:
+    properties:
+      code:
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/models.User'
+      createdById:
+        type: string
+      expiresIn:
+        type: string
+      id:
+        type: string
+      productItem:
+        $ref: '#/definitions/models.ProductItem'
+      productItemId:
+        type: string
+      quantity:
+        type: integer
+      relatedUser:
+        $ref: '#/definitions/models.User'
+      relatedUserId:
+        type: string
+      type:
+        $ref: '#/definitions/models.DiscountType'
+      updatedAt:
+        type: string
+      updatedBy:
+        $ref: '#/definitions/models.User'
+      updatedById:
+        type: string
+      value:
+        type: number
+    type: object
+  models.DiscountType:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - DiscountTypeNumeric
+    - DiscountTypePercent
+    - DiscountTypeCode
   models.FavoriteProductItem:
     properties:
       createdAt:
@@ -995,6 +1040,10 @@ definitions:
         $ref: '#/definitions/models.User'
       createdById:
         type: string
+      discounts:
+        items:
+          $ref: '#/definitions/models.Discount'
+        type: array
       favorites:
         items:
           $ref: '#/definitions/models.FavoriteProductItem'
@@ -1319,6 +1368,10 @@ definitions:
         $ref: '#/definitions/models.User'
       createdById:
         type: string
+      discounts:
+        items:
+          $ref: '#/definitions/models.Discount'
+        type: array
       email:
         type: string
       enabled:
@@ -5151,6 +5204,15 @@ paths:
         in: query
         name: maxPrice
         type: number
+      - description: order by
+        enum:
+        - newest
+        - topSell
+        - cheap
+        - expersive
+        in: query
+        name: order
+        type: string
       produces:
       - application/json
       responses:
