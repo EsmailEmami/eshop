@@ -153,18 +153,22 @@ func (model *ProductReqModel) MergeWithDBData(dbmodel *dbmodels.Product) {
 }
 
 type ProductWithItemOutPutModel struct {
-	ID           *uuid.UUID        `gorm:"column:id"               json:"id"`
-	Name         string            `gorm:"column:name"             json:"name"`
-	Code         string            `gorm:"column:code"             json:"code"`
-	BrandID      uuid.UUID         `gorm:"column:brand_id"         json:"brandId"`
-	BrandName    string            `gorm:"column:brand_name"       json:"brandName"`
-	CategoryID   uuid.UUID         `gorm:"column:category_id"      json:"categoryId"`
-	CategoryName string            `gorm:"column:category_name"    json:"categoryName"`
-	Price        float32           `gorm:"column:price"            json:"price"`
-	ItemID       uuid.UUID         `gorm:"column:item_id"          json:"itemId"`
-	FileType     dbmodels.FileType `gorm:"column:file_type" json:"-"`
-	FileName     string            `gorm:"column:file_name"        json:"-"`
-	FileUrl      string            `gorm:"column:file_url"         json:"fileUrl"`
+	ID               *uuid.UUID             `gorm:"column:id"                      json:"id"`
+	Name             string                 `gorm:"column:name"                    json:"name"`
+	Code             string                 `gorm:"column:code"                    json:"code"`
+	BrandID          uuid.UUID              `gorm:"column:brand_id"                json:"brandId"`
+	BrandName        string                 `gorm:"column:brand_name"              json:"brandName"`
+	CategoryID       uuid.UUID              `gorm:"column:category_id"             json:"categoryId"`
+	CategoryName     string                 `gorm:"column:category_name"           json:"categoryName"`
+	Price            float32                `gorm:"column:price"                   json:"price"`
+	ItemID           uuid.UUID              `gorm:"column:item_id"                 json:"itemId"`
+	FileType         dbmodels.FileType      `gorm:"column:file_type"               json:"-"`
+	FileName         string                 `gorm:"column:file_name"               json:"-"`
+	FileUrl          string                 `gorm:"column:file_url"                json:"fileUrl"`
+	DiscountType     *dbmodels.DiscountType `gorm:"column:discount_type"           json:"discountType,omitempty"`
+	DiscountValue    *float64               `gorm:"column:discount_value"          json:"discountValue"`
+	DiscountQuantity *int                   `gorm:"column:discount_quantity"       json:"discountQuantity"`
+	Quantity         int                    `gorm:"column:quantity"                json:"quantity"`
 }
 
 type ProductOutPutModel struct {

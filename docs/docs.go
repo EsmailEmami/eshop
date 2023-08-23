@@ -8085,6 +8085,15 @@ const docTemplate = `{
                 "code": {
                     "type": "string"
                 },
+                "discountQuantity": {
+                    "type": "integer"
+                },
+                "discountType": {
+                    "$ref": "#/definitions/models.DiscountType"
+                },
+                "discountValue": {
+                    "type": "number"
+                },
                 "fileUrl": {
                     "type": "string"
                 },
@@ -8099,6 +8108,9 @@ const docTemplate = `{
                 },
                 "price": {
                     "type": "number"
+                },
+                "quantity": {
+                    "type": "integer"
                 }
             }
         },

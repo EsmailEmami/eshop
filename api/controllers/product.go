@@ -32,32 +32,38 @@ import (
 // @Failure 401 {object} map[string]any
 // @Router /user/product [get]
 func GetUserProducts(ctx *app.HttpContext) error {
-	baseDB := db.MustGormDBConn(ctx)
+	baseDB := db.MustGormDBConn(ctx).Debug()
 
 	parameter := parameter.New[appmodels.ProductWithItemOutPutModel](ctx, baseDB)
 
 	productItemQry := baseDB.Table("product_item pi2").
-		Select("id, price, created_at, bought_quantity").
-		Where("pi2.quantity > 0 AND pi2.product_id = p.id")
+		Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", baseDB.Table("discount d").
+			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL").
+			Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
+			Where("d.related_user_id IS NULL").
+			Select("d.type, d.value, d.product_item_id, d.quantity").
+			Limit(1),
+		).
+		Select("pi2.id, pi2.price, pi2.created_at, pi2.bought_quantity, d.type, d.value, d.quantity as discount_quantity, pi2.quantity").
+		Where("pi2.quantity > 0 AND pi2.product_id = p.id AND pi2.deleted_at IS NULL")
 
 	order, _ := ctx.GetParam("order")
 
 	switch order {
 	case "newest":
-		productItemQry = productItemQry.Order("pi2.created_at DESC").Limit(1)
+		productItemQry = productItemQry.Order("pi2.created_at DESC")
 	case "topSell":
-		productItemQry = productItemQry.Order("pi2.bought_quantity DESC").Limit(1)
+		productItemQry = productItemQry.Order("pi2.bought_quantity DESC")
 	case "cheap":
-		productItemQry = productItemQry.Order("pi2.price ASC").Limit(1)
+		productItemQry = productItemQry.Order("pi2.price ASC")
 	case "expersive":
-		productItemQry = productItemQry.Order("pi2.price DESC").Limit(1)
+		productItemQry = productItemQry.Order("pi2.price DESC")
 	default:
-		productItemQry = productItemQry.Order("CASE WHEN p.default_product_item_id IS NULL THEN pi2.bought_quantity WHEN pi2.id = p.default_product_item_id THEN 0 ELSE 1 END").
-			Limit(1)
+		productItemQry = productItemQry.Order("CASE WHEN p.default_product_item_id IS NULL THEN pi2.bought_quantity WHEN pi2.id = p.default_product_item_id THEN 0 ELSE 1 END")
 	}
 
 	baseDB = baseDB.Table("product as p").
-		Joins("CROSS JOIN LATERAL (?) as pi2", productItemQry).
+		Joins("CROSS JOIN LATERAL (?) as pi2", productItemQry.Limit(1)).
 		Joins("INNER JOIN brand b ON b.id = p.brand_id").
 		Joins("INNER JOIN category c ON c.id = p.category_id").
 		Joins("CROSS JOIN LATERAL (?) as pf", baseDB.Table("product_file_map pf").
@@ -94,7 +100,7 @@ func GetUserProducts(ctx *app.HttpContext) error {
 		baseDB = baseDB.Order("pi2.bought_quantity DESC")
 	}
 
-	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name").
+	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name, pi2.type as discount_type, pi2.value as discount_value, pi2.discount_quantity, pi2.quantity").
 		SearchColumns("p.name", "p.code").
 		EachItemProcess(func(db *gorm.DB, item *appmodels.ProductWithItemOutPutModel) error {
 			item.FileUrl = item.FileType.GetDirectory() + "/" + item.FileName
