@@ -32,7 +32,7 @@ import (
 // @Failure 401 {object} map[string]any
 // @Router /user/product [get]
 func GetUserProducts(ctx *app.HttpContext) error {
-	baseDB := db.MustGormDBConn(ctx).Debug()
+	baseDB := db.MustGormDBConn(ctx)
 
 	parameter := parameter.New[appmodels.ProductWithItemOutPutModel](ctx, baseDB)
 
@@ -41,6 +41,7 @@ func GetUserProducts(ctx *app.HttpContext) error {
 			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL").
 			Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
 			Where("d.related_user_id IS NULL").
+			Order("d.created_at ASC").
 			Select("d.type, d.value, d.product_item_id, d.quantity").
 			Limit(1),
 		).

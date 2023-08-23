@@ -7358,6 +7358,15 @@ const docTemplate = `{
         "models.OrderItemOutPutModel": {
             "type": "object",
             "properties": {
+                "discountQuantity": {
+                    "type": "integer"
+                },
+                "discountType": {
+                    "$ref": "#/definitions/models.DiscountType"
+                },
+                "discountValue": {
+                    "type": "number"
+                },
                 "fileUrl": {
                     "type": "string"
                 },
@@ -7933,6 +7942,15 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.ProductItemInfoColorOutPutModel"
                     }
+                },
+                "discountQuantity": {
+                    "type": "integer"
+                },
+                "discountType": {
+                    "$ref": "#/definitions/models.DiscountType"
+                },
+                "discountValue": {
+                    "type": "number"
                 },
                 "features": {
                     "type": "array",

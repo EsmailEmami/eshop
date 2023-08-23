@@ -202,6 +202,14 @@ func GetUserFavoriteProducts(ctx *app.HttpContext) error {
 
 	baseDB = baseDB.Table("favorite_product_item fpi").
 		Joins("INNER JOIN product_item pi2 ON pi2.id = fpi.product_item_id").
+		Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", baseDB.Table("discount d").
+			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL").
+			Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
+			Where("d.related_user_id IS NULL").
+			Order("d.created_at ASC").
+			Select("d.type, d.value, d.product_item_id, d.quantity").
+			Limit(1),
+		).
 		Joins("INNER JOIN product p ON p.id = pi2.product_id").
 		Joins("INNER JOIN brand b ON b.id = p.brand_id").
 		Joins("INNER JOIN category c ON c.id = p.category_id").
@@ -228,7 +236,7 @@ func GetUserFavoriteProducts(ctx *app.HttpContext) error {
 		baseDB = baseDB.Where("pi2.price <= ?", maxPrice)
 	}
 
-	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name").
+	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name,d.type as discount_type, d.value as discount_value, d.quantity as discount_quantity").
 		SearchColumns("p.name").
 		EachItemProcess(func(db *gorm.DB, item *appmodels.ProductWithItemOutPutModel) error {
 			item.FileUrl = item.FileType.GetDirectory() + "/" + item.FileName
@@ -272,6 +280,14 @@ func GetAdminUserFavoriteProducts(ctx *app.HttpContext) error {
 
 	baseDB = baseDB.Table("favorite_product_item fpi").
 		Joins("INNER JOIN product_item pi2 ON pi2.id = fpi.product_item_id").
+		Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", baseDB.Table("discount d").
+			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL").
+			Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
+			Where("d.related_user_id IS NULL").
+			Order("d.created_at ASC").
+			Select("d.type, d.value, d.product_item_id, d.quantity").
+			Limit(1),
+		).
 		Joins("INNER JOIN product p ON p.id = pi2.product_id").
 		Joins("INNER JOIN brand b ON b.id = p.brand_id").
 		Joins("INNER JOIN category c ON c.id = p.category_id").
@@ -298,7 +314,7 @@ func GetAdminUserFavoriteProducts(ctx *app.HttpContext) error {
 		baseDB = baseDB.Where("pi2.price <= ?", maxPrice)
 	}
 
-	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name").
+	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name,d.type as discount_type, d.value as discount_value, d.quantity as discount_quantity").
 		SearchColumns("p.name").
 		EachItemProcess(func(db *gorm.DB, item *appmodels.ProductWithItemOutPutModel) error {
 			item.FileUrl = item.FileType.GetDirectory() + "/" + item.FileName

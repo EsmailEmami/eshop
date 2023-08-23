@@ -792,6 +792,12 @@ definitions:
     type: object
   models.OrderItemOutPutModel:
     properties:
+      discountQuantity:
+        type: integer
+      discountType:
+        $ref: '#/definitions/models.DiscountType'
+      discountValue:
+        type: number
       fileUrl:
         type: string
       id:
@@ -1169,6 +1175,12 @@ definitions:
         items:
           $ref: '#/definitions/models.ProductItemInfoColorOutPutModel'
         type: array
+      discountQuantity:
+        type: integer
+      discountType:
+        $ref: '#/definitions/models.DiscountType'
+      discountValue:
+        type: number
       features:
         items:
           $ref: '#/definitions/models.ProductItemCategoryFeatureModel'

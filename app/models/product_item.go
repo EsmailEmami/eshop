@@ -127,6 +127,9 @@ type ProductItemInfoOutPutModel struct {
 	Quantity                int                               `gorm:"column:quantity"                  json:"quantity"`
 	ProductShortDescription string                            `gorm:"column:product_short_description" json:"productShortDescription"`
 	ProductDescription      string                            `gorm:"column:product_description"       json:"productDescription"`
+	DiscountType            *dbmodels.DiscountType            `gorm:"column:discount_type"             json:"discountType,omitempty"`
+	DiscountValue           *float64                          `gorm:"column:discount_value"            json:"discountValue"`
+	DiscountQuantity        *int                              `gorm:"column:discount_quantity"         json:"discountQuantity"`
 	Files                   []ProductItemFileOutPutModel      `gorm:"-"                                json:"files"`
 	Features                []ProductItemCategoryFeatureModel `gorm:"-"                                json:"features"`
 	Colors                  []ProductItemInfoColorOutPutModel `gorm:"-"                                json:"colors"`

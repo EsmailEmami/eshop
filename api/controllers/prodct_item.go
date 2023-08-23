@@ -35,9 +35,17 @@ func GetProductItem(ctx *app.HttpContext) error {
 	if err := baseDB.Table("product_item pi2").
 		Joins("INNER JOIN product p ON P.id = pi2 .product_id").
 		Joins("INNER JOIN color c ON C.id = pi2.color_id").
+		Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", baseDB.Table("discount d").
+			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL").
+			Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
+			Where("d.related_user_id IS NULL").
+			Order("d.created_at ASC").
+			Select("d.type, d.value, d.product_item_id, d.quantity").
+			Limit(1),
+		).
 		Select(`pi2.id, pi2.price,pi2.status, pi2 .color_id, pi2.product_id, pi2.quantity,
 		p."name" AS product_title, p.code AS product_code, p.short_description AS product_short_description, 
-		p.description AS product_description, c."name" AS color_name`).
+		p.description AS product_description, c."name" AS color_name,d.type as discount_type, d.value as discount_value, d.quantity as discount_quantity`).
 		First(&data, "pi2.id", id).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}

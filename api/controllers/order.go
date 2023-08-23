@@ -39,6 +39,14 @@ func GetOrder(ctx *app.HttpContext) error {
 	if err := baseDB.Table("order_item oi").
 		Joins(`INNER JOIN "order" o ON o.id = oi.order_id`).
 		Joins("INNER JOIN product_item pi2 ON pi2.id = oi.product_item_id").
+		Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", baseDB.Table("discount d").
+			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL").
+			Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
+			Where("d.related_user_id IS NULL").
+			Order("d.created_at ASC").
+			Select("d.type, d.value, d.product_item_id, d.quantity").
+			Limit(1),
+		).
 		Joins("INNER JOIN product p ON	p.id = pi2.product_id").
 		Joins("CROSS JOIN LATERAL (?) as pf", baseDB.Table("product_file_map pfm").
 			Select("file_id").
@@ -48,7 +56,7 @@ func GetOrder(ctx *app.HttpContext) error {
 		).
 		Joins("INNER JOIN file f ON f.id = pf.file_id").
 		Where("o.status = 0 AND o.created_by_id = ?", *user.ID).
-		Select(`oi.id, oi.product_item_id,p."name" AS product_name,pi2.price,oi.quantity,f.file_type, f.unique_file_name AS file_name`).
+		Select(`oi.id, oi.product_item_id,p."name" AS product_name,pi2.price,oi.quantity,f.file_type, f.unique_file_name AS file_name,d.type as discount_type, d.value as discount_value, d.quantity as discount_quantity`).
 		Find(&orderItems).Error; err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
