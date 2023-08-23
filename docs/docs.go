@@ -1245,6 +1245,24 @@ const docTemplate = `{
                         "description": "search for item",
                         "name": "searchTerm",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search for product item",
+                        "name": "productItemId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search for related user",
+                        "name": "relatedUser",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search for creator",
+                        "name": "createdBy",
+                        "in": "query"
                     }
                 ],
                 "responses": {

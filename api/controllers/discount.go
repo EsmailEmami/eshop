@@ -21,6 +21,9 @@ import (
 // @Param page  query  string  false  "page size"
 // @Param limit  query  string  false  "length of records to show"
 // @Param searchTerm  query  string  false  "search for item"
+// @Param productItemId  query  string  false  "search for product item"
+// @Param relatedUser  query  string  false  "search for related user"
+// @Param createdBy  query  string  false  "search for creator"
 // @Success 200 {object} parameter.ListResponse[appmodels.DiscountOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
@@ -29,11 +32,23 @@ func GetDiscounts(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 	parameter := parameter.New[appmodels.DiscountOutPutModel](ctx, baseDB)
 
-	baseDB = baseDB.Debug().Table("discount d").
+	baseDB = baseDB.Table("discount d").
 		Joins("LEFT JOIN product_item pi2 ON pi2.id = d.product_item_id").
 		Joins(`INNER JOIN "user" cu ON cu.id = d.created_by_id`).
 		Joins(`LEFT JOIN "product" p ON p.id = pi2.product_id`).
 		Joins(`LEFT JOIN "user" ru ON ru.id = d.related_user_id`)
+
+	if productItemID, ok := ctx.GetParam("productItemId"); ok {
+		baseDB = baseDB.Where("pi2.id = ?", productItemID)
+	}
+
+	if relatedUserID, ok := ctx.GetParam("relatedUser"); ok {
+		baseDB = baseDB.Where("ru.id = ?", relatedUserID)
+	}
+
+	if creatorUserID, ok := ctx.GetParam("createdBy"); ok {
+		baseDB = baseDB.Where("cu.id = ?", creatorUserID)
+	}
 
 	data, err := parameter.SelectColumns("d.id, d.created_at, d.updated_at, d.product_item_id, p.name as product_name, d.type, d.value, d.quantity, d.expires_in, d.code, d.created_by_id as creator_user_id, cu.username,d.related_user_id, ru.username as related_user_username").
 		SortDescending("d.created_at").

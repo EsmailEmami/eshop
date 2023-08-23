@@ -2671,6 +2671,18 @@ paths:
         in: query
         name: searchTerm
         type: string
+      - description: search for product item
+        in: query
+        name: productItemId
+        type: string
+      - description: search for related user
+        in: query
+        name: relatedUser
+        type: string
+      - description: search for creator
+        in: query
+        name: createdBy
+        type: string
       produces:
       - application/json
       responses:
