@@ -67,7 +67,7 @@ func GetAppPic(ctx *app.HttpContext) error {
 // @Produce json
 // @Security Bearer
 // @Param AppPic   body  appmodels.AppPicReqModel  true  "AppPic model"
-// @Success 200 {object} helpers.SuccessResponse
+// @Success 200 {object} helpers.SuccessDBResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /admin/appPic  [post]
@@ -85,11 +85,12 @@ func CreateAppPic(ctx *app.HttpContext) error {
 		return errors.NewValidationError(consts.ValidationError, err)
 	}
 
-	if err := baseDB.Create(inputModel.ToDBModel()).Error; err != nil {
+	dbModel := inputModel.ToDBModel()
+	if err := baseDB.Create(dbModel).Error; err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
-	return ctx.QuickResponse(consts.Created, http.StatusOK)
+	return ctx.QuickDBResponse(consts.Created, *dbModel.ID, http.StatusOK)
 }
 
 // Edit AppPic godoc

@@ -509,7 +509,7 @@ definitions:
       value:
         type: number
     type: object
-  models.DiscountOutPutModel:
+  models.DiscountAdminOutPutModel:
     properties:
       code:
         type: string
@@ -1688,11 +1688,11 @@ definitions:
       total:
         type: integer
     type: object
-  parameter.ListResponse-models_DiscountOutPutModel:
+  parameter.ListResponse-models_DiscountAdminOutPutModel:
     properties:
       data:
         items:
-          $ref: '#/definitions/models.DiscountOutPutModel'
+          $ref: '#/definitions/models.DiscountAdminOutPutModel'
         type: array
       from:
         type: integer
@@ -1945,7 +1945,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/helpers.SuccessResponse'
+            $ref: '#/definitions/helpers.SuccessDBResponse'
         "400":
           description: Bad Request
           schema:
@@ -2689,7 +2689,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/parameter.ListResponse-models_DiscountOutPutModel'
+            $ref: '#/definitions/parameter.ListResponse-models_DiscountAdminOutPutModel'
         "400":
           description: Bad Request
           schema:
@@ -2751,7 +2751,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.DiscountOutPutModel'
+            $ref: '#/definitions/models.DiscountAdminOutPutModel'
         "400":
           description: Bad Request
           schema:

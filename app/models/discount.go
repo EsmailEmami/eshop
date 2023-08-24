@@ -63,7 +63,7 @@ func (model *DiscountReqModel) MergeWithDBData(dbmodel *dbmodels.Discount) {
 	dbmodel.RelatedUserID = model.RelatedUserID
 }
 
-type DiscountOutPutModel struct {
+type DiscountAdminOutPutModel struct {
 	ID                  *uuid.UUID            `gorm:"column:id"                                               json:"id"`
 	CreatedAt           time.Time             `gorm:"column:created_at"                                       json:"createdAt"`
 	UpdatedAt           time.Time             `gorm:"column:updated_at"                                       json:"updatedAt"`

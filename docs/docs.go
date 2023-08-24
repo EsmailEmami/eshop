@@ -99,7 +99,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/helpers.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessDBResponse"
                         }
                     },
                     "400": {
@@ -1269,7 +1269,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/parameter.ListResponse-models_DiscountOutPutModel"
+                            "$ref": "#/definitions/parameter.ListResponse-models_DiscountAdminOutPutModel"
                         }
                     },
                     "400": {
@@ -1474,7 +1474,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.DiscountOutPutModel"
+                            "$ref": "#/definitions/models.DiscountAdminOutPutModel"
                         }
                     },
                     "400": {
@@ -6951,7 +6951,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.DiscountOutPutModel": {
+        "models.DiscountAdminOutPutModel": {
             "type": "object",
             "properties": {
                 "code": {
@@ -8742,13 +8742,13 @@ const docTemplate = `{
                 }
             }
         },
-        "parameter.ListResponse-models_DiscountOutPutModel": {
+        "parameter.ListResponse-models_DiscountAdminOutPutModel": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.DiscountOutPutModel"
+                        "$ref": "#/definitions/models.DiscountAdminOutPutModel"
                     }
                 },
                 "from": {

@@ -24,13 +24,13 @@ import (
 // @Param productItemId  query  string  false  "search for product item"
 // @Param relatedUser  query  string  false  "search for related user"
 // @Param createdBy  query  string  false  "search for creator"
-// @Success 200 {object} parameter.ListResponse[appmodels.DiscountOutPutModel]
+// @Success 200 {object} parameter.ListResponse[appmodels.DiscountAdminOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /admin/discount [get]
 func GetDiscounts(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
-	parameter := parameter.New[appmodels.DiscountOutPutModel](ctx, baseDB)
+	parameter := parameter.New[appmodels.DiscountAdminOutPutModel](ctx, baseDB)
 
 	baseDB = baseDB.Table("discount d").
 		Joins("LEFT JOIN product_item pi2 ON pi2.id = d.product_item_id").
@@ -68,7 +68,7 @@ func GetDiscounts(ctx *app.HttpContext) error {
 // @Produce json
 // @Security Bearer
 // @Param id  path  string  true  "Record ID"
-// @Success 200 {object} appmodels.DiscountOutPutModel
+// @Success 200 {object} appmodels.DiscountAdminOutPutModel
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /admin/discount/{id} [get]
@@ -86,7 +86,7 @@ func GetDiscount(ctx *app.HttpContext) error {
 		Joins(`LEFT JOIN "product" p ON p.id = pi2.product_id`).
 		Joins(`LEFT JOIN "user" ru ON ru.id = d.related_user_id`)
 
-	var data appmodels.DiscountOutPutModel
+	var data appmodels.DiscountAdminOutPutModel
 
 	if err := baseDB.Select("d.id, d.created_at, d.updated_at, d.product_item_id, p.name as product_name, d.type, d.value, d.quantity, d.expires_in, d.code, d.created_by_id as creator_user_id, cu.username,d.related_user_id, ru.username as related_user_username").First(&data, "id", id).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
