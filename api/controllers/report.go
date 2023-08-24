@@ -10,7 +10,6 @@ import (
 	"github.com/esmailemami/eshop/app/errors"
 	"github.com/esmailemami/eshop/app/helpers"
 	appmodels "github.com/esmailemami/eshop/app/models"
-	"github.com/esmailemami/eshop/db"
 	dbpkg "github.com/esmailemami/eshop/db"
 )
 
@@ -74,11 +73,11 @@ func ReportRevenueByCategory(ctx *app.HttpContext) error {
 // @Failure 401 {object} map[string]any
 // @Router /admin/report/sellsChart [get]
 func ReportSellsChart(ctx *app.HttpContext) error {
-	baseDB := db.MustGormDBConn(ctx)
+	baseDB := dbpkg.MustGormDBConn(ctx)
 
 	baseDB = baseDB.Table("order_item oi").
 		Joins(`INNER JOIN "order" o ON o.id = oi.order_id`).
-		Where("o.deleted_at IS NULL AND o.status > 0 AND o.payed_at IS NOT NULL")
+		Where("o.deleted_at IS NULL AND o.status > 0 AND o.paid_at IS NOT NULL")
 
 	queryType, ok := ctx.GetParam("type")
 	if !ok {
@@ -98,17 +97,17 @@ func ReportSellsChart(ctx *app.HttpContext) error {
 	_ = length
 	switch queryType {
 	case "hour":
-		baseDB = baseDB.Where("o.payed_at >= ?", time.Now().Add(time.Duration(-lengthNum)*time.Hour)).
-			Select(`TO_CHAR(DATE_TRUNC('hour', o.payed_at), 'HH24:MI') AS "key", SUM(oi.quantity) AS "value"`)
+		baseDB = baseDB.Where("o.paid_at >= ?", time.Now().Add(time.Duration(-lengthNum)*time.Hour)).
+			Select(`TO_CHAR(DATE_TRUNC('hour', o.paid_at), 'HH24:MI') AS "key", SUM(oi.quantity) AS "value"`)
 	case "daily":
-		baseDB = baseDB.Where("o.payed_at >= ?", time.Now().AddDate(0, 0, -lengthNum)).
-			Select(`TO_CHAR(DATE_TRUNC('day', o.payed_at), 'YYYY-MM-DD') AS "key", SUM(oi.quantity) AS "value"`)
+		baseDB = baseDB.Where("o.paid_at >= ?", time.Now().AddDate(0, 0, -lengthNum)).
+			Select(`TO_CHAR(DATE_TRUNC('day', o.paid_at), 'YYYY-MM-DD') AS "key", SUM(oi.quantity) AS "value"`)
 	case "weekly":
-		baseDB = baseDB.Where("o.payed_at >= ?", time.Now().AddDate(0, 0, -lengthNum*7)).
-			Select(`TO_CHAR(DATE_TRUNC('week', o.payed_at), 'YYYY-MM-DD') AS "key", SUM(oi.quantity) AS "value"`)
+		baseDB = baseDB.Where("o.paid_at >= ?", time.Now().AddDate(0, 0, -lengthNum*7)).
+			Select(`TO_CHAR(DATE_TRUNC('week', o.paid_at), 'YYYY-MM-DD') AS "key", SUM(oi.quantity) AS "value"`)
 	case "monthly":
-		baseDB = baseDB.Where("o.payed_at >= ?", time.Now().AddDate(0, -lengthNum, 0)).
-			Select(`TO_CHAR(DATE_TRUNC('month', o.payed_at), 'YYYY-MM-DD') AS "key", SUM(oi.quantity) AS "value"`)
+		baseDB = baseDB.Where("o.paid_at >= ?", time.Now().AddDate(0, -lengthNum, 0)).
+			Select(`TO_CHAR(DATE_TRUNC('month', o.paid_at), 'YYYY-MM-DD') AS "key", SUM(oi.quantity) AS "value"`)
 	default:
 		return errors.NewBadRequestError("Invalid type", nil)
 	}

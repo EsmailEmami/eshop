@@ -5,11 +5,15 @@ import "time"
 type Order struct {
 	Model
 
-	Code    string      `gorm:"column:code"                       json:"code"`
-	Items   []OrderItem `gorm:"foreignKey:order_id;references:id" json:"items"`
-	Status  OrderStatus `gorm:"column:status"                     json:"status"`
-	Price   float64     `gorm:"column:price"                      json:"price"`
-	PayedAt *time.Time  `gorm:"column:payed_at"                   json:"payedAt"`
+	Code          string        `gorm:"column:code"                       json:"code"`
+	Items         []OrderItem   `gorm:"foreignKey:order_id;references:id" json:"items"`
+	Status        OrderStatus   `gorm:"column:status"                     json:"status"`
+	Price         float64       `gorm:"column:price"                      json:"price"`
+	PaidAt        *time.Time    `gorm:"column:paid_at"                    json:"paidAt"`
+	TotalPrice    float64       `gorm:"column:total_price"                json:"totalPrice"`
+	DiscountPrice *float64      `gorm:"column:discount_price"             json:"discountPrice,omitempty"`
+	DiscountValue *float64      `gorm:"column:discount_value"             json:"discountValue,omitempty"`
+	DiscountType  *DiscountType `gorm:"column:discount_type"              json:"discountType,omitempty"`
 
 	// keep the address
 	FirstName    string `gorm:"column:first_name"        json:"firstName"`

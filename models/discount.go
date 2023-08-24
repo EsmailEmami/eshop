@@ -25,23 +25,23 @@ func (Discount) TableName() string {
 	return "discount"
 }
 
-func (d *Discount) IsValidToUse(userID, productItemID uuid.UUID) (bool, error) {
+func (d *Discount) IsValidToUse(userID, productItemID *uuid.UUID) error {
 	if d.ExpiresIn != nil && d.ExpiresIn.Before(time.Now()) {
-		return false, errors.New("discount expired")
+		return errors.New("discount expired")
 	}
 
 	if d.Quantity != nil && *d.Quantity <= 0 {
-		return false, errors.New("discount reached to full quantity limit")
+		return errors.New("discount reached to full quantity limit")
 	}
 
-	if d.RelatedUserID != nil && *d.RelatedUserID != userID {
-		return false, errors.New("discount is not for you")
+	if d.RelatedUserID != nil && (userID == nil || *d.RelatedUserID != *userID) {
+		return errors.New("discount is not for you")
 	}
 
-	if d.ProductItemID != nil && *d.ProductItemID != productItemID {
-		return false, errors.New("discount is not for this product")
+	if d.ProductItemID != nil && (productItemID == nil || *d.ProductItemID != *productItemID) {
+		return errors.New("discount is not for this product")
 	}
-	return true, nil
+	return nil
 }
 
 type DiscountType int

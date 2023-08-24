@@ -9,7 +9,11 @@ import (
 
 func IsValidPostalCode() func(value interface{}) error {
 	return func(value interface{}) error {
-		postalCode, ok := value.(string)
+		if IsNil(value) {
+			return nil
+		}
+
+		postalCode, ok := Value(value).(string)
 		if !ok {
 			return errors.New(consts.InvalidPostalCode)
 		}

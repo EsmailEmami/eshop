@@ -185,6 +185,16 @@ const (
 	ACTION_ORDER_ADMIN_LIST = "action_user_admin_orders_list"
 
 	// ###### Order ######
+
+	// ###### Color ######
+
+	ACTION_DISCOUNT_ADMIN_INFO   = "action_discount_admin_info"
+	ACTION_DISCOUNT_ADMIN_CREATE = "action_discount_admin_create"
+	ACTION_DISCOUNT_ADMIN_LIST   = "action_discount_admin_list"
+	ACTION_DISCOUNT_ADMIN_UPDATE = "action_discount_admin_update"
+	ACTION_DISCOUNT_ADMIN_DELETE = "action_discount_admin_delete"
+
+	// ###### Color ######
 )
 
 type Action struct {
@@ -652,6 +662,31 @@ func GetPermissionsTree() []Action {
 				{
 					Name: "Orders",
 					Code: ACTION_ORDER_ADMIN_LIST,
+				},
+			},
+		},
+		{
+			Name: "Discounts",
+			Children: []Action{
+				{
+					Name: "Discounts",
+					Code: ACTION_DISCOUNT_ADMIN_LIST,
+				},
+				{
+					Name: "Create discount",
+					Code: ACTION_DISCOUNT_ADMIN_CREATE,
+				},
+				{
+					Name: "Update discount",
+					Code: ACTION_DISCOUNT_ADMIN_UPDATE,
+				},
+				{
+					Name: "Discount information",
+					Code: ACTION_DISCOUNT_ADMIN_INFO,
+				},
+				{
+					Name: "Delete discount",
+					Code: ACTION_DISCOUNT_ADMIN_DELETE,
 				},
 			},
 		},

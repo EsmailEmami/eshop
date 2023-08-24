@@ -13,4 +13,5 @@ const (
 	ModelRoleNotFound                   = "Role not found."
 	ModelProductItemNotFound            = "Product item not found."
 	ModelUserNotFound                   = "User not found."
+	ModelDiscountNotFound               = "Discount not found."
 )

@@ -1,0 +1,26 @@
+---
+up: |
+  ALTER TABLE public."order" 
+    RENAME COLUMN "payed_at" TO "paid_at";
+
+  ALTER TABLE public."order"
+    ADD "total_price" NUMERIC NOT NULL DEFAULT 0,
+    ADD "discount_price" NUMERIC,
+    ADD "discount_value" NUMERIC,
+    ADD "discount_type" INT;
+
+  ALTER TABLE public."order_item"
+    ADD "total_price" NUMERIC NOT NULL DEFAULT 0;
+
+down: |
+  ALTER TABLE public."order" 
+    RENAME COLUMN paid_at TO payed_at;
+
+  ALTER TABLE public."order" 
+    DROP COLUMN IF EXISTS total_price,
+    DROP COLUMN IF EXISTS discount_price,
+    DROP COLUMN IF EXISTS discount_value,
+    DROP COLUMN IF EXISTS discount_type;
+
+  ALTER TABLE public."order_item"
+    DROP COLUMN IF EXISTS total_price;

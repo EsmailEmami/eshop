@@ -77,6 +77,7 @@ func GetOrder(ctx *app.HttpContext) error {
 // @Produce json
 // @Security Bearer
 // @Param addressId  path  string  true  "Record ID"
+// @Param discountId  query  string  false  "Discount ID"
 // @Success 200 {object} helpers.SuccessResponse
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
@@ -91,8 +92,39 @@ func CheckoutOrder(ctx *app.HttpContext) error {
 		return errors.NewBadRequestError(consts.ModelAddressNotFound, err)
 	}
 
-	baseDB := db.MustGormDBConn(ctx)
-	baseTx := baseDB.Begin()
+	var (
+		baseDB                = db.MustGormDBConn(ctx)
+		baseTx                = baseDB.Begin()
+		discountValue float64 = 0
+		discountPrice float64 = 0
+		discountType  models.DiscountType
+	)
+
+	if discountID, ok := ctx.GetParam("discountId"); ok {
+		var dbModel models.Discount
+
+		if baseDB.First(&dbModel, discountID).Error != nil {
+			return errors.NewRecordNotFoundError(consts.ModelDiscountNotFound, nil)
+		}
+
+		if err := dbModel.IsValidToUse(user.ID, nil); err != nil {
+			baseTx.Rollback()
+			return errors.NewBadRequestError(err.Error(), err)
+		}
+
+		if dbModel.Quantity != nil {
+			qty := *dbModel.Quantity - 1
+			dbModel.Quantity = &qty
+
+			if err := baseDB.Save(&dbModel).Error; err != nil {
+				baseTx.Rollback()
+				return errors.NewInternalServerError(consts.InternalServerError, err)
+			}
+		}
+
+		discountValue = dbModel.Value
+		discountType = dbModel.Type
+	}
 
 	var order models.Order
 
@@ -109,25 +141,76 @@ func CheckoutOrder(ctx *app.HttpContext) error {
 	}
 
 	// update the prices of order items
-	baseTx.Table("order_item oi").Where("oi.order_id=?", *order.ID).Update("price", baseDB.Model(&models.ProductItem{}).
-		Select("price").
-		Where("id= oi.product_item_id").
-		Limit(1),
+	baseTx.Table("order_item oi").Where("oi.order_id=?", *order.ID).UpdateColumns(map[string]interface{}{
+		"total_price": baseDB.Model(&models.ProductItem{}).
+			Select("price").
+			Where("id = oi.product_item_id").
+			Limit(1),
+		"price": baseDB.Table("product_item pi2").
+			Select("pi2.price - (CASE WHEN d.type = 1 THEN ((d.value / 100) * pi2.price) WHEN d.type = 0 THEN d.value  ELSE 0 END)").
+			Where("id = oi.product_item_id").
+			Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", baseDB.Table("discount d").
+				Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL").
+				Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
+				Where("d.related_user_id IS NULL").
+				Order("d.created_at ASC").
+				Select("d.type, d.value, d.product_item_id").
+				Limit(1),
+			).
+			Limit(1),
+	})
+
+	orderItemsPrice := struct {
+		Price      float64 `gorm:"price"`
+		TotalPrice float64 `gorm:"total_price"`
+	}{}
+
+	if err := baseTx.Model(&models.OrderItem{}).Select("SUM(price) as price, SUM(total_price) as total_price").
+		Where("order_id=?", *order.ID).Find(&orderItemsPrice).Error; err != nil {
+		baseTx.Rollback()
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	if discountValue > 0 {
+		switch discountType {
+		case models.DiscountTypeNumeric:
+			discountPrice = discountValue
+			orderItemsPrice.Price -= discountPrice
+		case models.DiscountTypePercent:
+			discountPrice = orderItemsPrice.Price * (discountValue / 100)
+			orderItemsPrice.Price -= discountPrice
+		}
+	}
+
+	var (
+		orderDiscountPrice *float64             = nil
+		orderDiscountType  *models.DiscountType = nil
+		orderDiscountValue *float64             = nil
 	)
+
+	if discountValue > 0 {
+		orderDiscountPrice = &discountPrice
+		orderDiscountType = &discountType
+		orderDiscountValue = &discountValue
+	}
 
 	// update order
 	if err := baseTx.Model(&models.Order{}).
 		Where("id=?", *order.ID).UpdateColumns(map[string]interface{}{
-		"status":        models.OrderStatusPaid,
-		"price":         baseTx.Model(&models.OrderItem{}).Select("SUM(price)").Where("order_id=?", *order.ID),
-		"first_name":    address.FirstName,
-		"last_name":     address.LastName,
-		"plaque":        address.Plaque,
-		"phone_number":  address.PhoneNumber,
-		"national_code": address.NationalCode,
-		"postal_code":   address.PostalCode,
-		"address":       address.Address,
-		"payed_at":      time.Now(),
+		"status":         models.OrderStatusPaid,
+		"price":          orderItemsPrice.Price,
+		"discount_price": orderDiscountPrice,
+		"discount_value": orderDiscountValue,
+		"discount_type":  orderDiscountType,
+		"total_price":    orderItemsPrice.TotalPrice,
+		"first_name":     address.FirstName,
+		"last_name":      address.LastName,
+		"plaque":         address.Plaque,
+		"phone_number":   address.PhoneNumber,
+		"national_code":  address.NationalCode,
+		"postal_code":    address.PostalCode,
+		"address":        address.Address,
+		"paid_at":        time.Now(),
 	}).Error; err != nil {
 		baseTx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, err)

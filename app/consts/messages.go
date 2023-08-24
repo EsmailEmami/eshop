@@ -71,4 +71,5 @@ const (
 	InvalidNationalCode              = "Invalid national code entered."
 	InvalidPostalCode                = "Invalid postal code entered."
 	RecoveryPasswordReqDone          = "If the provided information is accurate, an email has been dispatched to facilitate the process of password recovery for your account."
+	TimeGreaterThanNow               = "The entered date time must be greater than now."
 )

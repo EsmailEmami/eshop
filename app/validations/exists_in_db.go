@@ -3,7 +3,6 @@ package validations
 import (
 	"context"
 	"errors"
-	"reflect"
 
 	dbpkg "github.com/esmailemami/eshop/db"
 	"github.com/google/uuid"
@@ -11,15 +10,8 @@ import (
 
 func ExistsInDB(model interface{}, column string, errorMsg string) func(value interface{}) error {
 	return func(value interface{}) error {
-		if value == nil {
+		if IsNil(value) {
 			return nil
-		}
-
-		v := reflect.ValueOf(value)
-		if v.Kind() == reflect.Ptr {
-			if v.IsNil() {
-				return nil
-			}
 		}
 
 		db := dbpkg.MustGormDBConn(context.Background())
@@ -39,15 +31,8 @@ func ExistsInDB(model interface{}, column string, errorMsg string) func(value in
 
 func NotExistsInDB(model interface{}, column string, errorMsg string) func(value interface{}) error {
 	return func(value interface{}) error {
-		if value == nil {
+		if IsNil(value) {
 			return nil
-		}
-
-		v := reflect.ValueOf(value)
-		if v.Kind() == reflect.Ptr {
-			if v.IsNil() {
-				return nil
-			}
 		}
 
 		db := dbpkg.MustGormDBConn(context.Background())
@@ -67,15 +52,8 @@ func NotExistsInDB(model interface{}, column string, errorMsg string) func(value
 
 func NotExistsInDBWithID(model interface{}, column string, id uuid.UUID, errorMsg string) func(value interface{}) error {
 	return func(value interface{}) error {
-		if value == nil {
+		if IsNil(value) {
 			return nil
-		}
-
-		v := reflect.ValueOf(value)
-		if v.Kind() == reflect.Ptr {
-			if v.IsNil() {
-				return nil
-			}
 		}
 
 		db := dbpkg.MustGormDBConn(context.Background())
@@ -96,15 +74,8 @@ func NotExistsInDBWithID(model interface{}, column string, id uuid.UUID, errorMs
 
 func NotExistsInDBWithCond(model interface{}, column string, errorMsg string, condition interface{}, args ...interface{}) func(value interface{}) error {
 	return func(value interface{}) error {
-		if value == nil {
+		if IsNil(value) {
 			return nil
-		}
-
-		v := reflect.ValueOf(value)
-		if v.Kind() == reflect.Ptr {
-			if v.IsNil() {
-				return nil
-			}
 		}
 
 		db := dbpkg.MustGormDBConn(context.Background())
@@ -125,15 +96,8 @@ func NotExistsInDBWithCond(model interface{}, column string, errorMsg string, co
 
 func ExistsInDBWithCond(model interface{}, column string, errorMsg string, condition interface{}, args ...interface{}) func(value interface{}) error {
 	return func(value interface{}) error {
-		if value == nil {
+		if IsNil(value) {
 			return nil
-		}
-
-		v := reflect.ValueOf(value)
-		if v.Kind() == reflect.Ptr {
-			if v.IsNil() {
-				return nil
-			}
 		}
 
 		db := dbpkg.MustGormDBConn(context.Background())

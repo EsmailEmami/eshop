@@ -4788,6 +4788,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/discount/validate/code/{code}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Discounts"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Discount Code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ValidateDiscountOutPutModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/user/favoriteProductItem": {
             "post": {
                 "security": [
@@ -5454,6 +5503,12 @@ const docTemplate = `{
                         "name": "addressId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Discount ID",
+                        "name": "discountId",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -6500,9 +6555,6 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
-                "fileId": {
-                    "type": "string"
-                },
                 "priority": {
                     "type": "integer"
                 },
@@ -6635,9 +6687,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "type": "string"
-                },
-                "fileId": {
                     "type": "string"
                 },
                 "name": {
@@ -7281,6 +7330,15 @@ const docTemplate = `{
                 "createdById": {
                     "type": "string"
                 },
+                "discountPrice": {
+                    "type": "number"
+                },
+                "discountType": {
+                    "$ref": "#/definitions/models.DiscountType"
+                },
+                "discountValue": {
+                    "type": "number"
+                },
                 "firstName": {
                     "description": "keep the address",
                     "type": "string"
@@ -7300,7 +7358,7 @@ const docTemplate = `{
                 "nationalCode": {
                     "type": "string"
                 },
-                "payedAt": {
+                "paidAt": {
                     "type": "string"
                 },
                 "phoneNumber": {
@@ -7317,6 +7375,9 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                },
+                "totalPrice": {
+                    "type": "number"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -7361,6 +7422,9 @@ const docTemplate = `{
                 },
                 "quantity": {
                     "type": "integer"
+                },
+                "totalPrice": {
+                    "type": "number"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -8565,6 +8629,23 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "models.ValidateDiscountOutPutModel": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                },
+                "type": {
+                    "$ref": "#/definitions/models.DiscountType"
+                },
+                "value": {
+                    "type": "number"
                 }
             }
         },

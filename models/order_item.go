@@ -11,6 +11,7 @@ type OrderItem struct {
 	ProductItem   *ProductItem `gorm:"foreignKey:product_item_id;references:id" json:"productItem"`
 	Quantity      int          `gorm:"column:quantity"                          json:"quantity"`
 	Price         float64      `gorm:"column:price"                             json:"price"`
+	TotalPrice    float64      `gorm:"column:total_price"                       json:"totalPrice"`
 }
 
 func (OrderItem) TableName() string {

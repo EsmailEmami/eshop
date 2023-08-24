@@ -3,6 +3,7 @@ package validations
 import (
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/esmailemami/eshop/app/consts"
 )
@@ -26,4 +27,19 @@ func TimeValidator(value interface{}) error {
 	}
 
 	return nil
+}
+
+func TimeGreaterThanNow() func(value interface{}) error {
+	return func(value interface{}) error {
+		if IsNil(value) {
+			return nil
+		}
+		valTime := Value(value).(time.Time)
+
+		if valTime.Before(time.Now()) {
+			return errors.New(consts.TimeGreaterThanNow)
+		}
+
+		return nil
+	}
 }

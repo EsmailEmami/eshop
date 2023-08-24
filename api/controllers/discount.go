@@ -202,3 +202,43 @@ func DeleteDiscount(ctx *app.HttpContext) error {
 
 	return ctx.QuickResponse(consts.Deleted, http.StatusOK)
 }
+
+// Validate Discount godoc
+// @Tags Discounts
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param code  path  string  true  "Discount Code"
+// @Success 200 {object} appmodels.ValidateDiscountOutPutModel
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /user/discount/validate/code/{code} [get]
+func ValidateDiscountByCode(ctx *app.HttpContext) error {
+	code := ctx.GetPathParam("code")
+
+	user, err := ctx.GetUser()
+	if err != nil {
+		return errors.NewUnauthorizedError(consts.UnauthorizedError, err)
+	}
+
+	baseDB := db.MustGormDBConn(ctx)
+
+	var dbModel models.Discount
+
+	if baseDB.First(&dbModel, "code=?", code).Error != nil {
+		return errors.NewRecordNotFoundError(consts.ModelDiscountNotFound, nil)
+	}
+
+	if err := dbModel.IsValidToUse(user.ID, nil); err != nil {
+		return ctx.QuickDBResponse(err.Error(), appmodels.ValidateDiscountOutPutModel{
+			Success: false,
+		}, http.StatusOK)
+	}
+
+	return ctx.QuickDBResponse(consts.OperationDone, appmodels.ValidateDiscountOutPutModel{
+		Success: true,
+		ID:      dbModel.ID,
+		Value:   &dbModel.Value,
+		Type:    &dbModel.Type,
+	}, http.StatusOK)
+}

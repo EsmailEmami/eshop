@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"github.com/esmailemami/eshop/app/consts"
@@ -28,13 +29,42 @@ func (model DiscountReqModel) ValidateCreate() error {
 		),
 		validation.Field(&model.ProductItemID,
 			validation.By(validations.ExistsInDB(&dbmodels.ProductItem{}, "id", consts.ModelProductItemNotFound)),
+			validation.By(func(value interface{}) error {
+				if validations.IsNil(value) {
+					return nil
+				}
+
+				if !validations.IsNil(model.Code) || !validations.IsNil(model.RelatedUserID) {
+					return errors.New("discount cannot have a code or user for product item")
+				}
+
+				return nil
+			}),
 		),
 		validation.Field(&model.Code,
 			validation.By(validations.Code()),
 			validation.By(validations.NotExistsInDB(&dbmodels.Discount{}, "code", consts.ExistedCode)),
 		),
+		validation.Field(&model.ExpiresIn,
+			validation.By(validations.TimeGreaterThanNow()),
+		),
 		validation.Field(&model.RelatedUserID,
 			validation.By(validations.ExistsInDB(&dbmodels.User{}, "id", consts.ModelUserNotFound)),
+			validation.By(func(value interface{}) error {
+				if validations.IsNil(value) {
+					return nil
+				}
+
+				if validations.IsNil(model.Code) {
+					return errors.New("discount must have a code for specific user")
+				}
+
+				if !validations.IsNil(model.ProductItemID) {
+					return errors.New("discount cannot have a product item for specific user")
+				}
+
+				return nil
+			}),
 		),
 	)
 }
@@ -47,13 +77,42 @@ func (model DiscountReqModel) ValidateUpdate(id uuid.UUID) error {
 		),
 		validation.Field(&model.ProductItemID,
 			validation.By(validations.ExistsInDB(&dbmodels.ProductItem{}, "id", consts.ModelProductItemNotFound)),
+			validation.By(func(value interface{}) error {
+				if validations.IsNil(value) {
+					return nil
+				}
+
+				if !validations.IsNil(model.Code) || !validations.IsNil(model.RelatedUserID) {
+					return errors.New("discount cannot have a code or user for product item")
+				}
+
+				return nil
+			}),
 		),
 		validation.Field(&model.Code,
 			validation.By(validations.Code()),
 			validation.By(validations.NotExistsInDBWithID(&dbmodels.Discount{}, "code", id, consts.ExistedCode)),
 		),
+		validation.Field(&model.ExpiresIn,
+			validation.By(validations.TimeGreaterThanNow()),
+		),
 		validation.Field(&model.RelatedUserID,
 			validation.By(validations.ExistsInDB(&dbmodels.User{}, "id", consts.ModelUserNotFound)),
+			validation.By(func(value interface{}) error {
+				if validations.IsNil(value) {
+					return nil
+				}
+
+				if validations.IsNil(model.Code) {
+					return errors.New("discount must have a code for specific user")
+				}
+
+				if !validations.IsNil(model.ProductItemID) {
+					return errors.New("discount cannot have a product item for specific user")
+				}
+
+				return nil
+			}),
 		),
 	)
 }
@@ -99,4 +158,11 @@ type DiscountAdminOutPutModel struct {
 	CreatorUsername     *string               `gorm:"column:creator_user_username"                            json:"creatorUsername,omitempty"`
 	RelatedUserID       *uuid.UUID            `gorm:"column:related_user_id"                                  json:"relatedUserId,omitempty"`
 	RelatedUserUsername *string               `gorm:"column:related_user_username"                            json:"relatedUserUsername,omitempty"`
+}
+
+type ValidateDiscountOutPutModel struct {
+	Success bool                   `json:"success"`
+	ID      *uuid.UUID             `json:"id"`
+	Type    *dbmodels.DiscountType `json:"type,omitempty"`
+	Value   *float64               `json:"value,omitempty"`
 }

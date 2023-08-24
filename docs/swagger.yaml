@@ -212,8 +212,6 @@ definitions:
         $ref: '#/definitions/models.AppPicType'
       description:
         type: string
-      fileId:
-        type: string
       priority:
         type: integer
       title:
@@ -301,8 +299,6 @@ definitions:
   models.BrandReqModel:
     properties:
       code:
-        type: string
-      fileId:
         type: string
       name:
         type: string
@@ -729,6 +725,12 @@ definitions:
         $ref: '#/definitions/models.User'
       createdById:
         type: string
+      discountPrice:
+        type: number
+      discountType:
+        $ref: '#/definitions/models.DiscountType'
+      discountValue:
+        type: number
       firstName:
         description: keep the address
         type: string
@@ -742,7 +744,7 @@ definitions:
         type: string
       nationalCode:
         type: string
-      payedAt:
+      paidAt:
         type: string
       phoneNumber:
         type: string
@@ -754,6 +756,8 @@ definitions:
         type: number
       status:
         type: integer
+      totalPrice:
+        type: number
       updatedAt:
         type: string
       updatedBy:
@@ -783,6 +787,8 @@ definitions:
         type: string
       quantity:
         type: integer
+      totalPrice:
+        type: number
       updatedAt:
         type: string
       updatedBy:
@@ -1573,6 +1579,17 @@ definitions:
         type: string
       username:
         type: string
+    type: object
+  models.ValidateDiscountOutPutModel:
+    properties:
+      id:
+        type: string
+      success:
+        type: boolean
+      type:
+        $ref: '#/definitions/models.DiscountType'
+      value:
+        type: number
     type: object
   parameter.ListResponse-helpers_KeyValueResponse-uuid_UUID-string:
     properties:
@@ -4932,6 +4949,37 @@ paths:
       - Bearer: []
       tags:
       - Comments
+  /user/discount/validate/code/{code}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Discount Code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ValidateDiscountOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Discounts
   /user/favoriteProductItem:
     post:
       consumes:
@@ -5355,6 +5403,10 @@ paths:
         in: path
         name: addressId
         required: true
+        type: string
+      - description: Discount ID
+        in: query
+        name: discountId
         type: string
       produces:
       - application/json
