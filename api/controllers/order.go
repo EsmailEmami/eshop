@@ -253,7 +253,12 @@ func GetAdminOrders(ctx *app.HttpContext) error {
 			CASE
 				WHEN o.status > 0 THEN o.price
 				ELSE (SELECT SUM(price) FROM order_item oi WHERE oi.order_id = o.id)
-			END AS price
+			END AS price,
+			CASE
+				WHEN o.status > 0 THEN o.total_price
+				ELSE (SELECT SUM(total_price) FROM order_item oi WHERE oi.order_id = o.id)
+			END AS total_price,
+			o.paid_at, o.discount_price,o.discount_value,o.discount_type
 		`).
 		Execute(baseDB)
 

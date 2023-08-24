@@ -61,7 +61,7 @@ func GetUserOrders(ctx *app.HttpContext) error {
 	}
 
 	baseDB := db.MustGormDBConn(ctx)
-	orderDB := baseDB.Model(&models.Order{}).Where("created_by_id=?", *user.ID)
+	orderDB := baseDB.Model(&models.Order{}).Where("created_by_id=? AND status > 0", *user.ID)
 
 	orderStatus, ok := ctx.GetParam("status")
 	if ok {
@@ -127,7 +127,7 @@ func GetAdminUserOrders(ctx *app.HttpContext) error {
 	}
 
 	baseDB := db.MustGormDBConn(ctx)
-	orderDB := baseDB.Model(&models.Order{}).Where("created_by_id=?", userID)
+	orderDB := baseDB.Model(&models.Order{}).Where("created_by_id=? AND status > 0", userID)
 
 	orderStatus, ok := ctx.GetParam("status")
 	if ok {

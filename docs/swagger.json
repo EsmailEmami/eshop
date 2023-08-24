@@ -6435,7 +6435,19 @@
                 "createdAt": {
                     "type": "string"
                 },
+                "discountPrice": {
+                    "type": "number"
+                },
+                "discountType": {
+                    "$ref": "#/definitions/models.DiscountType"
+                },
+                "discountValue": {
+                    "type": "number"
+                },
                 "orderId": {
+                    "type": "string"
+                },
+                "paidAt": {
                     "type": "string"
                 },
                 "price": {
@@ -6443,6 +6455,9 @@
                 },
                 "status": {
                     "type": "integer"
+                },
+                "totalPrice": {
+                    "type": "number"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -8536,6 +8551,15 @@
                 "createdAt": {
                     "type": "string"
                 },
+                "discountPrice": {
+                    "type": "number"
+                },
+                "discountType": {
+                    "$ref": "#/definitions/models.DiscountType"
+                },
+                "discountValue": {
+                    "type": "number"
+                },
                 "fileUrls": {
                     "type": "array",
                     "items": {
@@ -8545,11 +8569,17 @@
                 "id": {
                     "type": "string"
                 },
+                "paidAt": {
+                    "type": "string"
+                },
                 "price": {
                     "type": "number"
                 },
                 "status": {
                     "type": "integer"
+                },
+                "totalPrice": {
+                    "type": "number"
                 }
             }
         },

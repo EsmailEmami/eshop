@@ -6447,7 +6447,19 @@ const docTemplate = `{
                 "createdAt": {
                     "type": "string"
                 },
+                "discountPrice": {
+                    "type": "number"
+                },
+                "discountType": {
+                    "$ref": "#/definitions/models.DiscountType"
+                },
+                "discountValue": {
+                    "type": "number"
+                },
                 "orderId": {
+                    "type": "string"
+                },
+                "paidAt": {
                     "type": "string"
                 },
                 "price": {
@@ -6455,6 +6467,9 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                },
+                "totalPrice": {
+                    "type": "number"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -8548,6 +8563,15 @@ const docTemplate = `{
                 "createdAt": {
                     "type": "string"
                 },
+                "discountPrice": {
+                    "type": "number"
+                },
+                "discountType": {
+                    "$ref": "#/definitions/models.DiscountType"
+                },
+                "discountValue": {
+                    "type": "number"
+                },
                 "fileUrls": {
                     "type": "array",
                     "items": {
@@ -8557,11 +8581,17 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "paidAt": {
+                    "type": "string"
+                },
                 "price": {
                     "type": "number"
                 },
                 "status": {
                     "type": "integer"
+                },
+                "totalPrice": {
+                    "type": "number"
                 }
             }
         },

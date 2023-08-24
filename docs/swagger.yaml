@@ -141,12 +141,22 @@ definitions:
     properties:
       createdAt:
         type: string
+      discountPrice:
+        type: number
+      discountType:
+        $ref: '#/definitions/models.DiscountType'
+      discountValue:
+        type: number
       orderId:
+        type: string
+      paidAt:
         type: string
       price:
         type: number
       status:
         type: integer
+      totalPrice:
+        type: number
       updatedAt:
         type: string
       userId:
@@ -1525,16 +1535,26 @@ definitions:
         type: string
       createdAt:
         type: string
+      discountPrice:
+        type: number
+      discountType:
+        $ref: '#/definitions/models.DiscountType'
+      discountValue:
+        type: number
       fileUrls:
         items:
           type: string
         type: array
       id:
         type: string
+      paidAt:
+        type: string
       price:
         type: number
       status:
         type: integer
+      totalPrice:
+        type: number
     type: object
   models.UserOutPutModel:
     properties:

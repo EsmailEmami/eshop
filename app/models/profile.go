@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/esmailemami/eshop/models"
+	dbmodels "github.com/esmailemami/eshop/models"
 	"github.com/google/uuid"
 )
 
@@ -17,10 +17,15 @@ type UserDashboardInfoOutPutModel struct {
 }
 
 type UserOrderOutPutModel struct {
-	ID        *uuid.UUID         `gorm:"column:id"                         json:"id"`
-	CreatedAt time.Time          `gorm:"column:created_at"                 json:"createdAt"`
-	Status    models.OrderStatus `gorm:"column:status"                     json:"status"`
-	Price     float64            `gorm:"column:price"                      json:"price"`
-	Code      string             `gorm:"column:code"                       json:"code"`
-	FileUrls  []string           `gorm:"-"                                 json:"fileUrls"`
+	ID            *uuid.UUID             `gorm:"column:id"                         json:"id"`
+	CreatedAt     time.Time              `gorm:"column:created_at"                 json:"createdAt"`
+	Status        dbmodels.OrderStatus   `gorm:"column:status"                     json:"status"`
+	Price         float64                `gorm:"column:price"                      json:"price"`
+	Code          string                 `gorm:"column:code"                       json:"code"`
+	PaidAt        *time.Time             `gorm:"column:paid_at"                    json:"paidAt"`
+	TotalPrice    float64                `gorm:"column:total_price"                json:"totalPrice"`
+	DiscountPrice *float64               `gorm:"column:discount_price"             json:"discountPrice,omitempty"`
+	DiscountValue *float64               `gorm:"column:discount_value"             json:"discountValue,omitempty"`
+	DiscountType  *dbmodels.DiscountType `gorm:"column:discount_type"              json:"discountType,omitempty"`
+	FileUrls      []string               `gorm:"-"                                 json:"fileUrls"`
 }
