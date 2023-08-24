@@ -1,16 +1,13 @@
 package models
 
 import (
-	"errors"
 	"time"
 
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/validations"
-	dbpkg "github.com/esmailemami/eshop/db"
 	dbmodels "github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type ProductFeatureCategoryReqModel struct {
@@ -18,46 +15,34 @@ type ProductFeatureCategoryReqModel struct {
 	Code string `json:"code"`
 }
 
-func (model ProductFeatureCategoryReqModel) ValidateCreate(db *gorm.DB) error {
+func (model ProductFeatureCategoryReqModel) ValidateCreate() error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Name,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.ClearText()),
-			validation.By(func(value interface{}) error {
-
-				if dbpkg.Exists(db, &dbmodels.ProductFeatureCategory{}, "name=?", value) {
-					return errors.New(consts.ExistedTitle)
-				}
-
-				return nil
-			}),
+			validation.By(validations.NotExistsInDB(&dbmodels.ProductFeatureCategory{}, "name", consts.ExistedTitle)),
 		),
 		validation.Field(&model.Code,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.Code()),
-			validation.By(func(value interface{}) error {
-
-				if dbpkg.Exists(db, &dbmodels.ProductFeatureCategory{}, "code=?", value) {
-					return errors.New(consts.ExistedCode)
-				}
-
-				return nil
-			}),
+			validation.By(validations.NotExistsInDB(&dbmodels.ProductFeatureCategory{}, "code", consts.ExistedCode)),
 		),
 	)
 }
 
-func (model ProductFeatureCategoryReqModel) ValidateUpdate() error {
+func (model ProductFeatureCategoryReqModel) ValidateUpdate(id uuid.UUID) error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Name,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.ClearText()),
+			validation.By(validations.NotExistsInDBWithID(&dbmodels.ProductFeatureCategory{}, "name", id, consts.ExistedTitle)),
 		),
 		validation.Field(&model.Code,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.Code()),
+			validation.By(validations.NotExistsInDBWithID(&dbmodels.ProductFeatureCategory{}, "code", id, consts.ExistedCode)),
 		),
 	)
 }

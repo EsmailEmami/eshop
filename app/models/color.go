@@ -1,16 +1,13 @@
 package models
 
 import (
-	"errors"
 	"time"
 
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/validations"
-	dbpkg "github.com/esmailemami/eshop/db"
 	dbmodels "github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type ColorReqModel struct {
@@ -19,7 +16,7 @@ type ColorReqModel struct {
 	ColorHex string `json:"colorHex"`
 }
 
-func (model ColorReqModel) ValidateCreate(db *gorm.DB) error {
+func (model ColorReqModel) ValidateCreate() error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Name,
@@ -33,19 +30,12 @@ func (model ColorReqModel) ValidateCreate(db *gorm.DB) error {
 		validation.Field(&model.Code,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.Code()),
-			validation.By(func(value interface{}) error {
-
-				if dbpkg.Exists(db, &dbmodels.Color{}, "code=?", value) {
-					return errors.New(consts.ExistedCode)
-				}
-
-				return nil
-			}),
+			validation.By(validations.NotExistsInDB(&dbmodels.Color{}, "code", consts.ExistedCode)),
 		),
 	)
 }
 
-func (model ColorReqModel) ValidateUpdate() error {
+func (model ColorReqModel) ValidateUpdate(id uuid.UUID) error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Name,
@@ -59,6 +49,7 @@ func (model ColorReqModel) ValidateUpdate() error {
 		validation.Field(&model.Code,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.Code()),
+			validation.By(validations.NotExistsInDBWithID(&dbmodels.Color{}, "code", id, consts.ExistedCode)),
 		),
 	)
 }

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"strings"
 	"time"
 
 	"github.com/esmailemami/eshop/app/consts"
@@ -9,20 +8,19 @@ import (
 	dbmodels "github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type AddressReqModel struct {
-	FirstName    string `json:"firstName"`
-	LastName     string `json:"lastName"`
-	Plaque       int    `json:"plaque"`
-	PhoneNumber  string `json:"phoneNumber"`
-	NationalCode string `json:"nationalCode"`
-	Address      string `json:"address"`
-	PostalCode   string `json:"postalCode"`
+	FirstName    string  `json:"firstName"`
+	LastName     string  `json:"lastName"`
+	Plaque       int     `json:"plaque"`
+	PhoneNumber  string  `json:"phoneNumber"`
+	NationalCode *string `json:"nationalCode"`
+	Address      string  `json:"address"`
+	PostalCode   string  `json:"postalCode"`
 }
 
-func (model AddressReqModel) ValidateCreate(db *gorm.DB) error {
+func (model AddressReqModel) ValidateCreate() error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.FirstName,
@@ -38,14 +36,7 @@ func (model AddressReqModel) ValidateCreate(db *gorm.DB) error {
 			validation.By(validations.IsValidMobileNumber()),
 		),
 		validation.Field(&model.NationalCode,
-			validation.By(func(value interface{}) error {
-				if value != nil && strings.TrimSpace(value.(string)) != "" {
-					fn := validations.IsValidNationalCode()
-					return fn(value)
-				}
-
-				return nil
-			}),
+			validation.By(validations.IsValidNationalCode()),
 		),
 		validation.Field(&model.LastName,
 			validation.Required.Error(consts.Required),
@@ -75,14 +66,7 @@ func (model AddressReqModel) ValidateUpdate() error {
 			validation.By(validations.IsValidMobileNumber()),
 		),
 		validation.Field(&model.NationalCode,
-			validation.By(func(value interface{}) error {
-				if value != nil && strings.TrimSpace(value.(string)) != "" {
-					fn := validations.IsValidNationalCode()
-					return fn(value)
-				}
-
-				return nil
-			}),
+			validation.By(validations.IsValidNationalCode()),
 		),
 		validation.Field(&model.LastName,
 			validation.Required.Error(consts.Required),

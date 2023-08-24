@@ -1,13 +1,11 @@
 package models
 
 import (
-	"context"
 	"errors"
 	"time"
 
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/validations"
-	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
@@ -64,18 +62,7 @@ func (model RegisterInputModel) Validate() error {
 			&model.Username,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.UserName()),
-			validation.By(func(value interface{}) error {
-				if db.Exists(
-					db.MustGormDBConn(context.Background()),
-					&models.User{},
-					"username = ?",
-					value,
-				) {
-					return errors.New(consts.UsernameAlreadyExists)
-				}
-
-				return nil
-			}),
+			validation.By(validations.NotExistsInDB(&models.User{}, "username", consts.UsernameAlreadyExists)),
 		),
 		validation.Field(
 			&model.Password,

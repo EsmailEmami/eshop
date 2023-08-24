@@ -1,14 +1,11 @@
 package models
 
 import (
-	"errors"
-
 	"github.com/esmailemami/eshop/app/consts"
-	dbpkg "github.com/esmailemami/eshop/db"
+	"github.com/esmailemami/eshop/app/validations"
 	dbmodels "github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type OrderItemReqModel struct {
@@ -18,7 +15,7 @@ type OrderItemReqModel struct {
 	Price         float64   `json:"-"`
 }
 
-func (model OrderItemReqModel) ValidateCreate(db *gorm.DB) error {
+func (model OrderItemReqModel) ValidateCreate() error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Quantity,
@@ -26,19 +23,12 @@ func (model OrderItemReqModel) ValidateCreate(db *gorm.DB) error {
 		),
 		validation.Field(&model.ProductItemID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-
-				if !dbpkg.Exists(db, &dbmodels.ProductItem{}, "id=?", value) {
-					return errors.New(consts.ModelProductNotFound)
-				}
-
-				return nil
-			}),
+			validation.By(validations.ExistsInDB(&dbmodels.ProductItem{}, "id", consts.ModelProductItemNotFound)),
 		),
 	)
 }
 
-func (model OrderItemReqModel) ValidateUpdate(db *gorm.DB) error {
+func (model OrderItemReqModel) ValidateUpdate() error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Quantity,
@@ -46,14 +36,7 @@ func (model OrderItemReqModel) ValidateUpdate(db *gorm.DB) error {
 		),
 		validation.Field(&model.ProductItemID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-
-				if !dbpkg.Exists(db, &dbmodels.ProductItem{}, "id=?", value) {
-					return errors.New(consts.ModelProductNotFound)
-				}
-
-				return nil
-			}),
+			validation.By(validations.ExistsInDB(&dbmodels.ProductItem{}, "id", consts.ModelProductItemNotFound)),
 		),
 	)
 }

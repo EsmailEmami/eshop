@@ -1,15 +1,12 @@
 package models
 
 import (
-	"errors"
-
 	"github.com/esmailemami/eshop/app/consts"
-	dbpkg "github.com/esmailemami/eshop/db"
+	"github.com/esmailemami/eshop/app/validations"
 	"github.com/esmailemami/eshop/models"
 	dbmodels "github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type ProductItemReqModel struct {
@@ -21,7 +18,7 @@ type ProductItemReqModel struct {
 	IsMainItem bool                   `json:"isMainItem"`
 }
 
-func (model ProductItemReqModel) ValidateCreate(db *gorm.DB) error {
+func (model ProductItemReqModel) ValidateCreate() error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Price,
@@ -30,28 +27,16 @@ func (model ProductItemReqModel) ValidateCreate(db *gorm.DB) error {
 			validation.Required.Error(consts.Required)),
 		validation.Field(&model.ColorID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-				if !dbpkg.Exists(db, &dbmodels.Color{}, "id=?", value) {
-					return errors.New(consts.ModelColorNotFound)
-				}
-
-				return nil
-			}),
+			validation.By(validations.ExistsInDB(&dbmodels.Color{}, "id", consts.ModelColorNotFound)),
 		),
 		validation.Field(&model.ProductID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-				if !dbpkg.Exists(db, &dbmodels.Product{}, "id=?", value) {
-					return errors.New(consts.ModelProductNotFound)
-				}
-
-				return nil
-			}),
+			validation.By(validations.ExistsInDB(&dbmodels.Product{}, "id", consts.ModelProductNotFound)),
 		),
 	)
 }
 
-func (model ProductItemReqModel) ValidateUpdate(db *gorm.DB) error {
+func (model ProductItemReqModel) ValidateUpdate() error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Price,
@@ -60,23 +45,11 @@ func (model ProductItemReqModel) ValidateUpdate(db *gorm.DB) error {
 			validation.Required.Error(consts.Required)),
 		validation.Field(&model.ColorID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-				if !dbpkg.Exists(db, &dbmodels.Color{}, "id=?", value) {
-					return errors.New(consts.ModelColorNotFound)
-				}
-
-				return nil
-			}),
+			validation.By(validations.ExistsInDB(&dbmodels.Color{}, "id", consts.ModelColorNotFound)),
 		),
 		validation.Field(&model.ProductID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-				if !dbpkg.Exists(db, &dbmodels.Product{}, "id=?", value) {
-					return errors.New(consts.ModelProductNotFound)
-				}
-
-				return nil
-			}),
+			validation.By(validations.ExistsInDB(&dbmodels.Product{}, "id", consts.ModelProductNotFound)),
 		),
 	)
 }

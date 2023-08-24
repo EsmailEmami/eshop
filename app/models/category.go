@@ -1,16 +1,13 @@
 package models
 
 import (
-	"errors"
 	"time"
 
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/validations"
-	dbpkg "github.com/esmailemami/eshop/db"
 	dbmodels "github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type CategoryReqModel struct {
@@ -18,7 +15,7 @@ type CategoryReqModel struct {
 	Code string `json:"code"`
 }
 
-func (model CategoryReqModel) ValidateCreate(db *gorm.DB) error {
+func (model CategoryReqModel) ValidateCreate() error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Name,
@@ -28,19 +25,12 @@ func (model CategoryReqModel) ValidateCreate(db *gorm.DB) error {
 		validation.Field(&model.Code,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.Code()),
-			validation.By(func(value interface{}) error {
-
-				if dbpkg.Exists(db, &dbmodels.Category{}, "code=?", value) {
-					return errors.New(consts.ExistedCode)
-				}
-
-				return nil
-			}),
+			validation.By(validations.NotExistsInDB(&dbmodels.Category{}, "code", consts.ExistedCode)),
 		),
 	)
 }
 
-func (model CategoryReqModel) ValidateUpdate() error {
+func (model CategoryReqModel) ValidateUpdate(id uuid.UUID) error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Name,
@@ -50,6 +40,7 @@ func (model CategoryReqModel) ValidateUpdate() error {
 		validation.Field(&model.Code,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.Code()),
+			validation.By(validations.NotExistsInDBWithID(&dbmodels.Category{}, "code", id, consts.ExistedCode)),
 		),
 	)
 }

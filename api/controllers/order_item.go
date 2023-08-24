@@ -39,7 +39,7 @@ func CreateOrderItem(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 	baseTx := baseDB.Begin()
 
-	err = inputModel.ValidateCreate(baseDB)
+	err = inputModel.ValidateCreate()
 	if err != nil {
 		return errors.NewValidationError(consts.ValidationError, err)
 	}

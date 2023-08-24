@@ -111,7 +111,7 @@ func CreateAddress(ctx *app.HttpContext) error {
 	}
 	baseDB := db.MustGormDBConn(ctx)
 
-	err = inputModel.ValidateCreate(baseDB)
+	err = inputModel.ValidateCreate()
 	if err != nil {
 		return errors.NewValidationError(consts.ValidationError, err)
 	}

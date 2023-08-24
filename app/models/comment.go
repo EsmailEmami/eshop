@@ -1,17 +1,14 @@
 package models
 
 import (
-	"errors"
 	"time"
 
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/validations"
-	dbpkg "github.com/esmailemami/eshop/db"
 	dbmodels "github.com/esmailemami/eshop/models"
 	datatypes "github.com/esmailemami/eshop/models/data_types"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type CommentReqModel struct {
@@ -22,7 +19,7 @@ type CommentReqModel struct {
 	ProductID      uuid.UUID             `json:"productId"`
 }
 
-func (model CommentReqModel) ValidateCreate(db *gorm.DB) error {
+func (model CommentReqModel) ValidateCreate() error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Text,
@@ -34,17 +31,12 @@ func (model CommentReqModel) ValidateCreate(db *gorm.DB) error {
 		),
 		validation.Field(&model.ProductID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-				if !dbpkg.Exists(db, &dbmodels.Product{}, "id=?", value) {
-					return errors.New(consts.ModelProductNotFound)
-				}
-
-				return nil
-			})),
+			validation.By(validations.ExistsInDB(&dbmodels.Product{}, "id", consts.ModelProductNotFound)),
+		),
 	)
 }
 
-func (model CommentReqModel) ValidateUpdate(db *gorm.DB) error {
+func (model CommentReqModel) ValidateUpdate() error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Text,
@@ -57,13 +49,8 @@ func (model CommentReqModel) ValidateUpdate(db *gorm.DB) error {
 		),
 		validation.Field(&model.ProductID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-				if !dbpkg.Exists(db, &dbmodels.Product{}, "id=?", value) {
-					return errors.New(consts.ModelProductNotFound)
-				}
-
-				return nil
-			})),
+			validation.By(validations.ExistsInDB(&dbmodels.Product{}, "id", consts.ModelProductNotFound)),
+		),
 	)
 }
 

@@ -1,28 +1,25 @@
 package models
 
 import (
-	"errors"
 	"time"
 
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/validations"
-	dbpkg "github.com/esmailemami/eshop/db"
+	"github.com/esmailemami/eshop/models"
 	dbmodels "github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type AppPicReqModel struct {
 	Title       string              `json:"title"`
 	Description string              `json:"description"`
-	FileID      *uuid.UUID          `json:"fileId,omitempty"`
 	Priority    int                 `json:"priority"`
 	AppPicType  dbmodels.AppPicType `json:"appPicType"`
 	Url         string              `json:"url"`
 }
 
-func (model AppPicReqModel) ValidateCreate(db *gorm.DB) error {
+func (model AppPicReqModel) ValidateCreate() error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Title,
@@ -38,22 +35,13 @@ func (model AppPicReqModel) ValidateCreate(db *gorm.DB) error {
 		),
 		validation.Field(&model.Priority,
 			validation.Required.Error(consts.Required),
-		),
-		validation.Field(&model.FileID,
-			validation.By(func(value interface{}) error {
-				if value.(*uuid.UUID) != nil {
-					if !dbpkg.Exists(db, &dbmodels.File{}, "id", value) {
-						return errors.New(consts.ModelFileNotFound)
-					}
-				}
-
-				return nil
-			}),
+			validation.By(validations.NotExistsInDBWithCond(&models.AppPic{}, "priority", consts.OrderAlreadyRegistered,
+				"app_pic_type=?", model.AppPicType)),
 		),
 	)
 }
 
-func (model AppPicReqModel) ValidateUpdate(db *gorm.DB) error {
+func (model AppPicReqModel) ValidateUpdate(id uuid.UUID) error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Title,
@@ -69,16 +57,8 @@ func (model AppPicReqModel) ValidateUpdate(db *gorm.DB) error {
 		),
 		validation.Field(&model.Priority,
 			validation.Required.Error(consts.Required),
-		),
-		validation.Field(&model.FileID,
-			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-				if !dbpkg.Exists(db, &dbmodels.File{}, "id", value) {
-					return errors.New(consts.ModelFileNotFound)
-				}
-
-				return nil
-			}),
+			validation.By(validations.NotExistsInDBWithCond(&models.AppPic{}, "priority", consts.OrderAlreadyRegistered,
+				"id != ? AND app_pic_type=?", id, model.AppPicType)),
 		),
 	)
 }
@@ -100,7 +80,6 @@ func (model *AppPicReqModel) ToDBModel() *dbmodels.AppPic {
 func (model *AppPicReqModel) MergeWithDBData(dbmodel *dbmodels.AppPic) {
 	dbmodel.Title = model.Title
 	dbmodel.Description = model.Description
-	dbmodel.FileID = *model.FileID
 	dbmodel.Priority = model.Priority
 	dbmodel.AppPicType = model.AppPicType
 	dbmodel.Url = model.Url

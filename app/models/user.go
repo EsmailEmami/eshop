@@ -5,7 +5,6 @@ import (
 
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/validations"
-	"github.com/esmailemami/eshop/models"
 	dbmodels "github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
@@ -28,23 +27,24 @@ func (model UserReqModel) ValidateCreate() error {
 		validation.Field(&model.Username,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.UserName()),
-			validation.By(validations.NotExistsInDB(&models.User{}, "username", consts.UsernameAlreadyExists)),
+			validation.By(validations.NotExistsInDB(&dbmodels.User{}, "username", consts.UsernameAlreadyExists)),
 		),
 		validation.Field(&model.RoleID,
-			validation.By(validations.ExistsInDB(&models.Role{}, "id", consts.ModelRoleNotFound)),
+			validation.By(validations.ExistsInDB(&dbmodels.Role{}, "id", consts.ModelRoleNotFound)),
 		),
 	)
 }
 
-func (model UserReqModel) ValidateUpdate() error {
+func (model UserReqModel) ValidateUpdate(id uuid.UUID) error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Username,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.UserName()),
+			validation.By(validations.NotExistsInDBWithID(&dbmodels.User{}, "username", id, consts.UsernameAlreadyExists)),
 		),
 		validation.Field(&model.RoleID,
-			validation.By(validations.ExistsInDB(&models.Role{}, "id", consts.ModelRoleNotFound)),
+			validation.By(validations.ExistsInDB(&dbmodels.Role{}, "id", consts.ModelRoleNotFound)),
 		),
 	)
 }

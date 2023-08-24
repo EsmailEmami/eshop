@@ -115,7 +115,7 @@ func CreateProductFeatureValue(ctx *app.HttpContext) error {
 	dbItems := []models.ProductFeatureValue{}
 	for _, inputModel := range inputModels {
 		inputModel.ProductID = productId
-		err = inputModel.ValidateCreate(baseDB)
+		err = inputModel.ValidateCreate()
 		if err != nil {
 			baseTx.Rollback()
 			return errors.NewValidationError(consts.ValidationError, err)
@@ -124,7 +124,7 @@ func CreateProductFeatureValue(ctx *app.HttpContext) error {
 		dbItems = append(dbItems, *inputModel.ToDBModel())
 	}
 
-	if err := baseTx.Debug().CreateInBatches(dbItems, len(dbItems)).Error; err != nil {
+	if err := baseTx.CreateInBatches(dbItems, len(dbItems)).Error; err != nil {
 		baseTx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}

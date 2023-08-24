@@ -179,7 +179,7 @@ func CreateProductItem(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 	baseTx := baseDB.Begin()
 
-	err = inputModel.ValidateCreate(baseDB)
+	err = inputModel.ValidateCreate()
 	if err != nil {
 		return errors.NewValidationError(consts.ValidationError, err)
 	}
@@ -237,15 +237,15 @@ func EditProductItem(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 	baseTx := baseDB.Begin()
 
-	err = inputModel.ValidateUpdate(baseDB)
-	if err != nil {
-		return errors.NewValidationError(consts.ValidationError, err)
-	}
-
 	var dbModel models.ProductItem
 
 	if baseDB.First(&dbModel, id).Error != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
+	}
+
+	err = inputModel.ValidateUpdate()
+	if err != nil {
+		return errors.NewValidationError(consts.ValidationError, err)
 	}
 
 	inputModel.MergeWithDBData(&dbModel)

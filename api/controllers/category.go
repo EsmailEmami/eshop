@@ -119,7 +119,7 @@ func CreateCategory(ctx *app.HttpContext) error {
 	}
 	baseDB := db.MustGormDBConn(ctx)
 
-	err = inputModel.ValidateCreate(baseDB)
+	err = inputModel.ValidateCreate()
 	if err != nil {
 		return errors.NewValidationError(consts.ValidationError, err)
 	}
@@ -156,11 +156,6 @@ func EditCategory(ctx *app.HttpContext) error {
 		return errors.NewBadRequestError(consts.BadRequest, err)
 	}
 
-	err = inputModel.ValidateUpdate()
-	if err != nil {
-		return errors.NewValidationError(consts.ValidationError, err)
-	}
-
 	baseDB := db.MustGormDBConn(ctx)
 
 	var dbModel models.Category
@@ -169,8 +164,9 @@ func EditCategory(ctx *app.HttpContext) error {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	if db.Exists(baseDB, &models.Category{}, "code = ? and id != ?", inputModel.Code, id) {
-		return errors.NewValidationError(consts.ExistedCode, nil)
+	err = inputModel.ValidateUpdate(id)
+	if err != nil {
+		return errors.NewValidationError(consts.ValidationError, err)
 	}
 
 	inputModel.MergeWithDBData(&dbModel)

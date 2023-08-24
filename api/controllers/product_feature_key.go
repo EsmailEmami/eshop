@@ -91,7 +91,7 @@ func CreateProductFeatureKey(ctx *app.HttpContext) error {
 	}
 	baseDB := db.MustGormDBConn(ctx)
 
-	err = inputModel.ValidateCreate(baseDB)
+	err = inputModel.ValidateCreate()
 	if err != nil {
 		return errors.NewValidationError(consts.ValidationError, err)
 	}
@@ -129,10 +129,6 @@ func EditProductFeatureKey(ctx *app.HttpContext) error {
 	}
 
 	baseDB := db.MustGormDBConn(ctx)
-	err = inputModel.ValidateUpdate(baseDB)
-	if err != nil {
-		return errors.NewValidationError(consts.ValidationError, err)
-	}
 
 	var dbModel models.ProductFeatureKey
 
@@ -140,14 +136,9 @@ func EditProductFeatureKey(ctx *app.HttpContext) error {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	if db.Exists(
-		baseDB,
-		&models.ProductFeatureKey{},
-		"name = ? and id != ?",
-		inputModel.Name,
-		id,
-	) {
-		return errors.NewValidationError(consts.ExistedTitle, nil)
+	err = inputModel.ValidateUpdate(id)
+	if err != nil {
+		return errors.NewValidationError(consts.ValidationError, err)
 	}
 
 	inputModel.MergeWithDBData(&dbModel)

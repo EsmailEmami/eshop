@@ -80,7 +80,7 @@ func CreateAppPic(ctx *app.HttpContext) error {
 	}
 	baseDB := db.MustGormDBConn(ctx)
 
-	err = inputModel.ValidateCreate(baseDB)
+	err = inputModel.ValidateCreate()
 	if err != nil {
 		return errors.NewValidationError(consts.ValidationError, err)
 	}
@@ -121,35 +121,15 @@ func EditAppPic(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 	baseTx := baseDB.Begin()
 
-	err = inputModel.ValidateUpdate(baseDB)
-	if err != nil {
-		return errors.NewValidationError(consts.ValidationError, err)
-	}
-
 	var dbModel models.AppPic
 
-	if baseDB.Preload("File").First(&dbModel, id).Error != nil {
+	if baseDB.First(&dbModel, id).Error != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	if db.Exists(
-		baseDB,
-		&models.AppPic{},
-		"priority = ? and id != ? and app_pic_type = ?",
-		inputModel.Priority,
-		id,
-		inputModel.AppPicType,
-	) {
-		return errors.NewValidationError(consts.OrderAlreadyRegistered, nil)
-	}
-
-	if dbModel.FileID != *inputModel.FileID {
-		err := fileService.DeleteFile(baseTx, dbModel.File)
-
-		if err != nil {
-			baseTx.Rollback()
-			return errors.NewInternalServerError(consts.InternalServerError, err)
-		}
+	err = inputModel.ValidateUpdate(id)
+	if err != nil {
+		return errors.NewValidationError(consts.ValidationError, err)
 	}
 
 	inputModel.MergeWithDBData(&dbModel)

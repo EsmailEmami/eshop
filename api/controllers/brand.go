@@ -136,7 +136,7 @@ func CreateBrand(ctx *app.HttpContext) error {
 	}
 	baseDB := db.MustGormDBConn(ctx)
 
-	err = inputModel.ValidateCreate(baseDB)
+	err = inputModel.ValidateCreate()
 	if err != nil {
 		return errors.NewValidationError(consts.ValidationError, err)
 	}
@@ -176,28 +176,15 @@ func EditBrand(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 	baseTx := baseDB.Begin()
 
-	err = inputModel.ValidateUpdate(baseDB)
-	if err != nil {
-		return errors.NewValidationError(consts.ValidationError, err)
-	}
-
 	var dbModel models.Brand
 
-	if baseDB.Preload("File").First(&dbModel, id).Error != nil {
+	if baseDB.First(&dbModel, id).Error != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	if db.Exists(baseDB, &models.Brand{}, "code = ? and id != ?", inputModel.Code, id) {
-		return errors.NewValidationError(consts.ExistedCode, nil)
-	}
-
-	if dbModel.FileID != inputModel.FileID {
-		err := fileService.DeleteFile(baseTx, dbModel.File)
-
-		if err != nil {
-			baseTx.Rollback()
-			return errors.NewInternalServerError(consts.InternalServerError, err)
-		}
+	err = inputModel.ValidateUpdate(id)
+	if err != nil {
+		return errors.NewValidationError(consts.ValidationError, err)
 	}
 
 	inputModel.MergeWithDBData(&dbModel)

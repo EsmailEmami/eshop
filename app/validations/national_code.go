@@ -2,6 +2,7 @@ package validations
 
 import (
 	"errors"
+	"reflect"
 	"regexp"
 	"strconv"
 
@@ -10,6 +11,17 @@ import (
 
 func IsValidNationalCode() func(value interface{}) error {
 	return func(value interface{}) error {
+		if value == nil {
+			return nil
+		}
+
+		v := reflect.ValueOf(value)
+		if v.Kind() == reflect.Ptr {
+			if v.IsNil() {
+				return nil
+			}
+		}
+
 		nationalCode, ok := value.(string)
 		if !ok {
 			return errors.New(consts.InvalidNationalCode)

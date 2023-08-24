@@ -245,19 +245,15 @@ func EditProduct(ctx *app.HttpContext) error {
 
 	baseDB := db.MustGormDBConn(ctx)
 
-	err = inputModel.ValidateUpdate(baseDB)
-	if err != nil {
-		return errors.NewValidationError(consts.ValidationError, err)
-	}
-
 	var dbModel models.Product
 
 	if baseDB.First(&dbModel, id).Error != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	if db.Exists(baseDB, &models.Product{}, "code = ? and id != ?", inputModel.Code, id) {
-		return errors.NewValidationError(consts.ExistedCode, nil)
+	err = inputModel.ValidateUpdate(id)
+	if err != nil {
+		return errors.NewValidationError(consts.ValidationError, err)
 	}
 
 	inputModel.MergeWithDBData(&dbModel)

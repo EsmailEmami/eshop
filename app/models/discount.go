@@ -4,10 +4,10 @@ import (
 	"time"
 
 	"github.com/esmailemami/eshop/app/consts"
+	"github.com/esmailemami/eshop/app/validations"
 	dbmodels "github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type DiscountReqModel struct {
@@ -20,20 +20,40 @@ type DiscountReqModel struct {
 	RelatedUserID *uuid.UUID            `json:"relatedUserId,omitempty"`
 }
 
-func (model DiscountReqModel) ValidateCreate(db *gorm.DB) error {
+func (model DiscountReqModel) ValidateCreate() error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Value,
 			validation.Required.Error(consts.Required),
 		),
+		validation.Field(&model.ProductItemID,
+			validation.By(validations.ExistsInDB(&dbmodels.ProductItem{}, "id", consts.ModelProductItemNotFound)),
+		),
+		validation.Field(&model.Code,
+			validation.By(validations.Code()),
+			validation.By(validations.NotExistsInDB(&dbmodels.Discount{}, "code", consts.ExistedCode)),
+		),
+		validation.Field(&model.RelatedUserID,
+			validation.By(validations.ExistsInDB(&dbmodels.User{}, "id", consts.ModelUserNotFound)),
+		),
 	)
 }
 
-func (model DiscountReqModel) ValidateUpdate() error {
+func (model DiscountReqModel) ValidateUpdate(id uuid.UUID) error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Value,
 			validation.Required.Error(consts.Required),
+		),
+		validation.Field(&model.ProductItemID,
+			validation.By(validations.ExistsInDB(&dbmodels.ProductItem{}, "id", consts.ModelProductItemNotFound)),
+		),
+		validation.Field(&model.Code,
+			validation.By(validations.Code()),
+			validation.By(validations.NotExistsInDBWithID(&dbmodels.Discount{}, "code", id, consts.ExistedCode)),
+		),
+		validation.Field(&model.RelatedUserID,
+			validation.By(validations.ExistsInDB(&dbmodels.User{}, "id", consts.ModelUserNotFound)),
 		),
 	)
 }

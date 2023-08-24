@@ -126,11 +126,6 @@ func EditUser(ctx *app.HttpContext) error {
 		return errors.NewBadRequestError(consts.BadRequest, err)
 	}
 
-	err = inputModel.ValidateUpdate()
-	if err != nil {
-		return errors.NewValidationError(consts.ValidationError, err)
-	}
-
 	baseDB := db.MustGormDBConn(ctx)
 
 	var dbModel models.User
@@ -139,8 +134,9 @@ func EditUser(ctx *app.HttpContext) error {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	if db.Exists(baseDB, &models.User{}, "username = ? and id != ?", inputModel.Username, id) {
-		return errors.NewValidationError(consts.UsernameAlreadyExists, nil)
+	err = inputModel.ValidateUpdate(id)
+	if err != nil {
+		return errors.NewValidationError(consts.ValidationError, err)
 	}
 
 	inputModel.MergeWithDBData(&dbModel)

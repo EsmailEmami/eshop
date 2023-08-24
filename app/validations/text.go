@@ -2,6 +2,7 @@ package validations
 
 import (
 	"errors"
+	"reflect"
 	"strings"
 
 	"github.com/esmailemami/eshop/app/consts"
@@ -50,6 +51,14 @@ func Code() func(value interface{}) error {
 		if value == nil {
 			return nil
 		}
+
+		v := reflect.ValueOf(value)
+		if v.Kind() == reflect.Ptr {
+			if v.IsNil() {
+				return nil
+			}
+		}
+
 		txt, ok := value.(string)
 		if !ok {
 			return errors.New(consts.InvalidCharacters)

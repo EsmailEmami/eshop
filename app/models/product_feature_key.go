@@ -1,16 +1,13 @@
 package models
 
 import (
-	"errors"
 	"time"
 
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/validations"
-	dbpkg "github.com/esmailemami/eshop/db"
 	dbmodels "github.com/esmailemami/eshop/models"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type ProductFeatureKeyReqModel struct {
@@ -18,51 +15,32 @@ type ProductFeatureKeyReqModel struct {
 	ProductFeatureCategoryID uuid.UUID `json:"productFeatureCategoryId"`
 }
 
-func (model ProductFeatureKeyReqModel) ValidateCreate(db *gorm.DB) error {
+func (model ProductFeatureKeyReqModel) ValidateCreate() error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Name,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.ClearText()),
-			validation.By(func(value interface{}) error {
-
-				if dbpkg.Exists(db, &dbmodels.ProductFeatureKey{}, "name=?", value) {
-					return errors.New(consts.ExistedTitle)
-				}
-
-				return nil
-			}),
+			validation.By(validations.NotExistsInDB(&dbmodels.ProductFeatureKey{}, "name", consts.ExistedTitle)),
 		),
 		validation.Field(&model.ProductFeatureCategoryID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-
-				if !dbpkg.Exists(db, &dbmodels.ProductFeatureCategory{}, "id=?", value) {
-					return errors.New(consts.ModelCategoryNotFound)
-				}
-
-				return nil
-			}),
+			validation.By(validations.ExistsInDB(&dbmodels.ProductFeatureCategory{}, "id", consts.ModelProductFeatureCategoryNotFound)),
 		),
 	)
 }
 
-func (model ProductFeatureKeyReqModel) ValidateUpdate(db *gorm.DB) error {
+func (model ProductFeatureKeyReqModel) ValidateUpdate(id uuid.UUID) error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Name,
 			validation.Required.Error(consts.Required),
-			validation.By(validations.ClearText())),
+			validation.By(validations.ClearText()),
+			validation.By(validations.NotExistsInDBWithID(&dbmodels.ProductFeatureKey{}, "name", id, consts.ExistedTitle)),
+		),
 		validation.Field(&model.ProductFeatureCategoryID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-
-				if !dbpkg.Exists(db, &dbmodels.ProductFeatureCategory{}, "id=?", value) {
-					return errors.New(consts.ModelCategoryNotFound)
-				}
-
-				return nil
-			}),
+			validation.By(validations.ExistsInDB(&dbmodels.ProductFeatureCategory{}, "id", consts.ModelProductFeatureCategoryNotFound)),
 		),
 	)
 }

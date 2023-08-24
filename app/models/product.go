@@ -1,11 +1,8 @@
 package models
 
 import (
-	"errors"
-
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/validations"
-	dbpkg "github.com/esmailemami/eshop/db"
 	dbmodels "github.com/esmailemami/eshop/models"
 	datatypes "github.com/esmailemami/eshop/models/data_types"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
@@ -41,41 +38,20 @@ func (model ProductReqModel) ValidateCreate(db *gorm.DB) error {
 		validation.Field(&model.Code,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.Code()),
-			validation.By(func(value interface{}) error {
-
-				if dbpkg.Exists(db, &dbmodels.Product{}, "code=?", value) {
-					return errors.New(consts.ExistedCode)
-				}
-
-				return nil
-			}),
+			validation.By(validations.NotExistsInDB(&dbmodels.Product{}, "code", consts.ExistedCode)),
 		),
 		validation.Field(&model.BrandID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-
-				if !dbpkg.Exists(db, &dbmodels.Brand{}, "id=?", value) {
-					return errors.New(consts.ModelBrandNotFound)
-				}
-
-				return nil
-			}),
+			validation.By(validations.ExistsInDB(&dbmodels.Brand{}, "id", consts.ModelBrandNotFound)),
 		),
 		validation.Field(&model.CategoryID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-
-				if !dbpkg.Exists(db, &dbmodels.Category{}, "id=?", value) {
-					return errors.New(consts.ModelCategoryNotFound)
-				}
-
-				return nil
-			}),
+			validation.By(validations.ExistsInDB(&dbmodels.Category{}, "id", consts.ModelCategoryNotFound)),
 		),
 	)
 }
 
-func (model ProductReqModel) ValidateUpdate(db *gorm.DB) error {
+func (model ProductReqModel) ValidateUpdate(id uuid.UUID) error {
 	return validation.ValidateStruct(
 		&model,
 		validation.Field(&model.Name,
@@ -93,36 +69,15 @@ func (model ProductReqModel) ValidateUpdate(db *gorm.DB) error {
 		validation.Field(&model.Code,
 			validation.Required.Error(consts.Required),
 			validation.By(validations.Code()),
-			validation.By(func(value interface{}) error {
-
-				if dbpkg.Exists(db, &dbmodels.Product{}, "code=?", value) {
-					return errors.New(consts.ExistedCode)
-				}
-
-				return nil
-			}),
+			validation.By(validations.NotExistsInDBWithID(&dbmodels.Product{}, "code", id, consts.ExistedCode)),
 		),
 		validation.Field(&model.BrandID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-
-				if !dbpkg.Exists(db, &dbmodels.Brand{}, "id=?", value) {
-					return errors.New(consts.ModelBrandNotFound)
-				}
-
-				return nil
-			}),
+			validation.By(validations.ExistsInDB(&dbmodels.Brand{}, "id", consts.ModelBrandNotFound)),
 		),
 		validation.Field(&model.CategoryID,
 			validation.Required.Error(consts.Required),
-			validation.By(func(value interface{}) error {
-
-				if !dbpkg.Exists(db, &dbmodels.Category{}, "id=?", value) {
-					return errors.New(consts.ModelCategoryNotFound)
-				}
-
-				return nil
-			}),
+			validation.By(validations.ExistsInDB(&dbmodels.Category{}, "id", consts.ModelCategoryNotFound)),
 		),
 	)
 }
