@@ -35,8 +35,8 @@ func GetProductItem(ctx *app.HttpContext) error {
 	if err := baseDB.Table("product_item pi2").
 		Joins("INNER JOIN product p ON P.id = pi2 .product_id").
 		Joins("INNER JOIN color c ON C.id = pi2.color_id").
-		Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", baseDB.Table("discount d").
-			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL AND d.type = 1").
+		Joins("LEFT JOIN LATERAL (?) as d ON TRUE", baseDB.Table("discount d").
+			Where("d.product_item_id = pi2.id AND d.deleted_at IS NULL AND d.type = 1").
 			Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
 			Where("d.related_user_id IS NULL").
 			Order("d.created_at ASC").

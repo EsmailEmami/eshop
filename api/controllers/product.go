@@ -48,7 +48,7 @@ func GetUserProducts(ctx *app.HttpContext) error {
 	}
 
 	discountQry := baseDB.Table("discount d").
-		Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL AND d.type = 1").
+		Where("d.product_item_id = pi2.id AND d.deleted_at IS NULL AND d.type = 1").
 		Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
 		Where("d.related_user_id IS NULL").
 		Order("d.created_at ASC").
@@ -58,9 +58,9 @@ func GetUserProducts(ctx *app.HttpContext) error {
 	productItemQry := baseDB.Table("product_item pi2")
 
 	if productItemsWithDiscount {
-		productItemQry = productItemQry.Joins("INNER JOIN (?) as d ON d.product_item_id = pi2.id", discountQry)
+		productItemQry = productItemQry.Joins("INNER JOIN LATERAL (?) as d ON TRUE", discountQry)
 	} else {
-		productItemQry = productItemQry.Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", discountQry)
+		productItemQry = productItemQry.Joins("LEFT JOIN LATERAL (?) as d ON TRUE", discountQry)
 	}
 
 	productItemQry = productItemQry.Select("pi2.id, pi2.price, pi2.created_at, pi2.bought_quantity, d.type, d.value, d.quantity as discount_quantity, pi2.quantity").
