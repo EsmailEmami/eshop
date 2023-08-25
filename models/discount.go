@@ -49,7 +49,6 @@ type DiscountType int
 const (
 	DiscountTypeNumeric DiscountType = iota
 	DiscountTypePercent
-	DiscountTypeCode
 )
 
 func (d DiscountType) String() string {
@@ -58,8 +57,6 @@ func (d DiscountType) String() string {
 		return "numeric"
 	case DiscountTypePercent:
 		return "percent"
-	case DiscountTypeCode:
-		return "code"
 	default:
 		return "unknown"
 	}

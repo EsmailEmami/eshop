@@ -569,12 +569,10 @@ definitions:
     enum:
     - 0
     - 1
-    - 2
     type: integer
     x-enum-varnames:
     - DiscountTypeNumeric
     - DiscountTypePercent
-    - DiscountTypeCode
   models.FavoriteProductItem:
     properties:
       createdAt:
@@ -5545,12 +5543,17 @@ paths:
         in: query
         name: maxPrice
         type: number
+      - description: Only Products With Discount
+        in: query
+        name: onlyDiscount
+        type: boolean
       - description: order by
         enum:
         - newest
         - topSell
         - cheap
         - expersive
+        - discount
         in: query
         name: order
         type: string

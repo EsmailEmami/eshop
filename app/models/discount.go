@@ -34,6 +34,10 @@ func (model DiscountReqModel) ValidateCreate() error {
 					return nil
 				}
 
+				if model.Type != dbmodels.DiscountTypePercent {
+					return errors.New("discount type must be code")
+				}
+
 				if !validations.IsNil(model.Code) || !validations.IsNil(model.RelatedUserID) {
 					return errors.New("discount cannot have a code or user for product item")
 				}
@@ -80,6 +84,10 @@ func (model DiscountReqModel) ValidateUpdate(id uuid.UUID) error {
 			validation.By(func(value interface{}) error {
 				if validations.IsNil(value) {
 					return nil
+				}
+
+				if model.Type != dbmodels.DiscountTypePercent {
+					return errors.New("discount type must be code")
 				}
 
 				if !validations.IsNil(model.Code) || !validations.IsNil(model.RelatedUserID) {

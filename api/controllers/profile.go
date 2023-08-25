@@ -203,7 +203,7 @@ func GetUserFavoriteProducts(ctx *app.HttpContext) error {
 	baseDB = baseDB.Table("favorite_product_item fpi").
 		Joins("INNER JOIN product_item pi2 ON pi2.id = fpi.product_item_id").
 		Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", baseDB.Table("discount d").
-			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL").
+			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL AND d.type = 1").
 			Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
 			Where("d.related_user_id IS NULL").
 			Order("d.created_at ASC").
@@ -281,7 +281,7 @@ func GetAdminUserFavoriteProducts(ctx *app.HttpContext) error {
 	baseDB = baseDB.Table("favorite_product_item fpi").
 		Joins("INNER JOIN product_item pi2 ON pi2.id = fpi.product_item_id").
 		Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", baseDB.Table("discount d").
-			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL").
+			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL AND d.type = 1").
 			Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
 			Where("d.related_user_id IS NULL").
 			Order("d.created_at ASC").

@@ -40,7 +40,7 @@ func GetOrder(ctx *app.HttpContext) error {
 		Joins(`INNER JOIN "order" o ON o.id = oi.order_id`).
 		Joins("INNER JOIN product_item pi2 ON pi2.id = oi.product_item_id").
 		Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", baseDB.Table("discount d").
-			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL").
+			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL AND d.type = 1").
 			Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
 			Where("d.related_user_id IS NULL").
 			Order("d.created_at ASC").
@@ -150,7 +150,7 @@ func CheckoutOrder(ctx *app.HttpContext) error {
 			Select("pi2.price - (CASE WHEN d.type = 1 THEN ((d.value / 100) * pi2.price) WHEN d.type = 0 THEN d.value  ELSE 0 END)").
 			Where("id = oi.product_item_id").
 			Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", baseDB.Table("discount d").
-				Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL").
+				Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL AND d.type = 1").
 				Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
 				Where("d.related_user_id IS NULL").
 				Order("d.created_at ASC").

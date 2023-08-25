@@ -5695,11 +5695,18 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "boolean",
+                        "description": "Only Products With Discount",
+                        "name": "onlyDiscount",
+                        "in": "query"
+                    },
+                    {
                         "enum": [
                             "newest",
                             "topSell",
                             "cheap",
-                            "expersive"
+                            "expersive",
+                            "discount"
                         ],
                         "type": "string",
                         "description": "order by",
@@ -7095,13 +7102,11 @@ const docTemplate = `{
             "type": "integer",
             "enum": [
                 0,
-                1,
-                2
+                1
             ],
             "x-enum-varnames": [
                 "DiscountTypeNumeric",
-                "DiscountTypePercent",
-                "DiscountTypeCode"
+                "DiscountTypePercent"
             ]
         },
         "models.FavoriteProductItem": {

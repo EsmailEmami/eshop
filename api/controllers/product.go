@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/esmailemami/eshop/app"
 	"github.com/esmailemami/eshop/app/consts"
@@ -26,7 +27,8 @@ import (
 // @Param brandId  query  string  false  "Brand ID"
 // @Param minPrice  query  float64  false  "Min Price"
 // @Param maxPrice  query  float64  false  "Max Price"
-// @Param order query string false "order by" Enums(newest,topSell,cheap,expersive)
+// @Param onlyDiscount  query  bool  false  "Only Products With Discount"
+// @Param order query string false "order by" Enums(newest,topSell,cheap,expersive,discount)
 // @Success 200 {object} parameter.ListResponse[appmodels.ProductWithItemOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
@@ -36,16 +38,32 @@ func GetUserProducts(ctx *app.HttpContext) error {
 
 	parameter := parameter.New[appmodels.ProductWithItemOutPutModel](ctx, baseDB)
 
-	productItemQry := baseDB.Table("product_item pi2").
-		Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", baseDB.Table("discount d").
-			Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL").
-			Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
-			Where("d.related_user_id IS NULL").
-			Order("d.created_at ASC").
-			Select("d.type, d.value, d.product_item_id, d.quantity").
-			Limit(1),
-		).
-		Select("pi2.id, pi2.price, pi2.created_at, pi2.bought_quantity, d.type, d.value, d.quantity as discount_quantity, pi2.quantity").
+	var productItemsWithDiscount bool = false
+
+	if onlyDiscount, ok := ctx.GetParam("onlyDiscount"); ok {
+		discount, err := strconv.ParseBool(onlyDiscount)
+		if err == nil {
+			productItemsWithDiscount = discount
+		}
+	}
+
+	discountQry := baseDB.Table("discount d").
+		Where("d.product_item_id IS NOT NULL AND d.deleted_at IS NULL AND d.type = 1").
+		Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
+		Where("d.related_user_id IS NULL").
+		Order("d.created_at ASC").
+		Select("d.type, d.value, d.product_item_id, d.quantity").
+		Limit(1)
+
+	productItemQry := baseDB.Table("product_item pi2")
+
+	if productItemsWithDiscount {
+		productItemQry = productItemQry.Joins("INNER JOIN (?) as d ON d.product_item_id = pi2.id", discountQry)
+	} else {
+		productItemQry = productItemQry.Joins("LEFT JOIN (?) as d ON d.product_item_id = pi2.id", discountQry)
+	}
+
+	productItemQry = productItemQry.Select("pi2.id, pi2.price, pi2.created_at, pi2.bought_quantity, d.type, d.value, d.quantity as discount_quantity, pi2.quantity").
 		Where("pi2.quantity > 0 AND pi2.product_id = p.id AND pi2.deleted_at IS NULL")
 
 	order, _ := ctx.GetParam("order")
@@ -59,6 +77,8 @@ func GetUserProducts(ctx *app.HttpContext) error {
 		productItemQry = productItemQry.Order("pi2.price ASC")
 	case "expersive":
 		productItemQry = productItemQry.Order("pi2.price DESC")
+	case "discount":
+		productItemQry = productItemQry.Order("d.value DESC, pi2.bought_quantity DESC")
 	default:
 		productItemQry = productItemQry.Order("CASE WHEN p.default_product_item_id IS NULL THEN pi2.bought_quantity WHEN pi2.id = p.default_product_item_id THEN 0 ELSE 1 END")
 	}
@@ -97,6 +117,8 @@ func GetUserProducts(ctx *app.HttpContext) error {
 		baseDB = baseDB.Order("pi2.price ASC")
 	case "expersive":
 		baseDB = baseDB.Order("pi2.price DESC")
+	case "discount":
+		baseDB = baseDB.Order("pi2.value DESC, pi2.bought_quantity DESC")
 	default:
 		baseDB = baseDB.Order("pi2.bought_quantity DESC")
 	}
