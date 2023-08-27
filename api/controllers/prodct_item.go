@@ -37,7 +37,7 @@ func GetProductItem(ctx *app.HttpContext) error {
 		Joins("INNER JOIN color c ON C.id = pi2.color_id").
 		Joins("LEFT JOIN LATERAL (?) as d ON TRUE", baseDB.Table("discount d").
 			Where("d.product_item_id = pi2.id AND d.deleted_at IS NULL AND d.type = 1").
-			Where("CASE WHEN d.expires_in IS NOT NULL THEN d.expires_in > NOW() WHEN d.quantity IS NOT NULL THEN d.quantity > 0 ELSE TRUE END").
+			Where("(d.expires_in IS NOT NULL AND d.expires_in >= NOW()) AND (d.quantity IS NOT NULL AND d.quantity > 0)").
 			Where("d.related_user_id IS NULL").
 			Order("d.created_at ASC").
 			Select("d.type, d.value, d.product_item_id, d.quantity").

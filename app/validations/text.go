@@ -59,7 +59,7 @@ func Code() func(value interface{}) error {
 			}
 		}
 
-		txt, ok := value.(string)
+		txt, ok := Value(value).(string)
 		if !ok {
 			return errors.New(consts.InvalidCharacters)
 		}

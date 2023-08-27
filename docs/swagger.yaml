@@ -573,6 +573,27 @@ definitions:
     x-enum-varnames:
     - DiscountTypeNumeric
     - DiscountTypePercent
+  models.DiscountUserOutPutModel:
+    properties:
+      code:
+        type: string
+      createdAt:
+        type: string
+      expiresIn:
+        type: string
+      id:
+        type: string
+      quantity:
+        type: integer
+      type:
+        $ref: '#/definitions/models.DiscountType'
+      typeName:
+        type: string
+      updatedAt:
+        type: string
+      value:
+        type: number
+    type: object
   models.FavoriteProductItem:
     properties:
       createdAt:
@@ -1728,6 +1749,25 @@ definitions:
       data:
         items:
           $ref: '#/definitions/models.DiscountAdminOutPutModel'
+        type: array
+      from:
+        type: integer
+      last_page:
+        type: integer
+      limit:
+        type: integer
+      page:
+        type: integer
+      to:
+        type: integer
+      total:
+        type: integer
+    type: object
+  parameter.ListResponse-models_DiscountUserOutPutModel:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.DiscountUserOutPutModel'
         type: array
       from:
         type: integer
@@ -4967,6 +5007,44 @@ paths:
       - Bearer: []
       tags:
       - Comments
+  /user/discount:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_DiscountUserOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Discounts
   /user/discount/validate/code/{code}:
     get:
       consumes:

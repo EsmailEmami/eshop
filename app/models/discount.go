@@ -168,6 +168,18 @@ type DiscountAdminOutPutModel struct {
 	RelatedUserUsername *string               `gorm:"column:related_user_username"                            json:"relatedUserUsername,omitempty"`
 }
 
+type DiscountUserOutPutModel struct {
+	ID        *uuid.UUID            `gorm:"column:id"                                               json:"id"`
+	CreatedAt time.Time             `gorm:"column:created_at"                                       json:"createdAt"`
+	UpdatedAt time.Time             `gorm:"column:updated_at"                                       json:"updatedAt"`
+	Type      dbmodels.DiscountType `gorm:"column:type"                                             json:"type"`
+	TypeName  string                `gorm:"column:type_name"                                        json:"typeName"`
+	Value     float64               `form:"column:value"                                            json:"value"`
+	Quantity  *int                  `gorm:"column:quantity"                                         json:"quantity,omitempty"`
+	ExpiresIn *time.Time            `gorm:"column:expires_in"                                       json:"expiresIn,omitempty"`
+	Code      *string               `gorm:"column:code"                                             json:"code,omitempty"`
+}
+
 type ValidateDiscountOutPutModel struct {
 	Success bool                   `json:"success"`
 	ID      *uuid.UUID             `json:"id"`

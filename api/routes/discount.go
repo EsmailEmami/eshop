@@ -29,5 +29,6 @@ func loadAdminDiscountRoutes(r chi.Router) {
 
 func loadUserDiscountRoutes(r chi.Router) {
 	r.Get("/discount/validate/code/{code}", app.Handler(controllers.ValidateDiscountByCode))
+	r.Get("/discount", app.Handler(controllers.GetUserDiscounts))
 
 }
