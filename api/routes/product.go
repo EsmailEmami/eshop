@@ -30,4 +30,5 @@ func loadAnonymousProductRoutes(r chi.Router) {
 	r.Get("/product/suggestions", app.Handler(controllers.GetSuggestionProducts))
 	r.Get("/product", app.Handler(controllers.GetUserProducts))
 	r.Get("/product/{id}", app.Handler(controllers.GetProduct))
+	r.Get("/product/selectList", app.Handler(controllers.GetProductsSelectList))
 }

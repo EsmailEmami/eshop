@@ -21,6 +21,7 @@ func loadUserAnonymousRoutes(r chi.Router) {
 	loadAnonymousBrandRoutes(r)
 	loadAnonymousCategoryRoutes(r)
 	loadAnonymousColorRoutes(r)
+	loadAnonymousProductItemRoutes(r)
 }
 
 func loadAdminAnonymousRoutes(r chi.Router) {

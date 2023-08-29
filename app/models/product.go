@@ -139,8 +139,6 @@ type ProductOutPutModel struct {
 	BrandFileUrl  string            `gorm:"column:brand_file_url"   json:"brandFileUrl"`
 }
 
-// ------------------- suggestion products -----------------------
-
 type SuggestionProductOutPutModel struct {
 	ProductID     *uuid.UUID                        `gorm:"column:product_id"                json:"productId"`
 	Name          string                            `gorm:"column:name"                      json:"name"`
@@ -162,4 +160,14 @@ type ProductAdminOutPutModel struct {
 	Description      string                `gorm:"column:description"                     json:"description"`
 	ShortDescription string                `gorm:"column:short_description"               json:"shortDescription"`
 	TopFeatures      datatypes.StringArray `gorm:"column:top_features"                    json:"topFeatures"`
+}
+
+type ProductAdminSelectListOutPutModel struct {
+	ID           *uuid.UUID `gorm:"column:id"                              json:"id"`
+	Name         string     `gorm:"column:name"                            json:"name"`
+	Code         string     `gorm:"column:code"                            json:"code"`
+	BrandID      uuid.UUID  `gorm:"column:brand_id"         json:"brandId"`
+	BrandName    string     `gorm:"column:brand_name"       json:"brandName"`
+	CategoryID   uuid.UUID  `gorm:"column:category_id"      json:"categoryId"`
+	CategoryName string     `gorm:"column:category_name"    json:"categoryName"`
 }

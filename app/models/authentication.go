@@ -90,6 +90,8 @@ func (model RegisterInputModel) ToDBModel() *models.User {
 		},
 		Username: model.Username,
 		Password: string(pass),
+		IsSystem: false,
+		Enabled:  true,
 	}
 }
 

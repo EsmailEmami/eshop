@@ -131,3 +131,10 @@ type ProductItemInfoColorOutPutModel struct {
 	ColorHex      string    `gorm:"column:color_hex"              json:"colorHex"`
 	ProductItemID uuid.UUID `gorm:"column:product_item_id"        json:"productItemId"`
 }
+
+type ProductItemAdminSelectListOutPutModel struct {
+	ID        *uuid.UUID `gorm:"column:id"                        json:"id"`
+	Price     float64    `gorm:"column:price"                     json:"price"`
+	ColorID   uuid.UUID  `gorm:"column:color_id"                  json:"colorId"`
+	ColorName string     `gorm:"column:color_name"                json:"color"`
+}

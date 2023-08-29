@@ -7,6 +7,7 @@ import (
 	"github.com/esmailemami/eshop/app/consts"
 	"github.com/esmailemami/eshop/app/errors"
 	appmodels "github.com/esmailemami/eshop/app/models"
+	"github.com/esmailemami/eshop/app/parameter"
 	"github.com/esmailemami/eshop/db"
 	"github.com/esmailemami/eshop/models"
 	"github.com/google/uuid"
@@ -139,7 +140,6 @@ func GetProductItem(ctx *app.HttpContext) error {
 // @Router /admin/productItem/product/{productId} [get]
 func GetProductItems(ctx *app.HttpContext) error {
 	productID, err := uuid.Parse(ctx.GetPathParam("productId"))
-
 	if err != nil {
 		return errors.NewBadRequestError(consts.BadRequest, err)
 	}
@@ -320,4 +320,42 @@ func DeleteProductItem(ctx *app.HttpContext) error {
 	baseTx.Commit()
 
 	return ctx.QuickResponse(consts.Deleted, http.StatusOK)
+}
+
+// GetProducts godoc
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param productId  path  string  true  "Product ID"
+// @Param page  query  string  false  "page size"
+// @Param limit  query  string  false  "length of records to show"
+// @Param searchTerm  query  string  false  "search for item"
+// @Success 200 {object} parameter.ListResponse[appmodels.ProductItemAdminSelectListOutPutModel]
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /user/productItem/selectList/{productId} [get]
+func GetProductItemsSelectList(ctx *app.HttpContext) error {
+	productID, err := uuid.Parse(ctx.GetPathParam("productId"))
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	baseDB := db.MustGormDBConn(ctx)
+
+	parameter := parameter.New[appmodels.ProductItemAdminSelectListOutPutModel](ctx, baseDB)
+
+	baseDB = baseDB.Table("product_item as pi2").
+		Joins("INNER JOIN color c ON c.id = pi2.color_id").
+		Where("pi2.deleted_at IS NULL AND pi2.product_id = ?", productID)
+
+	response, err := parameter.SelectColumns("pi2.id, pi2.price, c.id as color_id, c.name as color_name").
+		SearchColumns("c.name", "c.code", "c.color_hex").
+		Execute(baseDB)
+
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	return ctx.JSON(*response, http.StatusOK)
 }

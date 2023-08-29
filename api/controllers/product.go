@@ -428,3 +428,36 @@ func GetAdminProduct(ctx *app.HttpContext) error {
 
 	return ctx.JSON(data, http.StatusOK)
 }
+
+// GetProducts godoc
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param page  query  string  false  "page size"
+// @Param limit  query  string  false  "length of records to show"
+// @Param searchTerm  query  string  false  "search for item"
+// @Success 200 {object} parameter.ListResponse[appmodels.ProductAdminSelectListOutPutModel]
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /user/product/selectList [get]
+func GetProductsSelectList(ctx *app.HttpContext) error {
+	baseDB := db.MustGormDBConn(ctx)
+
+	parameter := parameter.New[appmodels.ProductAdminSelectListOutPutModel](ctx, baseDB)
+
+	baseDB = baseDB.Table("product as p").
+		Joins("INNER JOIN brand b ON b.id = p.brand_id").
+		Joins("INNER JOIN category c ON c.id = p.category_id").
+		Where("p.deleted_at IS NULL")
+
+	response, err := parameter.SelectColumns("p.id, p.name, p.code, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name").
+		SearchColumns("p.name", "p.code", "b.name", "c.name").
+		Execute(baseDB)
+
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	return ctx.JSON(*response, http.StatusOK)
+}

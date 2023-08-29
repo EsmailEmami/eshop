@@ -944,6 +944,23 @@ definitions:
           type: string
         type: array
     type: object
+  models.ProductAdminSelectListOutPutModel:
+    properties:
+      brandId:
+        type: string
+      brandName:
+        type: string
+      categoryId:
+        type: string
+      categoryName:
+        type: string
+      code:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
   models.ProductCommentOutPutModel:
     properties:
       createdAt:
@@ -1161,6 +1178,17 @@ definitions:
         $ref: '#/definitions/models.User'
       updatedById:
         type: string
+    type: object
+  models.ProductItemAdminSelectListOutPutModel:
+    properties:
+      color:
+        type: string
+      colorId:
+        type: string
+      id:
+        type: string
+      price:
+        type: number
     type: object
   models.ProductItemCategoryFeatureModel:
     properties:
@@ -1782,6 +1810,25 @@ definitions:
       total:
         type: integer
     type: object
+  parameter.ListResponse-models_ProductAdminSelectListOutPutModel:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.ProductAdminSelectListOutPutModel'
+        type: array
+      from:
+        type: integer
+      last_page:
+        type: integer
+      limit:
+        type: integer
+      page:
+        type: integer
+      to:
+        type: integer
+      total:
+        type: integer
+    type: object
   parameter.ListResponse-models_ProductCommentOutPutModel:
     properties:
       data:
@@ -1844,6 +1891,25 @@ definitions:
       data:
         items:
           $ref: '#/definitions/models.ProductFeatureValueOutPutModel'
+        type: array
+      from:
+        type: integer
+      last_page:
+        type: integer
+      limit:
+        type: integer
+      page:
+        type: integer
+      to:
+        type: integer
+      total:
+        type: integer
+    type: object
+  parameter.ListResponse-models_ProductItemAdminSelectListOutPutModel:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.ProductItemAdminSelectListOutPutModel'
         type: array
       from:
         type: integer
@@ -5687,6 +5753,44 @@ paths:
       - Bearer: []
       tags:
       - Products
+  /user/product/selectList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_ProductAdminSelectListOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Products
   /user/product/suggestions:
     get:
       consumes:
@@ -5764,6 +5868,49 @@ paths:
       - Bearer: []
       tags:
       - ProductItems
+  /user/productItem/selectList/{productId}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Product ID
+        in: path
+        name: productId
+        required: true
+        type: string
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_ProductItemAdminSelectListOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Products
   /user/profile:
     get:
       consumes:
