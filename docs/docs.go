@@ -6738,6 +6738,15 @@ const docTemplate = `{
                 "fileId": {
                     "type": "string"
                 },
+                "fileName": {
+                    "type": "string"
+                },
+                "fileType": {
+                    "$ref": "#/definitions/models.FileType"
+                },
+                "fileUrl": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },

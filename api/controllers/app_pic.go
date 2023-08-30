@@ -23,12 +23,21 @@ import (
 // @Failure 401 {object} map[string]any
 // @Router /user/appPic [get]
 func GetAppPics(ctx *app.HttpContext) error {
-	baseDB := db.MustGormDBConn(ctx).Model(&models.AppPic{})
+	baseDB := db.MustGormDBConn(ctx)
+
+	baseDB = baseDB.Table("app_pic ap").
+		Joins("INNER JOIN file f ON f.id = ap.file_id").
+		Where("ap.deleted_at IS NULL")
 
 	var data []appmodels.AppPicOutPutModel
 
-	if err := baseDB.Find(&data).Error; err != nil {
+	if err := baseDB.Select("ap.id, ap.created_at, ap.updated_at, ap.priority, ap.app_pic_type,ap.file_id,ap.title,ap.description,ap.url,f.file_type,f.unique_file_name as file_name").Find(&data).Error; err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	for k, v := range data {
+		v.FileUrl = v.FileType.GetFileUrl(v.FileName)
+		data[k] = v
 	}
 
 	return ctx.JSON(data, http.StatusOK)
@@ -50,13 +59,20 @@ func GetAppPic(ctx *app.HttpContext) error {
 	if err != nil {
 		return errors.NewBadRequestError(consts.BadRequest, err)
 	}
-	baseDB := db.MustGormDBConn(ctx).Model(&models.AppPic{})
+	baseDB := db.MustGormDBConn(ctx)
+
+	baseDB = baseDB.Table("app_pic ap").
+		Joins("INNER JOIN file f ON f.id = ap.file_id").
+		Where("ap.deleted_at IS NULL")
 
 	var data appmodels.AppPicOutPutModel
 
-	if err := baseDB.First(&data, "id", id).Error; err != nil {
-		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
+	if err := baseDB.Select("ap.id, ap.created_at, ap.updated_at, ap.priority, ap.app_pic_type,ap.file_id,ap.title,ap.description,ap.url,f.file_type,f.unique_file_name as file_name").
+		First(&data, "ap.id=?", id).Error; err != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
+
+	data.FileUrl = data.FileType.GetFileUrl(data.FileName)
 
 	return ctx.JSON(data, http.StatusOK)
 }

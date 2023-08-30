@@ -94,5 +94,8 @@ type AppPicOutPutModel struct {
 	FileID      uuid.UUID           `gorm:"column:file_id"           json:"fileId"`
 	Title       string              `gorm:"column:title"             json:"title"`
 	Description string              `gorm:"column:description"       json:"description"`
-	Url         string              `gorm:"url"                      json:"url"`
+	Url         string              `gorm:"column:url"               json:"url"`
+	FileType    dbmodels.FileType   `gorm:"column:file_type"         json:"fileType"`
+	FileName    string              `gorm:"column:file_name"         json:"fileName"`
+	FileUrl     string              `gorm:"-"                        json:"fileUrl"`
 }
