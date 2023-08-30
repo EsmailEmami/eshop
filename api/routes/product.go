@@ -24,11 +24,11 @@ func loadAdminProductRoutes(r chi.Router) {
 	r.Post("/product/delete/{id}", app.Handler(controllers.DeleteProduct,
 		middlewares.Permitted(models.ACTION_PRODUCT_ADMIN_DELETE),
 	))
+	r.Get("/product/selectList", app.Handler(controllers.GetProductsSelectList))
 }
 
 func loadAnonymousProductRoutes(r chi.Router) {
 	r.Get("/product/suggestions", app.Handler(controllers.GetSuggestionProducts))
 	r.Get("/product", app.Handler(controllers.GetUserProducts))
 	r.Get("/product/{id}", app.Handler(controllers.GetProduct))
-	r.Get("/product/selectList", app.Handler(controllers.GetProductsSelectList))
 }

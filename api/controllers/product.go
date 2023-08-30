@@ -440,7 +440,7 @@ func GetAdminProduct(ctx *app.HttpContext) error {
 // @Success 200 {object} parameter.ListResponse[appmodels.ProductAdminSelectListOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /user/product/selectList [get]
+// @Router /admin/product/selectList [get]
 func GetProductsSelectList(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 

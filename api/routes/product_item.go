@@ -11,6 +11,8 @@ func loadAdminProductItemRoutes(r chi.Router) {
 	r.Post("/productItem/edit/{id}", app.Handler(controllers.EditProductItem))
 	r.Post("/productItem/delete/{id}", app.Handler(controllers.DeleteProductItem))
 	r.Get("/productItem/product/{productId}", app.Handler(controllers.GetProductItems))
+	r.Get("/productItem/selectList/{productId}", app.Handler(controllers.GetProductItemsSelectList))
+
 }
 
 func loadUserProductItemRoutes(r chi.Router) {
@@ -18,5 +20,4 @@ func loadUserProductItemRoutes(r chi.Router) {
 }
 
 func loadAnonymousProductItemRoutes(r chi.Router) {
-	r.Get("/productItem/selectList/{productId}", app.Handler(controllers.GetProductItemsSelectList))
 }

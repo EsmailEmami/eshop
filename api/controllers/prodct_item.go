@@ -322,8 +322,8 @@ func DeleteProductItem(ctx *app.HttpContext) error {
 	return ctx.QuickResponse(consts.Deleted, http.StatusOK)
 }
 
-// GetProducts godoc
-// @Tags Products
+// GetProductItemsSelectList godoc
+// @Tags ProductItems
 // @Accept json
 // @Produce json
 // @Security Bearer
@@ -334,7 +334,7 @@ func DeleteProductItem(ctx *app.HttpContext) error {
 // @Success 200 {object} parameter.ListResponse[appmodels.ProductItemAdminSelectListOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
-// @Router /user/productItem/selectList/{productId} [get]
+// @Router /admin/productItem/selectList/{productId} [get]
 func GetProductItemsSelectList(ctx *app.HttpContext) error {
 	productID, err := uuid.Parse(ctx.GetPathParam("productId"))
 	if err != nil {

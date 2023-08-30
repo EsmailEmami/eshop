@@ -3270,6 +3270,44 @@ paths:
       - Bearer: []
       tags:
       - Products
+  /admin/product/selectList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_ProductAdminSelectListOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Products
   /admin/productFeatureCategory:
     get:
       consumes:
@@ -3872,6 +3910,49 @@ paths:
             items:
               $ref: '#/definitions/models.ProductOutPutModel'
             type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - ProductItems
+  /admin/productItem/selectList/{productId}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Product ID
+        in: path
+        name: productId
+        required: true
+        type: string
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/parameter.ListResponse-models_ProductItemAdminSelectListOutPutModel'
         "400":
           description: Bad Request
           schema:
@@ -5759,44 +5840,6 @@ paths:
       - Bearer: []
       tags:
       - Products
-  /user/product/selectList:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: page size
-        in: query
-        name: page
-        type: string
-      - description: length of records to show
-        in: query
-        name: limit
-        type: string
-      - description: search for item
-        in: query
-        name: searchTerm
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/parameter.ListResponse-models_ProductAdminSelectListOutPutModel'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Products
   /user/product/suggestions:
     get:
       consumes:
@@ -5874,49 +5917,6 @@ paths:
       - Bearer: []
       tags:
       - ProductItems
-  /user/productItem/selectList/{productId}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Product ID
-        in: path
-        name: productId
-        required: true
-        type: string
-      - description: page size
-        in: query
-        name: page
-        type: string
-      - description: length of records to show
-        in: query
-        name: limit
-        type: string
-      - description: search for item
-        in: query
-        name: searchTerm
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/parameter.ListResponse-models_ProductItemAdminSelectListOutPutModel'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - Bearer: []
-      tags:
-      - Products
   /user/profile:
     get:
       consumes:
