@@ -29,6 +29,7 @@ func loadAdminBrandRoutes(r chi.Router) {
 
 func loadAnonymousBrandRoutes(r chi.Router) {
 	r.Get("/brand/selectList", app.Handler(controllers.GetBrandsSelectList))
+	r.Get("/brand", app.Handler(controllers.GetBrands))
 }
 
 func loadUserBrandRoutes(r chi.Router) {

@@ -16,8 +16,9 @@ func loadAdminProductItemRoutes(r chi.Router) {
 }
 
 func loadUserProductItemRoutes(r chi.Router) {
-	r.Get("/productItem/{id}", app.Handler(controllers.GetProductItem))
+
 }
 
 func loadAnonymousProductItemRoutes(r chi.Router) {
+	r.Get("/productItem/{id}", app.Handler(controllers.GetProductItem))
 }
