@@ -16,7 +16,7 @@ func loadAdminProductFeatureValueRoutes(r chi.Router) {
 	r.Get("/productFeatureValue/{id}", app.Handler(controllers.GetProductFeatureValue,
 		middlewares.Permitted(models.ACTION_PRODUCT_FEATURE_VALUE_ADMIN_INFO)),
 	)
-	r.Post("/productFeatureValue", app.Handler(controllers.CreateProductFeatureValue,
+	r.Post("/productFeatureValue/{productId}", app.Handler(controllers.CreateProductFeatureValue,
 		middlewares.Permitted(models.ACTION_PRODUCT_FEATURE_VALUE_ADMIN_CREATE)),
 	)
 	r.Post("/productFeatureValue/delete/{id}", app.Handler(controllers.DeleteProductFeatureValue,
