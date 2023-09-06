@@ -328,3 +328,40 @@ func GetAdminUserFavoriteProducts(ctx *app.HttpContext) error {
 
 	return ctx.JSON(*response, http.StatusOK)
 }
+
+// Edit Profile godoc
+// @Tags Profile
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param Profile   body  appmodels.UserProfileUpdateModel  true  "Profile model"
+// @Success 200 {object} helpers.SuccessResponse
+// @Failure 400 {object} map[string]any
+// @Failure 401 {object} map[string]any
+// @Router /user/profile/edit  [post]
+func EditProfile(ctx *app.HttpContext) error {
+	user, err := ctx.GetUser()
+	if err != nil {
+		return errors.NewUnauthorizedError(consts.UnauthorizedError, err)
+	}
+
+	var inputModel appmodels.UserProfileUpdateModel
+	err = ctx.BlindBind(&inputModel)
+	if err != nil {
+		return errors.NewBadRequestError(consts.BadRequest, err)
+	}
+
+	baseDB := db.MustGormDBConn(ctx)
+
+	err = inputModel.ValidateUpdate(*user.ID)
+	if err != nil {
+		return errors.NewValidationError(consts.ValidationError, err)
+	}
+
+	inputModel.MergeWithDBData(user)
+	if baseDB.Save(user).Error != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	return ctx.QuickResponse(consts.Updated, http.StatusOK)
+}

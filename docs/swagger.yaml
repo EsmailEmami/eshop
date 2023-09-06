@@ -1569,6 +1569,8 @@ definitions:
     type: object
   models.UserDashboardInfoOutPutModel:
     properties:
+      email:
+        type: string
       firstName:
         type: string
       id:
@@ -1630,6 +1632,19 @@ definitions:
       roleId:
         type: string
       updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
+  models.UserProfileUpdateModel:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      mobile:
         type: string
       username:
         type: string
@@ -5928,6 +5943,38 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.UserDashboardInfoOutPutModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      tags:
+      - Profile
+  /user/profile/edit:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Profile model
+        in: body
+        name: Profile
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserProfileUpdateModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.SuccessResponse'
         "400":
           description: Bad Request
           schema:

@@ -6135,6 +6135,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/profile/edit": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "parameters": [
+                    {
+                        "description": "Profile model",
+                        "name": "Profile",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UserProfileUpdateModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/user/profile/favoriteProducts": {
             "get": {
                 "security": [
@@ -8810,6 +8861,9 @@ const docTemplate = `{
         "models.UserDashboardInfoOutPutModel": {
             "type": "object",
             "properties": {
+                "email": {
+                    "type": "string"
+                },
                 "firstName": {
                     "type": "string"
                 },
@@ -8902,6 +8956,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updatedAt": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserProfileUpdateModel": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "mobile": {
                     "type": "string"
                 },
                 "username": {

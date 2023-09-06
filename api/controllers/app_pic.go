@@ -190,7 +190,7 @@ func DeleteAppPic(ctx *app.HttpContext) error {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
-	if baseTx.Delete(&dbModel).Error != nil {
+	if baseTx.Delete(&models.AppPic{}, dbModel.ID).Error != nil {
 		baseTx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, nil)
 	}

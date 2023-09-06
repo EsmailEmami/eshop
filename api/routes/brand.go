@@ -33,7 +33,4 @@ func loadAnonymousBrandRoutes(r chi.Router) {
 }
 
 func loadUserBrandRoutes(r chi.Router) {
-	r.Get("/brand",
-		app.Handler(controllers.GetBrands),
-	)
 }
