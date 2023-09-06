@@ -364,7 +364,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/helpers.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessDBResponse"
                         }
                     },
                     "400": {
@@ -629,7 +629,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/helpers.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessDBResponse"
                         }
                     },
                     "400": {
@@ -894,7 +894,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/helpers.SuccessResponse"
+                            "$ref": "#/definitions/helpers.SuccessDBResponse"
                         }
                     },
                     "400": {

@@ -84,6 +84,7 @@ loop:
 		for _, fileHeader := range fileHeaders {
 			if !service.IsImageFile(fileHeader) {
 				fmt.Println("this is not image!")
+				continue
 			}
 			path, fileName, err := service.UploadFile(fileHeader, fileType.GetDirectory(), true, true)
 
