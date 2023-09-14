@@ -5892,7 +5892,7 @@ const docTemplate = `{
                             "newest",
                             "topSell",
                             "cheap",
-                            "expersive",
+                            "expensive",
                             "discount"
                         ],
                         "type": "string",

@@ -28,7 +28,7 @@ import (
 // @Param minPrice  query  float64  false  "Min Price"
 // @Param maxPrice  query  float64  false  "Max Price"
 // @Param onlyDiscount  query  bool  false  "Only Products With Discount"
-// @Param order query string false "order by" Enums(newest,topSell,cheap,expersive,discount)
+// @Param order query string false "order by" Enums(newest,topSell,cheap,expensive,discount)
 // @Success 200 {object} parameter.ListResponse[appmodels.ProductWithItemOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
@@ -75,7 +75,7 @@ func GetUserProducts(ctx *app.HttpContext) error {
 		productItemQry = productItemQry.Order("pi2.bought_quantity DESC")
 	case "cheap":
 		productItemQry = productItemQry.Order("pi2.price ASC")
-	case "expersive":
+	case "expensive":
 		productItemQry = productItemQry.Order("pi2.price DESC")
 	case "discount":
 		productItemQry = productItemQry.Order("d.value DESC, pi2.bought_quantity DESC")
@@ -115,7 +115,7 @@ func GetUserProducts(ctx *app.HttpContext) error {
 		baseDB = baseDB.Order("pi2.created_at DESC")
 	case "cheap":
 		baseDB = baseDB.Order("pi2.price ASC")
-	case "expersive":
+	case "expensive":
 		baseDB = baseDB.Order("pi2.price DESC")
 	case "discount":
 		baseDB = baseDB.Order("pi2.value DESC, pi2.bought_quantity DESC")
