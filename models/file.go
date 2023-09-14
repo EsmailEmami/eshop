@@ -51,12 +51,13 @@ func FileTypeFromInt(value int) (FileType, error) {
 	}
 }
 
-func (ft FileType) GetFullInfo() (multiple, hasPriority, canForceDelete bool, table, mapTable, foreignColumn, fileColumn, priorityColumn, uploadDir, downloadPermission, listPermission, uploadPermission, deletePermission, changePriorirtyPermission string) {
+func (ft FileType) GetFullInfo() (multiple, hasPriority, canForceDelete, isFileColumnNullable bool, table, mapTable, foreignColumn, fileColumn, priorityColumn, uploadDir, downloadPermission, listPermission, uploadPermission, deletePermission, changePriorirtyPermission string) {
 	// default values
 	fileColumn = "file_id"
 	priorityColumn = "priority"
 	multiple = false
 	canForceDelete = true
+	isFileColumnNullable = false
 
 	switch ft {
 	case FileTypeSystematic:
@@ -81,6 +82,7 @@ func (ft FileType) GetFullInfo() (multiple, hasPriority, canForceDelete bool, ta
 		mapTable = "product_file_map"
 		foreignColumn = "product_id"
 		uploadDir = "uploads/product"
+		canForceDelete = false
 
 	case FileTypeBrand:
 		downloadPermission = ACTION_FILE_BRAND_DOWNLOAD
@@ -105,7 +107,7 @@ func (ft FileType) GetFullInfo() (multiple, hasPriority, canForceDelete bool, ta
 		panic("invalid file type")
 	}
 
-	if !multiple && hasPriority {
+	if !multiple {
 		mapTable = table
 	}
 
@@ -113,37 +115,37 @@ func (ft FileType) GetFullInfo() (multiple, hasPriority, canForceDelete bool, ta
 }
 
 func (ft FileType) GetInfo() (multiple, hasPriority bool, table, mapTable, foreignColumn, fileColumn, priorityColumn, uploadDir string) {
-	multiple, hasPriority, _, table, mapTable, foreignColumn, fileColumn, priorityColumn, uploadDir, _, _, _, _, _ = ft.GetFullInfo()
+	multiple, hasPriority, _, _, table, mapTable, foreignColumn, fileColumn, priorityColumn, uploadDir, _, _, _, _, _ = ft.GetFullInfo()
 	return
 }
 
 func (ft FileType) GetPermissions() (downloadPermission, listPermission, uploadPermission, deletePermission, changePriorirtyPermission string) {
-	_, _, _, _, _, _, _, _, _, downloadPermission, listPermission, uploadPermission, deletePermission, changePriorirtyPermission = ft.GetFullInfo()
+	_, _, _, _, _, _, _, _, _, _, downloadPermission, listPermission, uploadPermission, deletePermission, changePriorirtyPermission = ft.GetFullInfo()
 	return
 }
 
 func (ft FileType) GetUploadPermission() string {
-	_, _, _, _, _, _, _, _, _, _, _, uploadPermission, _, _ := ft.GetFullInfo()
+	_, _, _, _, _, _, _, _, _, _, _, _, uploadPermission, _, _ := ft.GetFullInfo()
 	return uploadPermission
 }
 
 func (ft FileType) GetDownloadPermission() string {
-	_, _, _, _, _, _, _, _, _, downloadPermission, _, _, _, _ := ft.GetFullInfo()
+	_, _, _, _, _, _, _, _, _, _, downloadPermission, _, _, _, _ := ft.GetFullInfo()
 	return downloadPermission
 }
 
 func (ft FileType) GetDeletePermission() string {
-	_, _, _, _, _, _, _, _, _, _, _, _, deletePermission, _ := ft.GetFullInfo()
+	_, _, _, _, _, _, _, _, _, _, _, _, _, deletePermission, _ := ft.GetFullInfo()
 	return deletePermission
 }
 
 func (ft FileType) GetListPermission() string {
-	_, _, _, _, _, _, _, _, _, _, listPermission, _, _, _ := ft.GetFullInfo()
+	_, _, _, _, _, _, _, _, _, _, _, listPermission, _, _, _ := ft.GetFullInfo()
 	return listPermission
 }
 
 func (ft FileType) GetChangePriorityPermission() string {
-	_, _, _, _, _, _, _, _, _, _, _, _, _, changePriorirtyPermission := ft.GetFullInfo()
+	_, _, _, _, _, _, _, _, _, _, _, _, _, _, changePriorirtyPermission := ft.GetFullInfo()
 	return changePriorirtyPermission
 }
 
@@ -173,6 +175,11 @@ func (ft FileType) GenerateWhereClause(db *gorm.DB, itemID uuid.UUID) *gorm.DB {
 }
 
 func (ft FileType) CanForceDelete() bool {
-	_, _, canForceDelete, _, _, _, _, _, _, _, _, _, _, _ := ft.GetFullInfo()
+	_, _, canForceDelete, _, _, _, _, _, _, _, _, _, _, _, _ := ft.GetFullInfo()
 	return canForceDelete
+}
+
+func (ft FileType) IsFileColumnNullable() bool {
+	_, _, _, isFileColumnNullable, _, _, _, _, _, _, _, _, _, _, _ := ft.GetFullInfo()
+	return isFileColumnNullable
 }

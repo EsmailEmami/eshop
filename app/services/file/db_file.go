@@ -1,6 +1,7 @@
 package file
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"strings"
@@ -85,7 +86,7 @@ func InsertItemFile(db, tx *gorm.DB, itemID uuid.UUID, fileType models.FileType,
 	}
 
 	if !multiple && fileType.CanForceDelete() {
-		if err := DeleteFile(tx, &file); err != nil {
+		if err := DeleteFile(db, tx, &itemID, &file); err != nil {
 			return err
 		}
 	}
@@ -93,7 +94,17 @@ func InsertItemFile(db, tx *gorm.DB, itemID uuid.UUID, fileType models.FileType,
 	return nil
 }
 
-func DeleteFile(tx *gorm.DB, file *models.File) error {
+func DeleteFileWithNoItemID(db, tx *gorm.DB, file *models.File) error {
+	itemID, err := getItemID(db, file)
+
+	if err != nil {
+		return err
+	}
+
+	return DeleteFile(db, tx, itemID, file)
+}
+
+func DeleteFile(db, tx *gorm.DB, itemID *uuid.UUID, file *models.File) error {
 	// the default file should not delete default file
 	if file.ID.String() == consts.FILE_DEFAULT_ID {
 		return nil
@@ -101,9 +112,18 @@ func DeleteFile(tx *gorm.DB, file *models.File) error {
 
 	forceDelete := func() error {
 		path := GetFilePhysicallyPath(file)
+
+		// update related table file column
+		if itemID != nil {
+			if err := changeTableFileColumn(db, tx, *itemID, file); err != nil {
+				return err
+			}
+		}
+
 		if err := tx.Unscoped().Delete(file).Error; err != nil {
 			return err
 		}
+
 		return DeleteFileByPath(path)
 	}
 
@@ -159,6 +179,69 @@ func ChangeFilePriority(db, tx *gorm.DB, itemID, fileID uuid.UUID, fileType mode
 	if err := tx.Table(mapTable).
 		Where(generateStrWhere(foreignColumn, fileColumn), itemID, fileID).
 		Update(priorityColumn, priority).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getItemID(db *gorm.DB, file *models.File) (*uuid.UUID, error) {
+	multiple, _, table, mapTable, foreignColumn, fileColumn, _, _ := file.FileType.GetInfo()
+
+	var fileID sql.NullString
+
+	if multiple {
+		if err := db.Table(mapTable).Select(foreignColumn).First(&fileID, generateStrWhere(fileColumn), *file.ID).Error; err != nil {
+			if err != gorm.ErrRecordNotFound {
+				return nil, err
+			}
+		}
+	} else {
+		if err := db.Table(table).Select("id").First(&fileID, generateStrWhere(fileColumn), *file.ID).Error; err != nil {
+			if err != gorm.ErrRecordNotFound {
+				return nil, err
+			}
+		}
+	}
+
+	if fileID.Valid {
+		uuid, err := uuid.Parse(fileID.String)
+
+		if err != nil {
+			return nil, err
+		}
+		return &uuid, nil
+	}
+
+	return nil, nil
+}
+
+// changeTableFileColumn changes the table file column or delete the row phyisically on multiple conditions
+// be care full on using this method, only use in force delete operations
+func changeTableFileColumn(db, tx *gorm.DB, itemID uuid.UUID, file *models.File) error {
+	var (
+		multiple, _, table, mapTable, foreignColumn, fileColumn, _, _ = file.FileType.GetInfo()
+		isNullable                                                    = file.FileType.IsFileColumnNullable()
+	)
+
+	if multiple {
+		if err := tx.Table(mapTable).Unscoped().
+			Where(generateStrWhere(fileColumn, foreignColumn), *file.ID, itemID).Delete(&struct{}{}).Error; err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	if isNullable {
+		if err := tx.Table(table).Where("id = ?", itemID).UpdateColumn(fileColumn, nil).Error; err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	if err := tx.Table(table).Where("id = ?", itemID).UpdateColumn(fileColumn, consts.FILE_DEFAULT_ID).Error; err != nil {
 		return err
 	}
 

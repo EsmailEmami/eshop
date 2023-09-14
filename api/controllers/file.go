@@ -152,19 +152,25 @@ func DeleteFile(ctx *app.HttpContext) error {
 	var file models.File
 
 	baseDB := dbpkg.MustGormDBConn(ctx)
+	baseTx := baseDB.Begin()
 
 	if baseDB.First(&file, fileID).Error != nil {
+		baseTx.Rollback()
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
 	// check delete permission
 	if err := authorization.CanAccess(ctx, file.FileType.GetDeletePermission()); err != nil {
+		baseTx.Rollback()
 		return err
 	}
 
-	if err := service.DeleteFile(baseDB, &file); err != nil {
+	if err := service.DeleteFileWithNoItemID(baseDB, baseTx, &file); err != nil {
+		baseTx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
+
+	baseDB.Commit()
 
 	return ctx.QuickResponse(consts.Deleted, http.StatusOK)
 }

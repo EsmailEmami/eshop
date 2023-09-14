@@ -223,7 +223,7 @@ func DeleteBrand(ctx *app.HttpContext) error {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	err = fileService.DeleteFile(baseTx, dbModel.File)
+	err = fileService.DeleteFile(baseDB, baseTx, dbModel.ID, dbModel.File)
 
 	if err != nil {
 		baseTx.Rollback()
