@@ -17,7 +17,7 @@ func seedColor(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:     "آبی",
+			Name:     "Blue",
 			Code:     "1",
 			ColorHex: "#2762EB",
 		},
@@ -28,7 +28,7 @@ func seedColor(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:     "طوسی",
+			Name:     "Gray",
 			Code:     "2",
 			ColorHex: "#C7C7D1",
 		},
@@ -39,7 +39,7 @@ func seedColor(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:     "سفید",
+			Name:     "White",
 			Code:     "3",
 			ColorHex: "#FFFFFF",
 		},
@@ -50,7 +50,7 @@ func seedColor(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:     "قرمز",
+			Name:     "Red",
 			Code:     "4",
 			ColorHex: "#FF0000",
 		},
@@ -61,7 +61,7 @@ func seedColor(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:     "سبز",
+			Name:     "Green",
 			Code:     "5",
 			ColorHex: "#2ab57d",
 		},
@@ -72,7 +72,7 @@ func seedColor(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:     "نارنجی",
+			Name:     "Orange",
 			Code:     "6",
 			ColorHex: "#DD9654",
 		},

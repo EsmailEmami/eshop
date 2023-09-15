@@ -19,11 +19,11 @@ func seedUser(dbConn *gorm.DB) error {
 				}(),
 			},
 			FirstName: func() *string {
-				value := "اسماعیل"
+				value := "esmail"
 				return &value
 			}(),
 			LastName: func() *string {
-				value := "امامی"
+				value := "emami"
 				return &value
 			}(),
 			Username: "esmailemami",
@@ -51,11 +51,11 @@ func seedUser(dbConn *gorm.DB) error {
 				}(),
 			},
 			FirstName: func() *string {
-				value := "علیرضا"
+				value := "alireza"
 				return &value
 			}(),
 			LastName: func() *string {
-				value := "صفری"
+				value := "safari"
 				return &value
 			}(),
 			Username: "alireza83safari",

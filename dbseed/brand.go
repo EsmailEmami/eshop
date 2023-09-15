@@ -18,7 +18,7 @@ func seedBrand(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:   "اپل",
+			Name:   "Apple",
 			Code:   "1",
 			FileID: uuid.MustParse(consts.FILE_BRAND_APPLE_ID),
 		},
@@ -29,7 +29,7 @@ func seedBrand(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:   "هواوی",
+			Name:   "Huawei",
 			Code:   "2",
 			FileID: uuid.MustParse(consts.FILE_BRAND_HUAWEI_ID),
 		},
@@ -40,7 +40,7 @@ func seedBrand(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:   "شیائومی",
+			Name:   "Xiaomi",
 			Code:   "3",
 			FileID: uuid.MustParse(consts.FILE_BRAND_XIAOMI_ID),
 		},
@@ -51,7 +51,7 @@ func seedBrand(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:   "سامسونگ",
+			Name:   "Samsung",
 			Code:   "4",
 			FileID: uuid.MustParse(consts.FILE_BRAND_SAMSUNG_ID),
 		},
@@ -62,7 +62,7 @@ func seedBrand(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:   "کوکا کولا",
+			Name:   "CocaCola",
 			Code:   "5",
 			FileID: uuid.MustParse(consts.FILE_BRAND_COCACOLA_ID),
 		},
@@ -73,7 +73,7 @@ func seedBrand(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:   "نستله",
+			Name:   "Nestele",
 			Code:   "6",
 			FileID: uuid.MustParse(consts.FILE_BRAND_NESTELE_ID),
 		},
@@ -84,7 +84,7 @@ func seedBrand(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:   "پپسی",
+			Name:   "Pepsi",
 			Code:   "7",
 			FileID: uuid.MustParse(consts.FILE_BRAND_PEPSI_ID),
 		},
@@ -95,7 +95,7 @@ func seedBrand(dbConn *gorm.DB) error {
 					return &id
 				}(),
 			},
-			Name:   "اوپو",
+			Name:   "Oppo",
 			Code:   "8",
 			FileID: uuid.MustParse(consts.FILE_BRAND_OPPO_ID),
 		},

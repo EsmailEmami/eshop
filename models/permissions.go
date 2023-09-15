@@ -476,97 +476,97 @@ func GetPermissionsTree() []Action {
 					Name: "Change file priority",
 					Code: ACTION_FILE_CHANGE_PRIORITY,
 				},
+			},
+		},
+		{
+			Name: "Systematic Files",
+			Code: "",
+			Children: []Action{
 				{
 					Name: "Systematic Files",
-					Code: "",
-					Children: []Action{
-						{
-							Name: "Systematic Files",
-							Code: ACTION_FILE_SYSTEMATIC_LIST,
-						},
-						{
-							Name: "Upload systematic file",
-							Code: ACTION_FILE_SYSTEMATIC_UPLOAD,
-						},
-						{
-							Name: "Systematic file information",
-							Code: ACTION_FILE_SYSTEMATIC_DOWNLOAD,
-						},
-						{
-							Name: "Delete systematic file",
-							Code: ACTION_FILE_SYSTEMATIC_DELETE,
-						},
-					},
+					Code: ACTION_FILE_SYSTEMATIC_LIST,
 				},
+				{
+					Name: "Upload systematic file",
+					Code: ACTION_FILE_SYSTEMATIC_UPLOAD,
+				},
+				{
+					Name: "Systematic file information",
+					Code: ACTION_FILE_SYSTEMATIC_DOWNLOAD,
+				},
+				{
+					Name: "Delete systematic file",
+					Code: ACTION_FILE_SYSTEMATIC_DELETE,
+				},
+			},
+		},
+		{
+			Name: "Product File Map",
+			Code: "",
+			Children: []Action{
 				{
 					Name: "Product File Map",
-					Code: "",
-					Children: []Action{
-						{
-							Name: "Product File Map",
-							Code: ACTION_FILE_PRODUCT_LIST,
-						},
-						{
-							Name: "Upload product file map",
-							Code: ACTION_FILE_PRODUCT_UPLOAD,
-						},
-						{
-							Name: "Product file map information",
-							Code: ACTION_FILE_PRODUCT_DOWNLOAD,
-						},
-						{
-							Name: "Delete product file map",
-							Code: ACTION_FILE_PRODUCT_DELETE,
-						},
-						{
-							Name: "Change product file map priority",
-							Code: ACTION_FILE_PRODUCT_CHANGE_PRIORITY,
-						},
-					},
+					Code: ACTION_FILE_PRODUCT_LIST,
 				},
+				{
+					Name: "Upload product file map",
+					Code: ACTION_FILE_PRODUCT_UPLOAD,
+				},
+				{
+					Name: "Product file map information",
+					Code: ACTION_FILE_PRODUCT_DOWNLOAD,
+				},
+				{
+					Name: "Delete product file map",
+					Code: ACTION_FILE_PRODUCT_DELETE,
+				},
+				{
+					Name: "Change product file map priority",
+					Code: ACTION_FILE_PRODUCT_CHANGE_PRIORITY,
+				},
+			},
+		},
+		{
+			Name: "Brand Files",
+			Code: "",
+			Children: []Action{
 				{
 					Name: "Brand Files",
-					Code: "",
-					Children: []Action{
-						{
-							Name: "Brand Files",
-							Code: ACTION_FILE_BRAND_LIST,
-						},
-						{
-							Name: "Upload brand file",
-							Code: ACTION_FILE_BRAND_UPLOAD,
-						},
-						{
-							Name: "Brand file information",
-							Code: ACTION_FILE_BRAND_DOWNLOAD,
-						},
-						{
-							Name: "Delete brand file",
-							Code: ACTION_FILE_BRAND_DELETE,
-						},
-					},
+					Code: ACTION_FILE_BRAND_LIST,
 				},
 				{
+					Name: "Upload brand file",
+					Code: ACTION_FILE_BRAND_UPLOAD,
+				},
+				{
+					Name: "Brand file information",
+					Code: ACTION_FILE_BRAND_DOWNLOAD,
+				},
+				{
+					Name: "Delete brand file",
+					Code: ACTION_FILE_BRAND_DELETE,
+				},
+			},
+		},
+		{
+			Name: "App Pic Files",
+			Code: "",
+			Children: []Action{
+				{
 					Name: "App Pic Files",
-					Code: "",
-					Children: []Action{
-						{
-							Name: "App Pic Files",
-							Code: ACTION_FILE_APP_PIC_LIST,
-						},
-						{
-							Name: "Upload app pic file",
-							Code: ACTION_FILE_APP_PIC_UPLOAD,
-						},
-						{
-							Name: "App pic file information",
-							Code: ACTION_FILE_APP_PIC_DOWNLOAD,
-						},
-						{
-							Name: "Delete app pic file",
-							Code: ACTION_FILE_APP_PIC_DELETE,
-						},
-					},
+					Code: ACTION_FILE_APP_PIC_LIST,
+				},
+				{
+					Name: "Upload app pic file",
+					Code: ACTION_FILE_APP_PIC_UPLOAD,
+				},
+				{
+					Name: "App pic file information",
+					Code: ACTION_FILE_APP_PIC_DOWNLOAD,
+				},
+				{
+					Name: "Delete app pic file",
+					Code: ACTION_FILE_APP_PIC_DELETE,
 				},
 			},
 		},
