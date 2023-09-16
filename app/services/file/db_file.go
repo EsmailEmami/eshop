@@ -124,7 +124,10 @@ func DeleteFile(db, tx *gorm.DB, itemID *uuid.UUID, file *models.File) error {
 			return err
 		}
 
-		return DeleteFileByPath(path)
+		// we have to ignore the error bacause there is no problem when there is no file
+		DeleteFileByPath(path)
+
+		return nil
 	}
 
 	if file.FileType.CanForceDelete() {
