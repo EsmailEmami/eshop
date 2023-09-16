@@ -94,7 +94,7 @@ func GetDiscount(ctx *app.HttpContext) error {
 
 	var data appmodels.DiscountAdminOutPutModel
 
-	if err := baseDB.Select("d.id, d.created_at, d.updated_at, d.product_item_id, p.name as product_name, d.type, d.value, d.quantity, d.expires_in, d.code, d.created_by_id as creator_user_id, cu.username,d.related_user_id, ru.username as related_user_username").First(&data, "id", id).Error; err != nil {
+	if err := baseDB.Select("d.id, d.created_at, d.updated_at, d.product_item_id, p.name as product_name, d.type, d.value, d.quantity, d.expires_in, d.code, d.created_by_id as creator_user_id, cu.username,d.related_user_id, ru.username as related_user_username").First(&data, "d.id", id).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
