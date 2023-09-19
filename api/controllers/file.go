@@ -342,6 +342,10 @@ func GetItemFiles(ctx *app.HttpContext) error {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
+	for i, file := range files {
+		files[i].FileUrl = file.FileType.GetFileUrl(file.UniqueFileName)
+	}
+
 	return ctx.JSON(files, http.StatusOK)
 }
 

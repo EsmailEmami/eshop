@@ -44,7 +44,13 @@ func UpdateField(db *sql.DB, model interface{}, field string, value interface{})
 
 	dbStringVal := interfaceToString(value)
 
-	updateCommand := fmt.Sprintf(`UPDATE "%s"."%s" SET "%s" = %s;`, schema, tableName, column, dbStringVal)
+	updateCommand := fmt.Sprintf(
+		`UPDATE "%s"."%s" SET "%s" = %s;`,
+		schema,
+		tableName,
+		column,
+		dbStringVal,
+	)
 	_, err = db.Exec(updateCommand)
 
 	return err

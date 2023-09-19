@@ -16,4 +16,5 @@ type FileOutPutModel struct {
 	OriginalName   string          `gorm:"column:original_name"    json:"originalName"`
 	UniqueFileName string          `gorm:"column:unique_file_name" json:"uniqueFineName"`
 	FileType       models.FileType `gorm:"column:file_type"        json:"fileType"`
+	FileUrl        string          `gorm:"-"                       json:"fileUrl"`
 }
