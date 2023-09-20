@@ -80,7 +80,9 @@ func GetUserProducts(ctx *app.HttpContext) error {
 	case "discount":
 		productItemQry = productItemQry.Order("d.value DESC, pi2.bought_quantity DESC")
 	default:
-		productItemQry = productItemQry.Order("CASE WHEN p.default_product_item_id IS NULL THEN pi2.bought_quantity WHEN pi2.id = p.default_product_item_id THEN 0 ELSE 1 END")
+		productItemQry = productItemQry.Order(
+			"CASE WHEN p.default_product_item_id IS NULL THEN pi2.bought_quantity WHEN pi2.id = p.default_product_item_id THEN 0 ELSE 1 END",
+		)
 	}
 
 	baseDB = baseDB.Table("product as p").
@@ -144,32 +146,40 @@ func GetUserProducts(ctx *app.HttpContext) error {
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Success 200 {object} []appmodels.ProductOutPutModel
+// @Param page  query  string  false  "page size"
+// @Param limit  query  string  false  "length of records to show"
+// @Param searchTerm  query  string  false  "search for item"
+// @Success 200 {object} parameter.ListResponse[appmodels.ProductOutPutModel]
 // @Failure 400 {object} map[string]any
 // @Failure 401 {object} map[string]any
 // @Router /admin/product [get]
 func GetAdminProducts(ctx *app.HttpContext) error {
 	baseDB := db.MustGormDBConn(ctx)
 
-	var data []appmodels.ProductOutPutModel
+	parameter := parameter.New[appmodels.ProductOutPutModel](ctx, baseDB)
 
-	if err := baseDB.Table("product as p").
+	baseDB = baseDB.Table("product as p").
 		Joins(`INNER JOIN brand b ON b.id = p.brand_id`).
 		Joins("INNER JOIN file f on f.id = b.file_id").
 		Joins(`INNER JOIN category c ON c.id = p.category_id`).
-		Select(`p.id, p."name", p.code, p.brand_id, 
-		b."name" AS brand_name, p.category_id, c."name" AS category_name, f.file_type AS brand_file_type, f.unique_file_name AS brand_file_name`).
-		Where("p.deleted_at IS NULL").
-		Find(&data).Error; err != nil {
-		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
+		Where("p.deleted_at IS NULL")
+
+	response, err := parameter.SelectColumns(`p.id, p."name", p.code, p.brand_id, b."name" AS brand_name, p.category_id, 
+							c."name" AS category_name, f.file_type AS brand_file_type, 
+							f.unique_file_name AS brand_file_name`).
+		SearchColumns(`p."name"`, "p.code").
+		SortDescending("p.updated_at").
+		EachItemProcess(func(db *gorm.DB, item *appmodels.ProductOutPutModel) error {
+			item.BrandFileUrl = item.BrandFileType.GetFileUrl(item.BrandFileName)
+			return nil
+		}).
+		Execute(baseDB)
+
+	if err != nil {
+		return errors.NewInternalServerError(consts.InternalServerError, nil)
 	}
 
-	for i, product := range data {
-		product.BrandFileUrl = product.BrandFileType.GetFileUrl(product.BrandFileName)
-		data[i] = product
-	}
-
-	return ctx.JSON(data, http.StatusOK)
+	return ctx.JSON(*response, http.StatusOK)
 }
 
 // GetProduct godoc
@@ -386,7 +396,8 @@ func GetSuggestionProducts(ctx *app.HttpContext) error {
 			data.Colors = colors
 
 			return nil
-		}).Execute(qry)
+		}).
+		Execute(qry)
 
 	if err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, err)

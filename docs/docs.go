@@ -1714,14 +1714,31 @@ const docTemplate = `{
                 "tags": [
                     "Products"
                 ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page size",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "length of records to show",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search for item",
+                        "name": "searchTerm",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.ProductOutPutModel"
-                            }
+                            "$ref": "#/definitions/parameter.ListResponse-models_ProductOutPutModel"
                         }
                     },
                     "400": {
@@ -7505,6 +7522,9 @@ const docTemplate = `{
                 "fileType": {
                     "$ref": "#/definitions/models.FileType"
                 },
+                "fileUrl": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -9413,6 +9433,35 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.ProductItemAdminSelectListOutPutModel"
+                    }
+                },
+                "from": {
+                    "type": "integer"
+                },
+                "last_page": {
+                    "type": "integer"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "parameter.ListResponse-models_ProductOutPutModel": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ProductOutPutModel"
                     }
                 },
                 "from": {

@@ -677,6 +677,8 @@ definitions:
         type: string
       fileType:
         $ref: '#/definitions/models.FileType'
+      fileUrl:
+        type: string
       id:
         type: string
       mimeType:
@@ -1945,6 +1947,25 @@ definitions:
       total:
         type: integer
     type: object
+  parameter.ListResponse-models_ProductOutPutModel:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.ProductOutPutModel'
+        type: array
+      from:
+        type: integer
+      last_page:
+        type: integer
+      limit:
+        type: integer
+      page:
+        type: integer
+      to:
+        type: integer
+      total:
+        type: integer
+    type: object
   parameter.ListResponse-models_ProductWithItemOutPutModel:
     properties:
       data:
@@ -3132,15 +3153,26 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: page size
+        in: query
+        name: page
+        type: string
+      - description: length of records to show
+        in: query
+        name: limit
+        type: string
+      - description: search for item
+        in: query
+        name: searchTerm
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/models.ProductOutPutModel'
-            type: array
+            $ref: '#/definitions/parameter.ListResponse-models_ProductOutPutModel'
         "400":
           description: Bad Request
           schema:
