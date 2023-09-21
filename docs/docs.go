@@ -8975,6 +8975,9 @@ const docTemplate = `{
                 "roleId": {
                     "type": "string"
                 },
+                "roleName": {
+                    "type": "string"
+                },
                 "updatedAt": {
                     "type": "string"
                 },

@@ -27,12 +27,15 @@ import (
 // @Failure 401 {object} map[string]any
 // @Router /admin/user [get]
 func GetUsers(ctx *app.HttpContext) error {
-	baseDB := db.MustGormDBConn(ctx).Model(&dbmodels.User{})
+	baseDB := db.MustGormDBConn(ctx).Table(`"user" u`).
+		Joins(`LEFT JOIN "role" r ON r.id = u.role_id`).
+		Where("u.deleted_at IS NULL")
 
 	parameter := parameter.New[appmodels.UserOutPutModel](ctx, baseDB)
 
 	data, err := parameter.SearchColumns("first_name", "last_name", "mobile", "email", "username").
-		SortDescending("created_at").
+		SelectColumns("u.id, u.created_at, u.updated_at, u.username, u.first_name, u.last_name, u.mobile, u.role_id, r.name as role_name, u.email, u.is_system, u.enabled").
+		SortDescending("u.created_at", "u.updated_at").
 		Execute(baseDB)
 
 	if err != nil {
@@ -58,11 +61,14 @@ func GetUser(ctx *app.HttpContext) error {
 	if err != nil {
 		return errors.NewBadRequestError(consts.BadRequest, err)
 	}
-	baseDB := db.MustGormDBConn(ctx).Model(&dbmodels.User{})
+	baseDB := db.MustGormDBConn(ctx).Table(`"user" u`).
+		Joins(`LEFT JOIN "role" r ON r.id = u.role_id`).
+		Where("u.deleted_at IS NULL")
 
 	var data appmodels.UserOutPutModel
 
-	if err := baseDB.First(&data, "id", id).Error; err != nil {
+	if err := baseDB.Select("u.id, u.created_at, u.updated_at, u.username, u.first_name, u.last_name, u.mobile, u.role_id, r.name as role_name, u.email, u.is_system, u.enabled").
+		Limit(1).Find(&data, "u.id", id).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
