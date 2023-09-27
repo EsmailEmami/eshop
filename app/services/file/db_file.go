@@ -191,24 +191,24 @@ func ChangeFilePriority(db, tx *gorm.DB, itemID, fileID uuid.UUID, fileType mode
 func getItemID(db *gorm.DB, file *models.File) (*uuid.UUID, error) {
 	multiple, _, table, mapTable, foreignColumn, fileColumn, _, _ := file.FileType.GetInfo()
 
-	var fileID sql.NullString
+	var itemID sql.NullString
 
 	if multiple {
-		if err := db.Table(mapTable).Select(foreignColumn).First(&fileID, generateStrWhere(fileColumn), *file.ID).Error; err != nil {
+		if err := db.Table(mapTable).Select(foreignColumn).Limit(1).Find(&itemID, generateStrWhere(fileColumn), *file.ID).Error; err != nil {
 			if err != gorm.ErrRecordNotFound {
 				return nil, err
 			}
 		}
 	} else {
-		if err := db.Table(table).Select("id").First(&fileID, generateStrWhere(fileColumn), *file.ID).Error; err != nil {
+		if err := db.Table(table).Select("id").Limit(1).Find(&itemID, generateStrWhere(fileColumn), *file.ID).Error; err != nil {
 			if err != gorm.ErrRecordNotFound {
 				return nil, err
 			}
 		}
 	}
 
-	if fileID.Valid {
-		uuid, err := uuid.Parse(fileID.String)
+	if itemID.Valid {
+		uuid, err := uuid.Parse(itemID.String)
 
 		if err != nil {
 			return nil, err

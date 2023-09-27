@@ -170,7 +170,7 @@ func DeleteFile(ctx *app.HttpContext) error {
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
 
-	baseDB.Commit()
+	baseTx.Commit()
 
 	return ctx.QuickResponse(consts.Deleted, http.StatusOK)
 }
