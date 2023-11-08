@@ -1,6 +1,6 @@
 version: "3.7"
 networks:
-  billing-core-net:
+  eshop-net:
     driver: bridge
 
 secrets:
@@ -10,38 +10,56 @@ secrets:
     file: ./secrets/REDIS_PASSWORD.txt
 
 services:
-  redis:
-    container_name: redis_db
-    image: redis:latest
-    restart: always
-    secrets:
-      - REDIS_PASSWORD
-    ports: 
-      - 6379:6379
-    environment:
-      - REDIS_PASSWORD_FILE=/run/secrets/REDIS_PASSWORD
-    command: --requirepass 12345678
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: ./..
+    container_name: eshop_app
     volumes:
-      - cache:/data
+      - ~/oauthkeys:/app/oauthkeys
+    ports:
+      - "6060:80"
     networks:
-      - billing-core-net
-  kafka:
-    image: bitnami/kafka:latest
-    container_name: kafka
+      - eshop-net
+
+  database:
+    image: postgres:latest
     restart: always
     secrets:
       - POSTGRES_PASSWORD
-    ports:
-      - 9092:9092
     environment:
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
-      - ALLOW_PLAINTEXT_LISTENER=yes
+      - POSTGRES_USER=eshop
+      - POSTGRES_PASSWORD_FILE=/run/secrets/POSTGRES_PASSWORD
+      - POSTGRES_DB=eshop
     volumes:
-      - kafka:/data/bitnami/kafka/data
+      - db:/var/lib/postgresql/data
+    ports:
+      - 5464:5432
+    networks:
+      - eshop-net
 
+  database_log:
+    image: postgres:latest
+    restart: always
+    secrets:
+      - POSTGRES_PASSWORD
+    environment:
+      - POSTGRES_USER=eshop_log
+      - POSTGRES_PASSWORD_FILE=/run/secrets/POSTGRES_PASSWORD
+      - POSTGRES_DB=eshop_log
+    volumes:
+      - db:/var/lib/postgresql/data
+    ports:
+      - 5465:5432
+    networks:
+      - eshop-net
 
 volumes:
   cache:
     driver: local
   kafka:
+    driver: local
+  app:
+    driver: local
+  db:
     driver: local

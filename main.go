@@ -1,6 +1,8 @@
 package main
 
-import "github.com/esmailemami/eshop/cmd"
+import (
+	"github.com/esmailemami/eshop/cmd"
+)
 
 // @securityDefinitions.apikey Bearer
 // @in header
