@@ -21,17 +21,12 @@ func RunServer() {
 		port = "6060"
 	}
 
-	ip := viper.GetString("server.ip")
-	if ip == "" {
-		ip = "127.0.0.1"
-	}
-
 	fileServer := http.FileServer(http.Dir("./uploads"))
 	router.Handle("/uploads/*", http.StripPrefix("/uploads", fileServer))
 
 	srv := &http.Server{
 		Handler:      router,
-		Addr:         ip + ":" + port,
+		Addr:         ":" + port,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}

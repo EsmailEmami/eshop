@@ -10,20 +10,9 @@ secrets:
     file: ./secrets/REDIS_PASSWORD.txt
 
 services:
-  app:
-    build:
-      dockerfile: Dockerfile
-      context: ./..
-    container_name: eshop_app
-    volumes:
-      - ~/oauthkeys:/app/oauthkeys
-    ports:
-      - "6060:80"
-    networks:
-      - eshop-net
-
   database:
     image: postgres:latest
+    container_name: eshop_db
     restart: always
     secrets:
       - POSTGRES_PASSWORD
@@ -40,6 +29,7 @@ services:
 
   database_log:
     image: postgres:latest
+    container_name: eshop_log_db
     restart: always
     secrets:
       - POSTGRES_PASSWORD
@@ -48,18 +38,30 @@ services:
       - POSTGRES_PASSWORD_FILE=/run/secrets/POSTGRES_PASSWORD
       - POSTGRES_DB=eshop_log
     volumes:
-      - db:/var/lib/postgresql/data
+      - dblog:/var/lib/postgresql/data
     ports:
       - 5465:5432
+    networks:
+      - eshop-net
+
+  app:
+    build:
+      dockerfile: Dockerfile-dev
+      context: ./..
+    container_name: eshop_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+      - database_log
+    restart: always
     networks:
       - eshop-net
 
 volumes:
   cache:
     driver: local
-  kafka:
-    driver: local
-  app:
-    driver: local
   db:
+    driver: local
+  dblog:
     driver: local

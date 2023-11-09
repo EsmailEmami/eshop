@@ -7,9 +7,6 @@ swagger-update:
 build:
 	@GOOS=linux GOARCH=amd64 go build -trimpath github.com/esmailemami/eshop
 
-# run:
-# 	@go run . serve
-
 run: build
 	@./eshop serve
 
@@ -18,3 +15,6 @@ seed:
 
 update-database:
 	@go run . migration up
+
+deploy:
+	liara deploy --disks uploads:/uploads --disks data:/app --app eshop-bak --port 8080

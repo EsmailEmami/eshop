@@ -5,6 +5,8 @@ import (
 	"mime/multipart"
 	"os"
 	"path/filepath"
+
+	"github.com/spf13/viper"
 )
 
 func UploadFile(fh *multipart.FileHeader, target string, useRandomName, startFromRoot bool) (uploadedFilePath, fileName string, err error) {
@@ -94,16 +96,10 @@ func GetFileSize(filePath string) int64 {
 	return info.Size()
 }
 
-// GetPath joins the given path with root
 func GetPath(paths ...string) string {
-	// Get the current working directory (project's root directory)
-	currentDir, err := os.Getwd()
-	if err != nil {
-		panic(err) // Handle the error appropriately based on your use case
-	}
+	uploadDir := viper.GetString("global.file_upload_dir")
 
-	// Concatenate the current directory with "/upload" to get the upload folder path
-	paths = append([]string{currentDir}, paths...)
+	paths = append([]string{uploadDir}, paths...)
 	pathDir := filepath.Join(paths...)
 
 	return pathDir

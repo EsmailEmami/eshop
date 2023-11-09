@@ -26,13 +26,11 @@ func LoadApiRoutes(root *chi.Mux) {
 	docs.SwaggerInfo.Title = "Eshop API doc"
 	docs.SwaggerInfo.Description = "Eshop API."
 	docs.SwaggerInfo.Version = "1.0"
-	port := viper.GetString("server.port")
-	if port == "" {
-		port = "6060"
-	}
-	docs.SwaggerInfo.Host = "127.0.0.1:" + port
+	url := viper.GetString("global.swagger_url")
+
+	docs.SwaggerInfo.Host = url
 	docs.SwaggerInfo.BasePath = "/api/v1"
-	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+	docs.SwaggerInfo.Schemes = []string{"https", "http"}
 	root.Mount("/swagger/", httpSwagger.WrapHandler)
 
 	root.Route("/api/v1", func(rootRouter chi.Router) {

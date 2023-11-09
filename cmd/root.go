@@ -40,8 +40,6 @@ func InitConfig() {
 	} else {
 		viper.SetConfigName("config")
 		viper.AddConfigPath(".")
-		viper.AddConfigPath("/etc/billing")
-		viper.AddConfigPath("$HOME/.billing")
 	}
 
 	viper.SetConfigType("toml")

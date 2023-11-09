@@ -67,7 +67,7 @@ func (ft FileType) GetFullInfo() (multiple, hasPriority, canForceDelete, isFileC
 		deletePermission = ACTION_FILE_SYSTEMATIC_DELETE
 
 		multiple = true
-		uploadDir = "uploads/systematic"
+		uploadDir = "systematic"
 
 	case FileTypeProduct:
 		downloadPermission = ACTION_FILE_PRODUCT_DOWNLOAD
@@ -81,7 +81,7 @@ func (ft FileType) GetFullInfo() (multiple, hasPriority, canForceDelete, isFileC
 		table = "product"
 		mapTable = "product_file_map"
 		foreignColumn = "product_id"
-		uploadDir = "uploads/product"
+		uploadDir = "product"
 		canForceDelete = false
 
 	case FileTypeBrand:
@@ -91,7 +91,7 @@ func (ft FileType) GetFullInfo() (multiple, hasPriority, canForceDelete, isFileC
 		deletePermission = ACTION_FILE_BRAND_DELETE
 
 		table = "brand"
-		uploadDir = "uploads/brand"
+		uploadDir = "brand"
 
 	case FileTypeAppPic:
 		downloadPermission = ACTION_FILE_APP_PIC_DOWNLOAD
@@ -100,7 +100,7 @@ func (ft FileType) GetFullInfo() (multiple, hasPriority, canForceDelete, isFileC
 		deletePermission = ACTION_FILE_APP_PIC_DELETE
 
 		table = "app_pic"
-		uploadDir = "uploads/app-pic"
+		uploadDir = "app-pic"
 		hasPriority = true
 
 	default:

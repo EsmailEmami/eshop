@@ -31,6 +31,8 @@ port = 9092
 
 [global]
 file_storage_path=""
+swagger_url = "127.0.0.1:6060"
+file_upload_dir = "/uploads"
 
 [keys]
 private = ""

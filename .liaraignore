@@ -13,8 +13,4 @@ deployments/secrets/POSTGRES_PASSWORD.txt
 deployments/data
 TODO.txt
 eshop
-config.toml
-config.docker.toml
-config.liara.toml
 uploads/*
-oauth-keys/*.key

@@ -17,8 +17,7 @@ RUN rm -rf /build
 
 WORKDIR /app
 COPY ./oauth-keys ./oauth-keys
-COPY ./config.liara.toml ./config.toml
-
+COPY ./config.docker.toml ./config.toml
 
 EXPOSE 8080
 
