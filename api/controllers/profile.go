@@ -239,7 +239,7 @@ func GetUserFavoriteProducts(ctx *app.HttpContext) error {
 	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name,d.type as discount_type, d.value as discount_value, d.quantity as discount_quantity").
 		SearchColumns("p.name").
 		EachItemProcess(func(db *gorm.DB, item *appmodels.ProductWithItemOutPutModel) error {
-			item.FileUrl = item.FileType.GetDirectory() + "/" + item.FileName
+			item.FileUrl = item.FileType.GetFileUrl(item.FileName)
 			return nil
 		}).
 		Execute(baseDB)
@@ -317,7 +317,7 @@ func GetAdminUserFavoriteProducts(ctx *app.HttpContext) error {
 	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name,d.type as discount_type, d.value as discount_value, d.quantity as discount_quantity").
 		SearchColumns("p.name").
 		EachItemProcess(func(db *gorm.DB, item *appmodels.ProductWithItemOutPutModel) error {
-			item.FileUrl = item.FileType.GetDirectory() + "/" + item.FileName
+			item.FileUrl = item.FileType.GetFileUrl(item.FileName)
 			return nil
 		}).
 		Execute(baseDB)

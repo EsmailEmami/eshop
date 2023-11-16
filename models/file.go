@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
 
@@ -155,7 +156,7 @@ func (ft FileType) GetDirectory() string {
 }
 
 func (ft FileType) GetFileUrl(fileName string) string {
-	return ft.GetDirectory() + "/" + fileName
+	return getUrl() + "/uploads/" + ft.GetDirectory() + "/" + fileName
 }
 
 func (ft FileType) GenerateWhereClause(db *gorm.DB, itemID uuid.UUID) *gorm.DB {
@@ -182,4 +183,8 @@ func (ft FileType) CanForceDelete() bool {
 func (ft FileType) IsFileColumnNullable() bool {
 	_, _, _, isFileColumnNullable, _, _, _, _, _, _, _, _, _, _, _ := ft.GetFullInfo()
 	return isFileColumnNullable
+}
+
+func getUrl() string {
+	return viper.GetString("server.url")
 }

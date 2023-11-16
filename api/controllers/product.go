@@ -128,7 +128,7 @@ func GetUserProducts(ctx *app.HttpContext) error {
 	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name, pi2.type as discount_type, pi2.value as discount_value, pi2.discount_quantity, pi2.quantity").
 		SearchColumns("p.name", "p.code").
 		EachItemProcess(func(db *gorm.DB, item *appmodels.ProductWithItemOutPutModel) error {
-			item.FileUrl = item.FileType.GetDirectory() + "/" + item.FileName
+			item.FileUrl = item.FileType.GetFileUrl(item.FileName)
 
 			return nil
 		}).
@@ -378,7 +378,7 @@ func GetSuggestionProducts(ctx *app.HttpContext) error {
 
 			for i := 0; i < len(files); i++ {
 				file := files[i]
-				files[i].FileUrl = file.FileType.GetDirectory() + "/" + file.UniqueFileName
+				files[i].FileUrl = file.FileType.GetFileUrl(file.UniqueFileName)
 			}
 
 			data.Files = files

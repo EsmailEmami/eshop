@@ -97,7 +97,7 @@ func GetFileSize(filePath string) int64 {
 }
 
 func GetPath(paths ...string) string {
-	uploadDir := viper.GetString("global.file_upload_dir")
+	uploadDir := viper.GetString("global.file_storage_path")
 
 	paths = append([]string{uploadDir}, paths...)
 	pathDir := filepath.Join(paths...)

@@ -2,7 +2,7 @@
 level=6 # PanicLevel=0, FatalLevel=1, ErrorLevel=2, WarnLevel=3, InfoLevel=4, DebugLevel=5, TraceLevel=6
 
 [server]
-ip="127.0.0.1"
+url = "http://127.0.0.1:6060"
 port="6060"
 
 [appdb]
@@ -32,7 +32,6 @@ port = 9092
 [global]
 file_storage_path=""
 swagger_url = "127.0.0.1:6060"
-file_upload_dir = "/uploads"
 
 [keys]
 private = ""

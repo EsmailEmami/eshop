@@ -21,8 +21,11 @@ func RunServer() {
 		port = "6060"
 	}
 
-	fileServer := http.FileServer(http.Dir("./uploads"))
-	router.Handle("/uploads/*", http.StripPrefix("/uploads", fileServer))
+	url := viper.GetString("server.url")
+
+	filesDir := viper.GetString("global.file_storage_path")
+	fileServer := http.FileServer(http.Dir(filesDir))
+	router.Handle("/uploads/*", http.StripPrefix("/uploads/", fileServer))
 
 	srv := &http.Server{
 		Handler:      router,
@@ -31,7 +34,7 @@ func RunServer() {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	fmt.Println("server started at: http://127.0.0.1:" + port)
+	fmt.Println("server started at: " + url)
 	defer srv.Close()
 	log.Fatalln(srv.ListenAndServe())
 

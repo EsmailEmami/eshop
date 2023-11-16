@@ -62,7 +62,7 @@ func GetProductItem(ctx *app.HttpContext) error {
 
 	for i := 0; i < len(files); i++ {
 		file := files[i]
-		files[i].FileUrl = file.FileType.GetDirectory() + "/" + file.UniqueFileName
+		files[i].FileUrl = file.FileType.GetFileUrl(file.UniqueFileName)
 	}
 
 	data.Files = files

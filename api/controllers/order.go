@@ -62,7 +62,7 @@ func GetOrder(ctx *app.HttpContext) error {
 	}
 
 	for _, orderItem := range orderItems {
-		orderItem.FileUrl = orderItem.FileType.GetDirectory() + "/" + orderItem.FileName
+		orderItem.FileUrl = orderItem.FileType.GetFileUrl(orderItem.FileName)
 		orderItem.TotalPrice = orderItem.Price * float64(orderItem.Quantity)
 		data.Items = append(data.Items, orderItem)
 		data.Price += orderItem.Price

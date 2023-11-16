@@ -1,7 +1,6 @@
 *.test
 cpu.out
 mem.out
-dbdata/
 .env
 .vscode/
 __debug_bin
@@ -10,7 +9,6 @@ ssl_cert/*
 vendor/
 deployments/secrets/REDIS_PASSWORD.txt
 deployments/secrets/POSTGRES_PASSWORD.txt
-deployments/data
 TODO.txt
 eshop
 config.toml
@@ -18,3 +16,4 @@ config.docker.toml
 config.liara.toml
 uploads/*
 oauth-keys/*.key
+!oauth-keys/.gitkeep

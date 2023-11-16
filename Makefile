@@ -17,4 +17,4 @@ update-database:
 	@go run . migration up
 
 deploy:
-	liara deploy --disks uploads:/uploads --disks data:/app --app eshop-bak --port 8080
+	liara deploy --disks uploads:/uploads --app eshop-bak --port 8080

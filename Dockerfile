@@ -5,6 +5,7 @@ RUN mkdir -p /app
 RUN mkdir -p /uploads
 
 ADD . /build/
+# ADD ./uploads /uploads/
 
 WORKDIR /build
 RUN go mod vendor
@@ -12,13 +13,9 @@ RUN CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -o /app/main .
 
 RUN rm -rf /build
 
-# WORKDIR /uploads
-# COPY ./uploads .
-
 WORKDIR /app
 COPY ./oauth-keys ./oauth-keys
 COPY ./config.liara.toml ./config.toml
-
 
 EXPOSE 8080
 
