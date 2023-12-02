@@ -22,4 +22,6 @@ type AppPicType int
 
 const (
 	AppPicTypeSlider AppPicType = iota
+	AppPicTypeSection
+	AppPicTypeBilboard
 )

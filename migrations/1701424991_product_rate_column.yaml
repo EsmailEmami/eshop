@@ -1,0 +1,8 @@
+---
+up: |
+  ALTER TABLE public."product"
+    ADD "rate" NUMERIC NOT NULL DEFAULT 0;
+
+down: |
+  ALTER TABLE public."product"
+    DROP COUMN IF EXISTS "rate";

@@ -6843,10 +6843,14 @@
         "models.AppPicType": {
             "type": "integer",
             "enum": [
-                0
+                0,
+                1,
+                2
             ],
             "x-enum-varnames": [
-                "AppPicTypeSlider"
+                "AppPicTypeSlider",
+                "AppPicTypeSection",
+                "AppPicTypeBilboard"
             ]
         },
         "models.AuthToken": {
@@ -7867,6 +7871,9 @@
                         "$ref": "#/definitions/models.ProductItem"
                     }
                 },
+                "rate": {
+                    "type": "number"
+                },
                 "shortDescription": {
                     "type": "string"
                 },
@@ -8420,6 +8427,9 @@
                 "quantity": {
                     "type": "integer"
                 },
+                "rate": {
+                    "type": "number"
+                },
                 "status": {
                     "$ref": "#/definitions/models.ProductStatus"
                 }
@@ -8474,6 +8484,9 @@
                 },
                 "name": {
                     "type": "string"
+                },
+                "rate": {
+                    "type": "number"
                 }
             }
         },
@@ -8561,6 +8574,9 @@
                 },
                 "quantity": {
                     "type": "integer"
+                },
+                "rate": {
+                    "type": "number"
                 }
             }
         },
@@ -8736,6 +8752,9 @@
                 },
                 "productItemId": {
                     "type": "string"
+                },
+                "rate": {
+                    "type": "number"
                 },
                 "topFeatures": {
                     "type": "array",

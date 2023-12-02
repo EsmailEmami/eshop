@@ -6855,10 +6855,14 @@ const docTemplate = `{
         "models.AppPicType": {
             "type": "integer",
             "enum": [
-                0
+                0,
+                1,
+                2
             ],
             "x-enum-varnames": [
-                "AppPicTypeSlider"
+                "AppPicTypeSlider",
+                "AppPicTypeSection",
+                "AppPicTypeBilboard"
             ]
         },
         "models.AuthToken": {
@@ -7879,6 +7883,9 @@ const docTemplate = `{
                         "$ref": "#/definitions/models.ProductItem"
                     }
                 },
+                "rate": {
+                    "type": "number"
+                },
                 "shortDescription": {
                     "type": "string"
                 },
@@ -8432,6 +8439,9 @@ const docTemplate = `{
                 "quantity": {
                     "type": "integer"
                 },
+                "rate": {
+                    "type": "number"
+                },
                 "status": {
                     "$ref": "#/definitions/models.ProductStatus"
                 }
@@ -8486,6 +8496,9 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "rate": {
+                    "type": "number"
                 }
             }
         },
@@ -8573,6 +8586,9 @@ const docTemplate = `{
                 },
                 "quantity": {
                     "type": "integer"
+                },
+                "rate": {
+                    "type": "number"
                 }
             }
         },
@@ -8748,6 +8764,9 @@ const docTemplate = `{
                 },
                 "productItemId": {
                     "type": "string"
+                },
+                "rate": {
+                    "type": "number"
                 },
                 "topFeatures": {
                     "type": "array",

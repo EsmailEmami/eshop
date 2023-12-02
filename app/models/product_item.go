@@ -106,6 +106,7 @@ type ProductItemInfoOutPutModel struct {
 	Files                   []ProductItemFileOutPutModel      `gorm:"-"                                json:"files"`
 	Features                []ProductItemCategoryFeatureModel `gorm:"-"                                json:"features"`
 	Colors                  []ProductItemInfoColorOutPutModel `gorm:"-"                                json:"colors"`
+	Rate                    float64                           `gorm:"column:rate"                      json:"rate"`
 }
 
 type ProductItemCategoryFeatureModel struct {

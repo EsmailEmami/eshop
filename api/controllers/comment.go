@@ -189,15 +189,29 @@ func CreateComment(ctx *app.HttpContext) error {
 		return errors.NewBadRequestError(consts.BadRequest, err)
 	}
 	baseDB := db.MustGormDBConn(ctx)
+	tx := baseDB.Begin()
 
 	err = inputModel.ValidateCreate()
 	if err != nil {
 		return errors.NewValidationError(consts.ValidationError, err)
 	}
 
-	if err := baseDB.Create(inputModel.ToDBModel()).Error; err != nil {
+	if err := tx.Create(inputModel.ToDBModel()).Error; err != nil {
+		tx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
+
+	// calculate product rate
+	if err := tx.Model(&models.Product{}).Where("id=?", inputModel.ProductID).
+		UpdateColumn("rate", tx.Model(&models.Comment{}).
+			Where("product_id=?", inputModel.ProductID).
+			Select("AVG(rate)"),
+		).Error; err != nil {
+		tx.Rollback()
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	tx.Commit()
 
 	return ctx.QuickResponse(consts.Created, http.StatusOK)
 }
@@ -239,10 +253,25 @@ func EditComment(ctx *app.HttpContext) error {
 		return errors.NewValidationError(consts.ValidationError, err)
 	}
 
+	tx := baseDB.Begin()
+
 	inputModel.MergeWithDBData(&dbModel)
-	if baseDB.Save(&dbModel).Error != nil {
+	if tx.Save(&dbModel).Error != nil {
+		tx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, err)
 	}
+
+	// calculate product rate
+	if err := tx.Model(&models.Product{}).Where("id=?", inputModel.ProductID).
+		UpdateColumn("rate", tx.Model(&models.Comment{}).
+			Where("product_id=?", inputModel.ProductID).
+			Select("AVG(rate)"),
+		).Error; err != nil {
+		tx.Rollback()
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	tx.Commit()
 
 	return ctx.QuickResponse(consts.Updated, http.StatusOK)
 }
@@ -271,9 +300,24 @@ func DeleteComment(ctx *app.HttpContext) error {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
 	}
 
-	if baseDB.Delete(&dbModel).Error != nil {
+	tx := baseDB.Begin()
+
+	if tx.Delete(&dbModel).Error != nil {
+		tx.Rollback()
 		return errors.NewInternalServerError(consts.InternalServerError, nil)
 	}
+
+	// calculate product rate
+	if err := tx.Model(&models.Product{}).Where("id=?", dbModel.ProductID).
+		UpdateColumn("rate", tx.Model(&models.Comment{}).
+			Where("product_id=?", dbModel.ProductID).
+			Select("AVG(rate)"),
+		).Error; err != nil {
+		tx.Rollback()
+		return errors.NewInternalServerError(consts.InternalServerError, err)
+	}
+
+	tx.Commit()
 
 	return ctx.QuickResponse(consts.Deleted, http.StatusOK)
 }

@@ -22,6 +22,7 @@ type Product struct {
 	DefaultProductItemID *uuid.UUID            `gorm:"column:default_product_item_id"         json:"defaultProductItemId"`
 	Comments             []Comment             `gorm:"foreignKey:product_id;references:id"    json:"comments"`
 	TopFeatures          datatypes.StringArray `gorm:"column:top_features"                    json:"topFeatures"`
+	Rate                 float64               `gorm:"column:rate"                            json:"rate"`
 }
 
 func (Product) TableName() string {

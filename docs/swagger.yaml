@@ -238,9 +238,13 @@ definitions:
   models.AppPicType:
     enum:
     - 0
+    - 1
+    - 2
     type: integer
     x-enum-varnames:
     - AppPicTypeSlider
+    - AppPicTypeSection
+    - AppPicTypeBilboard
   models.AuthToken:
     properties:
       createdAt:
@@ -914,6 +918,8 @@ definitions:
         items:
           $ref: '#/definitions/models.ProductItem'
         type: array
+      rate:
+        type: number
       shortDescription:
         type: string
       topFeatures:
@@ -1276,6 +1282,8 @@ definitions:
         type: string
       quantity:
         type: integer
+      rate:
+        type: number
       status:
         $ref: '#/definitions/models.ProductStatus'
     type: object
@@ -1312,6 +1320,8 @@ definitions:
         type: string
       name:
         type: string
+      rate:
+        type: number
     type: object
   models.ProductReqModel:
     properties:
@@ -1370,6 +1380,8 @@ definitions:
         type: number
       quantity:
         type: integer
+      rate:
+        type: number
     type: object
   models.RecoveryPasswordModel:
     properties:
@@ -1484,6 +1496,8 @@ definitions:
         type: string
       productItemId:
         type: string
+      rate:
+        type: number
       topFeatures:
         items:
           type: string

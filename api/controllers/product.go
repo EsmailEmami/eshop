@@ -125,11 +125,10 @@ func GetUserProducts(ctx *app.HttpContext) error {
 		baseDB = baseDB.Order("pi2.bought_quantity DESC")
 	}
 
-	response, err := parameter.SelectColumns("p.id, p.name, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name, pi2.type as discount_type, pi2.value as discount_value, pi2.discount_quantity, pi2.quantity").
+	response, err := parameter.SelectColumns("p.id, p.name,p.rate, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name, pi2.type as discount_type, pi2.value as discount_value, pi2.discount_quantity, pi2.quantity").
 		SearchColumns("p.name", "p.code").
 		EachItemProcess(func(db *gorm.DB, item *appmodels.ProductWithItemOutPutModel) error {
 			item.FileUrl = item.FileType.GetFileUrl(item.FileName)
-
 			return nil
 		}).
 		Execute(baseDB)
@@ -164,7 +163,7 @@ func GetAdminProducts(ctx *app.HttpContext) error {
 		Joins(`INNER JOIN category c ON c.id = p.category_id`).
 		Where("p.deleted_at IS NULL")
 
-	response, err := parameter.SelectColumns(`p.id, p."name", p.code, p.brand_id, b."name" AS brand_name, p.category_id, 
+	response, err := parameter.SelectColumns(`p.id,p.rate, p."name", p.code, p.brand_id, b."name" AS brand_name, p.category_id, 
 							c."name" AS category_name, f.file_type AS brand_file_type, 
 							f.unique_file_name AS brand_file_name`).
 		SearchColumns(`p."name"`, "p.code").
@@ -206,7 +205,7 @@ func GetProduct(ctx *app.HttpContext) error {
 		Joins(`INNER JOIN brand b ON b.id = p.brand_id`).
 		Joins("INNER JOIN file f on f.id = b.file_id").
 		Joins(`INNER JOIN category c ON c.id = p.category_id`).
-		Select(`p.id, p."name", p.code, p.brand_id, b."name" AS brand_name, 
+		Select(`p.id, p."name",p.rate, p.code, p.brand_id, b."name" AS brand_name, 
 			p.category_id, c."name" AS category_name, f.file_type AS brand_file_type, f.unique_file_name AS brand_file_name`).
 		Where("p.id = ? AND p.deleted_at IS NULL", id).
 		First(&data).Error; err != nil {
@@ -363,7 +362,7 @@ func GetSuggestionProducts(ctx *app.HttpContext) error {
 		qry = qry.Where("b.id = ?", brandID)
 	}
 
-	response, err := parameter.SelectColumns("p.id as product_id", "p.name", "pi2.id as product_item_id", "pi2.color_id", "p.top_features").
+	response, err := parameter.SelectColumns("p.id as product_id", "p.name", "p.rate", "pi2.id as product_item_id", "pi2.color_id", "p.top_features").
 		SearchColumns("p.name", "p.code").
 		EachItemProcess(func(db *gorm.DB, data *appmodels.SuggestionProductOutPutModel) error {
 

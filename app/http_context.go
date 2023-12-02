@@ -131,7 +131,7 @@ func (c *HttpContext) SetCookie(
 		MaxAge:   maxAge,
 		Path:     path,
 		Domain:   domain,
-		SameSite: 0,
+		SameSite: http.SameSiteNoneMode,
 		Secure:   secure,
 		HttpOnly: httpOnly,
 	})

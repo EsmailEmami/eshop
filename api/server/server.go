@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/esmailemami/eshop/api/middlewares"
 	"github.com/esmailemami/eshop/api/routes"
 	"github.com/go-chi/chi/v5"
 	"github.com/spf13/viper"
@@ -14,6 +15,7 @@ import (
 func RunServer() {
 	router := chi.NewRouter()
 
+	router.Use(middlewares.CORSHandler)
 	routes.LoadApiRoutes(router)
 
 	port := viper.GetString("server.port")

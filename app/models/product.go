@@ -124,6 +124,7 @@ type ProductWithItemOutPutModel struct {
 	DiscountValue    *float64               `gorm:"column:discount_value"          json:"discountValue"`
 	DiscountQuantity *int                   `gorm:"column:discount_quantity"       json:"discountQuantity"`
 	Quantity         int                    `gorm:"column:quantity"                json:"quantity"`
+	Rate             float64                `gorm:"column:rate"                    json:"rate"`
 }
 
 type ProductOutPutModel struct {
@@ -137,6 +138,7 @@ type ProductOutPutModel struct {
 	BrandFileType dbmodels.FileType `gorm:"column:brand_file_type"  json:"-"`
 	BrandFileName string            `gorm:"column:brand_file_name"  json:"-"`
 	BrandFileUrl  string            `gorm:"column:brand_file_url"   json:"brandFileUrl"`
+	Rate          float64           `gorm:"column:rate"             json:"rate"`
 }
 
 type SuggestionProductOutPutModel struct {
@@ -147,6 +149,7 @@ type SuggestionProductOutPutModel struct {
 	ProductItemID uuid.UUID                         `gorm:"product_item_id"                  json:"productItemId"`
 	ColorID       uuid.UUID                         `gorm:"color_id"                         json:"colorId"`
 	TopFeatures   datatypes.StringArray             `gorm:"column:top_features"              json:"topFeatures"`
+	Rate          float64                           `gorm:"column:rate"                      json:"rate"`
 }
 
 type ProductAdminOutPutModel struct {

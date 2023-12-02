@@ -10,14 +10,14 @@ import (
 )
 
 func LoadApiRoutes(root *chi.Mux) {
-	root.Use(func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method == http.MethodOptions {
-				return
-			}
-			next.ServeHTTP(w, r)
-		})
-	})
+	// root.Use(func(next http.Handler) http.Handler {
+	// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// 		if r.Method == http.MethodOptions {
+	// 			return
+	// 		}
+	// 		next.ServeHTTP(w, r)
+	// 	})
+	// })
 
 	root.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte("Eshop API Server"))

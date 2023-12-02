@@ -45,7 +45,7 @@ func GetProductItem(ctx *app.HttpContext) error {
 			Limit(1),
 		).
 		Select(`pi2.id, pi2.price,pi2.status, pi2 .color_id, pi2.product_id, pi2.quantity,
-		p."name" AS product_title, p.code AS product_code, p.short_description AS product_short_description, 
+		p."name" AS product_title,p.rate, p.code AS product_code, p.short_description AS product_short_description, 
 		p.description AS product_description, c."name" AS color_name,d.type as discount_type, d.value as discount_value, d.quantity as discount_quantity`).
 		First(&data, "pi2.id", id).Error; err != nil {
 		return errors.NewRecordNotFoundError(consts.RecordNotFound, nil)
