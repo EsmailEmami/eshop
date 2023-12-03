@@ -34,7 +34,7 @@ import (
 // @Failure 401 {object} map[string]any
 // @Router /user/product [get]
 func GetUserProducts(ctx *app.HttpContext) error {
-	baseDB := db.MustGormDBConn(ctx)
+	baseDB := db.MustGormDBConn(ctx).Debug()
 
 	parameter := parameter.New[appmodels.ProductWithItemOutPutModel](ctx, baseDB)
 
@@ -55,7 +55,8 @@ func GetUserProducts(ctx *app.HttpContext) error {
 		Select("d.type, d.value, d.product_item_id, d.quantity").
 		Limit(1)
 
-	productItemQry := baseDB.Table("product_item pi2")
+	productItemQry := baseDB.Table("product_item pi2").
+		Where("pi2.deleted_at IS NULL")
 
 	if productItemsWithDiscount {
 		productItemQry = productItemQry.Joins("INNER JOIN LATERAL (?) as d ON TRUE", discountQry)

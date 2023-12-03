@@ -102,14 +102,18 @@ func (p *Parameter[T]) Execute(db *gorm.DB) (*ListResponse[T], error) {
 	)
 
 	// search part
-	if searchTerm, ok := p.DBLikeSearch(); ok {
+	if searchTerm, ok := p.DBLikeSearch(); ok && len(p.searchColumns) > 0 {
+		filteredDB := db.WithContext(context.Background())
+
 		for i, column := range p.searchColumns {
 			if i == 0 {
-				db = db.Where(column+" LIKE ?", searchTerm)
+				filteredDB = filteredDB.Where(column+" LIKE ?", searchTerm)
 			} else {
-				db = db.Or(column+" LIKE ?", searchTerm)
+				filteredDB = filteredDB.Or(column+" LIKE ?", searchTerm)
 			}
 		}
+
+		db = db.Where(filteredDB)
 	}
 
 	wg.Add(2)
