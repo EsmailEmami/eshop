@@ -34,7 +34,7 @@ import (
 // @Failure 401 {object} map[string]any
 // @Router /user/product [get]
 func GetUserProducts(ctx *app.HttpContext) error {
-	baseDB := db.MustGormDBConn(ctx).Debug()
+	baseDB := db.MustGormDBConn(ctx)
 
 	parameter := parameter.New[appmodels.ProductWithItemOutPutModel](ctx, baseDB)
 

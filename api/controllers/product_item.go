@@ -56,7 +56,7 @@ func GetProductItem(ctx *app.HttpContext) error {
 
 	if err := baseDB.Table("file as f").
 		Joins("INNER JOIN product_file_map pf ON pf.file_id = f.id").
-		Where("pf.product_id = ?", data.ProductID).Find(&files).Error; err != nil {
+		Where("pf.product_id = ?", data.ProductID).Where("f.deleted_at IS NULL").Find(&files).Error; err != nil {
 		return errors.NewInternalServerError(consts.InternalServerError, nil)
 	}
 
