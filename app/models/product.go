@@ -125,6 +125,7 @@ type ProductWithItemOutPutModel struct {
 	DiscountQuantity *int                   `gorm:"column:discount_quantity"       json:"discountQuantity"`
 	Quantity         int                    `gorm:"column:quantity"                json:"quantity"`
 	Rate             float64                `gorm:"column:rate"                    json:"rate"`
+	IsUserFavorite   bool                   `gorm:"is_user_favorite"               json:"isUserFavorite"`
 }
 
 type ProductOutPutModel struct {

@@ -56,3 +56,14 @@ func AuthenticationHandler(next http.Handler) http.Handler {
 		next.ServeHTTP(ctx.ResponseWriter, ctx.Request)
 	})
 }
+
+func AuthenticationNotForceHandler(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := app.NewHttpContext(w, r)
+
+		// ignore the error
+		Authentication(ctx)
+
+		next.ServeHTTP(ctx.ResponseWriter, ctx.Request)
+	})
+}

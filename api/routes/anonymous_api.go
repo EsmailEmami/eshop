@@ -2,11 +2,14 @@ package routes
 
 import (
 	"github.com/esmailemami/eshop/api/controllers"
+	"github.com/esmailemami/eshop/api/middlewares"
 	"github.com/esmailemami/eshop/app"
 	"github.com/go-chi/chi/v5"
 )
 
 func loadUserAnonymousRoutes(r chi.Router) {
+	r.Use(middlewares.AuthenticationNotForceHandler)
+
 	// ##### Auth #####
 	r.Post("/login", app.Handler(controllers.LoginUser))
 	r.Post("/register", app.Handler(controllers.Register))

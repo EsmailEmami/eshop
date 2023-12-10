@@ -34,7 +34,13 @@ import (
 // @Failure 401 {object} map[string]any
 // @Router /user/product [get]
 func GetUserProducts(ctx *app.HttpContext) error {
-	baseDB := db.MustGormDBConn(ctx)
+	baseDB := db.MustGormDBConn(ctx).Debug()
+
+	userID := uuid.Nil
+
+	if user, err := ctx.GetUser(); err == nil {
+		userID = *user.ID
+	}
 
 	parameter := parameter.New[appmodels.ProductWithItemOutPutModel](ctx, baseDB)
 
@@ -55,8 +61,7 @@ func GetUserProducts(ctx *app.HttpContext) error {
 		Select("d.type, d.value, d.product_item_id, d.quantity").
 		Limit(1)
 
-	productItemQry := baseDB.Table("product_item pi2").
-		Where("pi2.deleted_at IS NULL")
+	productItemQry := baseDB.Table("product_item pi2")
 
 	if productItemsWithDiscount {
 		productItemQry = productItemQry.Joins("INNER JOIN LATERAL (?) as d ON TRUE", discountQry)
@@ -64,7 +69,10 @@ func GetUserProducts(ctx *app.HttpContext) error {
 		productItemQry = productItemQry.Joins("LEFT JOIN LATERAL (?) as d ON TRUE", discountQry)
 	}
 
-	productItemQry = productItemQry.Select("pi2.id, pi2.price, pi2.created_at, pi2.bought_quantity, d.type, d.value, d.quantity as discount_quantity, pi2.quantity").
+	isUserFavoriteProductQry := baseDB.Table("favorite_product_item as fpi").
+		Where("fpi.product_item_id = pi2.id AND fpi.created_by_id = ?", userID)
+
+	productItemQry = productItemQry.Select("pi2.id, pi2.price, pi2.created_at, pi2.bought_quantity, d.type, d.value, d.quantity as discount_quantity, pi2.quantity,(SELECT EXISTS(?)) as is_user_favorite", isUserFavoriteProductQry).
 		Where("pi2.quantity > 0 AND pi2.product_id = p.id AND pi2.deleted_at IS NULL")
 
 	order, _ := ctx.GetParam("order")
@@ -126,7 +134,7 @@ func GetUserProducts(ctx *app.HttpContext) error {
 		baseDB = baseDB.Order("pi2.bought_quantity DESC")
 	}
 
-	response, err := parameter.SelectColumns("p.id, p.name,p.rate, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name, pi2.type as discount_type, pi2.value as discount_value, pi2.discount_quantity, pi2.quantity").
+	response, err := parameter.SelectColumns("p.id, p.name,p.rate, p.code, pi2.price, p.brand_id, b.name as brand_name, p.category_id, c.name as category_name, pi2.id as item_id, f.file_type, f.unique_file_name as file_name, pi2.type as discount_type, pi2.value as discount_value, pi2.discount_quantity, pi2.quantity, pi2.is_user_favorite").
 		SearchColumns("p.name", "p.code").
 		EachItemProcess(func(db *gorm.DB, item *appmodels.ProductWithItemOutPutModel) error {
 			item.FileUrl = item.FileType.GetFileUrl(item.FileName)
